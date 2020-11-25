@@ -8,6 +8,7 @@
             <slot/>
         </main>
         <footer class="AppLayout__footer">
+            <router-view></router-view>
         </footer>
     </div>
 </template>

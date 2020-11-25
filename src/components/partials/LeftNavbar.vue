@@ -1,70 +1,100 @@
 <template>
     <div class="flex flex-col items-center min-h-full w-20" style="background-color: #28AAE1">
         <ul class="flex flex-col w-full">
-            <li class="items-center w-full navitem">
-                <router-link to="/">
-                     <span class="flex h-20 justify-center items-center rounded-2xl"
+            <li class="w-full navitem">
+                <router-link to="/" >
+                     <div class="flex h-20 items-center rounded-2xl"
                            @mouseover="selected = 1"
                            @mouseleave="selected = null"
                            :class="{ active: selected === 1 }"
                      >
-                    <Close></Close>
-                </span>
+                         <div class="mx-auto">
+                             <Close class="m-auto"></Close>
+                             <span>
+                                Exit
+                            </span>
+                         </div>
+                     </div>
                 </router-link>
             </li>
             <li class="w-full navitem">
                 <router-link to="/">
-                    <span class="flex h-20 justify-center items-center rounded-2xl"
+                    <div class="flex h-20 items-center rounded-2xl"
                           @mouseover="selected = 2"
                           @mouseleave="selected = null"
                           :class="{ active: selected === 2 }"
                     >
-                        <Analitics></Analitics>
-                    </span>
+                        <div class="mx-auto">
+                            <Analitics class="m-auto"></Analitics>
+                            <span>
+                                Analitics
+                            </span>
+                        </div>
+                    </div>
                 </router-link>
             </li>
             <li class="w-full navitem">
                 <router-link to="/">
-                    <span class="flex h-20 justify-center items-center rounded-2xl"
+                    <div class="flex h-20 items-center rounded-2xl"
                           @mouseover="selected = 3"
                           @mouseleave="selected = null"
                           :class="{ active: selected === 3 }"
                     >
-                        <Herbicides></Herbicides>
-                    </span>
+                        <div class="mx-auto">
+                            <Herbicides class="m-auto"></Herbicides>
+                            <span>
+                                Herbicides
+                            </span>
+                        </div>
+                    </div>
                 </router-link>
             </li>
             <li class="w-full navitem">
                 <router-link to="/">
-                    <span class="flex h-20 justify-center items-center rounded-2xl"
+                    <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 4"
                           @mouseleave="selected = null"
                           :class="{ active: selected === 4 }"
                     >
-                        <Traits></Traits>
-                    </span>
+                        <div class="mx-auto">
+                            <Traits class="m-auto"></Traits>
+                            <span>
+                                Traits
+                            </span>
+                        </div>
+                    </div>
                 </router-link>
             </li>
             <li class="w-full navitem">
                 <router-link to="/">
-                    <span class="flex h-20 justify-center items-center rounded-2xl"
+                    <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 5"
                           @mouseleave="selected = null"
                           :class="{ active: selected === 5 }"
                     >
-                        <TankMix></TankMix>
-                    </span>
+                        <div class="mx-auto">
+                            <TankMix class="m-auto"></TankMix>
+                            <span>
+                                Tank Mix
+                            </span>
+                        </div>
+                    </div>
                 </router-link>
             </li>
             <li class="w-full navitem">
                 <router-link to="/">
-                    <span class="flex h-20 justify-center items-center rounded-2xl"
+                    <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 6"
                           @mouseleave="selected = null"
                           :class="{ active: selected === 6 }"
                     >
-                        <Farms></Farms>
-                    </span>
+                        <div class="mx-auto">
+                            <Farms class="m-auto"></Farms>
+                            <span>
+                                Farms
+                            </span>
+                        </div>
+                    </div>
                 </router-link>
             </li>
         </ul>
