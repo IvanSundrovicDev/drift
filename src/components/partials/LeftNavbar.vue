@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col items-center min-h-full w-20" style="background-color: #28AAE1">
-        <ul class="flex flex-col w-full">
-            <li class="w-full navitem">
+    <div class="flex flex-col items-center overflow-auto w-20" style="background-color: #28AAE1">
+        <ul class="flex flex-col">
+            <li class="navitem">
                 <router-link to="/" >
                      <div class="flex h-20 items-center rounded-2xl"
                            @mouseover="selected = 1"
@@ -17,8 +17,8 @@
                      </div>
                 </router-link>
             </li>
-            <li class="w-full navitem">
-                <router-link to="/">
+            <li class="navitem">
+                <router-link to="#">
                     <div class="flex h-20 items-center rounded-2xl"
                           @mouseover="selected = 2"
                           @mouseleave="selected = null"
@@ -33,8 +33,8 @@
                     </div>
                 </router-link>
             </li>
-            <li class="w-full navitem">
-                <router-link to="/">
+            <li class="navitem">
+                <router-link to="#">
                     <div class="flex h-20 items-center rounded-2xl"
                           @mouseover="selected = 3"
                           @mouseleave="selected = null"
@@ -49,8 +49,8 @@
                     </div>
                 </router-link>
             </li>
-            <li class="w-full navitem">
-                <router-link to="/">
+            <li class="navitem">
+                <router-link to="#">
                     <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 4"
                           @mouseleave="selected = null"
@@ -65,8 +65,8 @@
                     </div>
                 </router-link>
             </li>
-            <li class="w-full navitem">
-                <router-link to="/">
+            <li class="navitem">
+                <router-link to="#">
                     <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 5"
                           @mouseleave="selected = null"
@@ -81,8 +81,8 @@
                     </div>
                 </router-link>
             </li>
-            <li class="w-full navitem">
-                <router-link to="/">
+            <li class="navitem">
+                <router-link to="#">
                     <div class="flex h-20 justify-center items-center rounded-2xl"
                           @mouseover="selected = 6"
                           @mouseleave="selected = null"
@@ -114,13 +114,6 @@
 </template>
 
 <script>
-    import { library } from '@fortawesome/fontawesome-svg-core';
-    // import { name of your icon in camelCase } from "@fortawesome/free-solid-svg-icons";
-    // For example, I want to use fa-enveloper-open-text, then it's faEnvelopeOpenText
-    import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
-    // Then add it to library
-    library.add(faArrowDown)
-
     import Close from '../../assets/images/navbar-icons/close.svg'
     import Farms from '../../assets/images/navbar-icons/farms.svg'
     import Herbicides from '../../assets/images/navbar-icons/herbicides.svg'
