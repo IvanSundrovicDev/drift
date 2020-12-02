@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- This example requires Tailwind CSS v2.0+ -->
-        <div class="bg-white">
+        <div class="w-full fixed bg-white">
             <nav class="bg-white border-b border-gray-200">
                 <div class="w-full">
                     <div class="flex h-16">
@@ -10,7 +10,7 @@
                                 <img class="block lg:hidden h-8 w-auto" src="../../assets/images/drift_logo.png" alt="DRIFT">
                                 <img class="hidden lg:block h-8 w-auto" src="../../assets/images/drift_logo.png" alt="DRIFT">
                             </div>
-                            <div class="flex items-center ml-5">
+                            <div class="flex items-center ml-7 mr-2">
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-2">
                                         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -21,7 +21,6 @@
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:items-center mr-5">
                             <button class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <span class="sr-only">View notifications</span>
                                 <!-- Heroicon name: bell -->
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -31,8 +30,7 @@
                             <!-- Profile dropdown -->
                             <div class="ml-3 relative">
                                 <div>
-                                    <button class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu" aria-haspopup="true">
-                                        <span class="sr-only">Open user menu</span>
+                                    <button class="h-8 w-8 bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu" aria-haspopup="true">
                                         <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
                                     </button>
                                 </div>
@@ -40,8 +38,7 @@
                         </div>
                         <div class="mr-2 flex items-center sm:hidden">
                             <!-- Mobile menu button -->
-                            <button class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <span class="sr-only">Open main menu</span>
+                            <button v-on:click="menuOpen = !menuOpen" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 <!--
                                   Heroicon name: menu
 
@@ -68,8 +65,8 @@
 
                   Open: "block", closed: "hidden"
                 -->
-                <div class="hidden sm:hidden">
-                    <div class="pt-4 pb-3 border-t border-gray-200">
+                <div v-if="menuOpen" class="block sm:hidden">
+                    <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="flex items-center px-4">
                             <div class="flex-shrink-0">
                                 <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
@@ -98,6 +95,31 @@
                             <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
                                 Sign out
                             </a>
+                            <hr>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <Close class="inline-block item mr-2"></Close>
+                                <p class="mt-1 inline-block">Exit</p>
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <Analitics class="inline-block item mr-2"></Analitics>
+                                <p class="mt-1 inline-block">Analitics</p>
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <Herbicides class="inline-block item mr-2"></Herbicides>
+                                <p class="mt-1 inline-block">Herbicides</p>
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <Traits class="inline-block item mr-2"></Traits>
+                                <p class="mt-1 inline-block">Traits</p>
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <TankMix class="inline-block item mr-2"></TankMix>
+                                <p class="mt-1 inline-block">Tank mix</p>
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                                <Farms class="inline-block item mr-2"></Farms>
+                                <p class="mt-1 inline-block">Farms</p>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -107,7 +129,28 @@
 </template>
 
 <script>
+    import Close from '../../assets/images/navbar-icons/close.svg'
+    import Farms from '../../assets/images/navbar-icons/farms.svg'
+    import Herbicides from '../../assets/images/navbar-icons/herbicides.svg'
+    import Traits from '../../assets/images/navbar-icons/traits.svg'
+    import TankMix from '../../assets/images/navbar-icons/tank-mix.svg'
+    import Analitics from '../../assets/images/navbar-icons/analitics.svg'
+
     export default {
-        name: "TopNavbar"
+        name: "TopNavbar",
+        components: {
+            Close, Farms, Herbicides, Traits, TankMix, Analitics
+        },
+        data: function () {
+            return {
+                menuOpen:false
+            }
+        }
     }
 </script>
+
+<style>
+    .item{
+        filter: invert(57%) sepia(72%) saturate(1464%) hue-rotate(165deg) brightness(94%) contrast(87%);
+    }
+</style>

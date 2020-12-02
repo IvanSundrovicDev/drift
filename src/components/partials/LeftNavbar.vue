@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col items-center overflow-auto w-20" style="background-color: #28AAE1">
-        <ul class="flex flex-col">
+    <div class="flex flex-col items-center overflow-auto w-24 hidden sm:block" style="background-color: #28AAE1">
+        <ul class="flex flex-col w-24 fixed mt-16">
             <li class="navitem">
                 <router-link to="/" >
                      <div class="flex h-20 items-center rounded-2xl"

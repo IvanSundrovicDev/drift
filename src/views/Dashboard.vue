@@ -1,6 +1,8 @@
 <template>
     <app-layout>
-        <h1>Welcome to the dashboard</h1>
+        <div>
+            <h1 style="height: 100px">Welcome to the dashboard</h1>
+        </div>
     </app-layout>
 </template>
 
