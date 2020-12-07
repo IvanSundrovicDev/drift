@@ -39,14 +39,14 @@
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your password"
             />
-            <button class="designColor" @click="goToForgotPassword">
+            <button class="designColorText" @click="goToForgotPassword">
               Forgot password?
             </button>
           </div>
 
           <div class="pt-7">
             <button
-              class="rounded-lg py-1 w-full authActionButton"
+              class="rounded-lg py-1 w-full designActionButton"
               @click="login()"
             >
               Login

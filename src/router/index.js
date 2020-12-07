@@ -4,6 +4,7 @@ import Login from "../views/auth/Login";
 import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
+import PricingPlansList from "../views/pricingPlans/PricingPlansList";
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard
+  },
+  {
+    path: "/pricing_plans",
+    name: "Pricing Plans",
+    component: PricingPlansList
   }
 ];
 
@@ -37,7 +43,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/", "/register", "/password_reset"];
+  const publicPages = ["/", "/register", "/password_reset", "/pricing_plans"];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
 

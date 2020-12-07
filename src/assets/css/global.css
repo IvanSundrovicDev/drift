@@ -1,6 +1,31 @@
-.designColor {
+.designColorText {
     color: rgba(40,170,225,1)
 }
-.designBackground {
+.designBackground100 {
     background-color: rgba(40,170,225,1)
+}
+.designBackground80 {
+    background-color: rgba(40,170,225,0.8)
+}
+.borderDesignTheme {
+    border: 3px solid rgba(40,170,225,1);
+    box-shadow: 1px 1px 5px rgba(40,170,225,1);
+}
+.designActionButton {
+    color: rgba(40, 170, 225, 1);
+    border: 2px solid rgba(40, 170, 225, 1);
+}
+.designActionButton:hover {
+    color: #ffffff;
+    background-color: rgba(40, 170, 225, 1);
+}
+.designInverseButton {
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 8px 12px 8px 12px;
+}
+.designInverseButton:hover {
+    color: rgba(40, 170, 225, 1);
+    padding: 8px 12px 8px 12px;
+    background-color: #ffffff;
 }

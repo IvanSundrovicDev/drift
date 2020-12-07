@@ -3,13 +3,13 @@
     <nav class="AuthLayout__nav"></nav>
     <main class="AuthLayout__main relative">
       <router-link
-        class="absolute top-8 right-10 rounded-lg loginRegisterButton"
+        class="absolute top-8 right-10 rounded-lg designInverseButton"
         v-if="this.$route.name === 'Register'"
         :to="{ name: 'Login' }"
         >Login</router-link
       >
       <router-link
-        class="absolute top-8 right-10 rounded-lg loginRegisterButton"
+        class="absolute top-8 right-10 rounded-lg designInverseButton"
         v-else
         :to="{ name: 'Register' }"
         >Sign Up</router-link
@@ -69,24 +69,6 @@ export default {
 }
 .authInputField:focus {
   outline: 0;
-}
-.authActionButton {
-  color: rgba(40, 170, 225, 1);
-  border: 2px solid rgba(40, 170, 225, 1);
-}
-.authActionButton:hover {
-  color: #ffffff;
-  background-color: rgba(40, 170, 225, 1);
-}
-.loginRegisterButton {
-  color: #ffffff;
-  border: 2px solid #ffffff;
-  padding: 8px 12px 8px 12px;
-}
-.loginRegisterButton:hover {
-  color: rgba(40, 170, 225, 1);
-  padding: 8px 12px 8px 12px;
-  background-color: #ffffff;
 }
 .authLeftSide {
   background-color: #28aae1;

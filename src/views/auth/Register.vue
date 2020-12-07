@@ -14,7 +14,7 @@
               alt=""
             />
             <span class="my-auto ml-2 align-middle"
-              >Full name <span class="designColor">*</span></span
+              >Full name <span class="designColorText">*</span></span
             >
           </div>
 
@@ -35,7 +35,7 @@
               alt=""
             />
             <span class="my-auto ml-2 align-middle"
-              >E-mail address <span class="designColor">*</span></span
+              >E-mail address <span class="designColorText">*</span></span
             >
           </div>
 
@@ -55,7 +55,7 @@
               alt=""
             />
             <span class="my-auto ml-2 align-middle"
-              >Farm name <span class="designColor">*</span></span
+              >Farm name <span class="designColorText">*</span></span
             >
           </div>
 
@@ -71,12 +71,8 @@
           <div class="pt-7">
             <button
               type="button"
-              class="rounded-lg py-1 w-full authActionButton"
-              :disabled="
-                user.username === '' &&
-                  user.email === '' &&
-                  user.farm_name === ''
-              "
+              class="rounded-lg py-1 w-full designActionButton"
+              :disabled="stepOneBtnDisabled"
               @click="registerStep = 2"
             >
               Continue
@@ -98,7 +94,7 @@
               alt=""
             />
             <span class="my-auto ml-2 align-middle"
-              >Password <span class="designColor">*</span></span
+              >Password <span class="designColorText">*</span></span
             >
           </div>
 
@@ -118,7 +114,8 @@
               alt=""
             />
             <span class="my-auto ml-2 align-middle"
-              >Password confirmation <span class="designColor">*</span></span
+              >Password confirmation
+              <span class="designColorText">*</span></span
             >
           </div>
 
@@ -171,11 +168,12 @@
 
           <div class="pt-7">
             <button
+              :disabled="stepTwoBtnDisabled"
               type="button"
-              class="rounded-lg py-1 w-full authActionButton authInputField"
+              class="rounded-lg py-1 w-full designActionButton authInputField"
               @click="register"
             >
-              Register
+              Continue
             </button>
           </div>
         </div>
@@ -187,6 +185,7 @@
 <script>
 import AuthLayout from "../layouts/AuthLayout";
 import User from "../../models/user";
+import PricingPlansList from "../pricingPlans/PricingPlansList";
 
 export default {
   name: "Register",
@@ -200,14 +199,14 @@ export default {
       security_questions: []
     };
   },
+  mounted() {
+    this.getSecurityQuestions();
+  },
   methods: {
-    goToStep2() {
-      this.registerStep = 2;
-    },
     register() {
-      console.log(this.user);
       this.$store.dispatch("auth/register", this.user).then(
         data => {
+          this.$router.push({ name: "Pricing Plans" });
           console.log(data);
         },
         error => {
@@ -221,8 +220,22 @@ export default {
       });
     }
   },
-  mounted() {
-    this.getSecurityQuestions();
+  computed: {
+    stepOneBtnDisabled() {
+      return (
+        this.user.username === "" ||
+        this.user.email === "" ||
+        this.user.farm_name === ""
+      );
+    },
+    stepTwoBtnDisabled() {
+      return (
+        this.user.password === "" ||
+        this.user.password_confirmation === "" ||
+        this.user.security_question === null ||
+        this.user.security_question_answer === ""
+      );
+    }
   }
 };
 </script>
