@@ -12,6 +12,7 @@
                     </div>
                     <div>
                         <input type="email"
+                               v-model="user.username"
                                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                                placeholder="Enter your e-mail address"
                         >
@@ -24,9 +25,11 @@
                     <div>
                         <input
                                 type="password"
+                                v-model="user.password"
                                 class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                                 placeholder="Enter your password"
                         >
+                        <button class="designColor" @click="goToForgotPassword">Forgot password?</button>
                     </div>
 
                     <div class="pt-7">
@@ -40,15 +43,31 @@
 
 <script>
     import AuthLayout from "../layouts/AuthLayout";
+    import User from "../../models/user";
 
     export default {
         name: 'Login',
         components: {
             AuthLayout
         },
+        data: function () {
+            return {
+                user: new User('','','','','', null, ''),
+            }
+        },
         methods: {
             login() {
-                this.$router.push('Dashboard')
+                this.$store.dispatch('auth/login', this.user).then(
+                    data => {
+                        this.$router.push('/Dashboard')
+                    },
+                    error => {
+                        console.log(error)
+                    }
+                );
+            },
+            goToForgotPassword() {
+                this.$router.push({name: 'Forgot Password'})
             }
         }
     };

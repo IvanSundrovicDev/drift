@@ -20,6 +20,12 @@
                             </div>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:items-center mr-5">
+                            <button @click="logout"
+                                    class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <!-- Heroicon name: bell -->
+                                <font-awesome-icon :icon="['far', 'envelope']"></font-awesome-icon>
+                            </button>
+
                             <button class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 <!-- Heroicon name: bell -->
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -144,6 +150,12 @@
         data: function () {
             return {
                 menuOpen:false
+            }
+        },
+        methods: {
+            logout() {
+                this.$store.dispatch('auth/logout')
+                this.$router.push('/');
             }
         }
     }

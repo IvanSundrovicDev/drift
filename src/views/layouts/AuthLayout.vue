@@ -18,13 +18,13 @@
                                     <p class="abc">
                                         Easily set up and manage your farms and fields
                                     </p>
-                                    <p class="mt-4 abc">
+                                    <p class="mt-10 abc">
                                         At the glance of a screen, know which field is best to spray and why
                                     </p>
-                                    <p class="mt-4">
+                                    <p class="mt-10">
                                         See your drift pattern and it’s compatability with neighbourng fields
                                     </p>
-                                    <p class="mt-4">
+                                    <p class="mt-10">
                                         Create your favourite tank mixes
                                     </p>
                                 </div>
@@ -74,8 +74,8 @@
     .authLeftSide {
         background-color: #28AAE1;
         height: 466px;
-        width: 415px;
-        font-family: "SFProDisplay";
+        width: 650px;
+        font-family: "SFProDisplay", Arial;
         font-style: normal;
         font-weight: 500;
         font-size: 19px;

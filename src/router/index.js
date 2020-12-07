@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from '../views/auth/Login'
+import Login from "../views/auth/Login";
 import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
@@ -37,14 +37,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/', '/register', '/password_reset'];
+  const publicPages = ["/", "/register", "/password_reset"];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('user');
+  const loggedIn = localStorage.getItem("user");
 
-  // trying to access a restricted page + not logged in
-  // redirect to login page
   if (authRequired && !loggedIn) {
-    next('/');
+    next("/");
   } else {
     next();
   }

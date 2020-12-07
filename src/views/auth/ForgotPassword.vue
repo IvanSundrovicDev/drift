@@ -19,6 +19,7 @@
 
                     <div>
                         <input type="email"
+                               v-model="user.email"
                                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                                placeholder="Enter your e-mail address"
                         >
@@ -40,13 +41,14 @@
                     <img class="inline w-1/10" src="../../assets/images/icons/question.png" alt="">
                     <select name="securityQuestion"
                             class="w-9/10 authInputField py-2 bg-transparent">
-                        <option value="test">What is your favorite chilhood memory</option>
+                        <option v-for="question in security_questions" :key="question.id" :value="question.question">{{ question.question }}</option>
                     </select>
                 </div>
 
                 <div>
                     <input
                             type="text"
+                            v-model="user.security_question_answer"
                             class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                             placeholder="Enter your answer here"
                     >
@@ -71,6 +73,7 @@
                 <div>
                     <input
                             type="password"
+                            v-model="user.password"
                             class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                             placeholder="Enter your password"
                     >
@@ -84,6 +87,7 @@
                 <div>
                     <input
                             type="password"
+                            v-model="user.password_confirmation"
                             class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                             placeholder="Enter your password confirmation"
                     >
@@ -100,6 +104,8 @@
 
 <script>
     import AuthLayout from "../layouts/AuthLayout";
+    import User from "../../models/user";
+    import {API_URL} from "../../main";
 
     export default {
         name: "ForgotPassword",
@@ -108,20 +114,33 @@
         },
         data: function () {
             return {
-                forgotPwdStep: 1
+                user: new User(),
+                forgotPwdStep: 1,
+                security_questions: []
             }
         },
         methods: {
             goToStep(step) {
-                (step === 2) ? this.forgotPwdStep = 2 : this.forgotPwdStep = 3
+                if(step === 2) {
+                    //TODO verify email
+                    this.forgotPwdStep = 2
+                }
+                if(step === 3) {
+                    //TODO verify security question
+                    this.forgotPwdStep = 3
+                }
             },
             complete() {
-                this.$router.push('Dashboard')
+                //TODO store new password and redirect to login screen
+            },
+            getUsersSecurityQuestions() {
+                this.$axios.get(API_URL + 'security/questions').then(res => {
+                    this.security_questions = res.data
+                })
             }
+        },
+        mounted() {
+            this.getUsersSecurityQuestions()
         }
     }
 </script>
-
-<style scoped>
-
-</style>

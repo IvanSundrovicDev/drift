@@ -4,12 +4,13 @@ import {API_URL} from "../main";
 class AuthService {
     login(user) {
         return axios
-            .post(API_URL + 'signin', {
+            .post(API_URL + 'jwt/create/', {
                 username: user.username,
                 password: user.password
             })
             .then(response => {
-                if (response.data.accessToken) {
+
+                if (response.data.access) {
                     localStorage.setItem('user', JSON.stringify(response.data));
                 }
 
@@ -22,7 +23,7 @@ class AuthService {
     }
 
     register(user) {
-        return axios.post(API_URL + 'users', {
+        return axios.post(API_URL + 'users/', {
            user
         });
     }

@@ -3,6 +3,13 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import axios from 'axios';
+
+import "@/assets/css/global.css"
+
+Vue.prototype.$axios = axios;
+
+Vue.prototype.$user = localStorage.getItem('user') || null;
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
