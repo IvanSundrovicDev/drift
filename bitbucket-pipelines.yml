@@ -13,7 +13,7 @@ definitions:
         # Login to docker registry on AWS
         - eval $(aws ecr get-login --no-include-email)
         # Build image
-        - DOCKER_BUILDKIT=1 docker build -t $DOCKER_URI .
+        - docker build -t $DOCKER_URI .
         # Push image to private registry
         - docker push $DOCKER_URI
 
