@@ -34,4 +34,4 @@ pipelines:
   branches:
     master:
       - step: *push-image
-      - step: *deploy-to-ecs
+      # - step: *deploy-to-ecs
