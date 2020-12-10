@@ -4,7 +4,8 @@ class AuthService {
   login(user) {
     return axios
       .post("jwt/create/", {
-        user
+        email: user.email,
+        password: user.password
       })
       .then(response => {
         if (response.data.access) {
@@ -21,7 +22,13 @@ class AuthService {
 
   register(user) {
     return axios.post("users/", {
-      user
+      full_name: user.full_name,
+      farm_name: user.farm_name,
+      email: user.email,
+      password: user.password,
+      password_confirmation: user.password_confirmation,
+      security_question: user.security_question,
+      security_answer: user.security_question_answer
     });
   }
 }

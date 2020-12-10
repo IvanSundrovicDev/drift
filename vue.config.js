@@ -12,7 +12,7 @@ module.exports = {
       .loader("vue-svg-loader");
   },
   devServer: {
-    host: "0.0.0.0:8080",
+    public: "0.0.0.0:8080",
     hot: true,
     disableHostCheck: true
   }

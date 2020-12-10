@@ -23,7 +23,7 @@
             <div
               class="grid grid-cols-2 gap-x-0 rounded-lg shadow-lg rounded-2xl"
             >
-              <div class="rounded-l-2xl text-white authLeftSide">
+              <div class="rounded-l-2xl text-white authLeftSide h-auto">
                 <img
                   class="m-auto my-10"
                   src="../../assets/images/drift-logo-transparent.png"

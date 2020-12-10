@@ -8,6 +8,7 @@ import "@/assets/css/tailwind.css";
 import user from "./models/user";
 import authHeader from "./helpers/auth-header";
 import "@/assets/css/global.css";
+import * as VueGoogleMaps from "vue2-google-maps";
 
 axios.defaults.baseURL = "http://localhost:8000/auth/";
 axios.defaults.headers.common = authHeader();
@@ -23,6 +24,13 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 // ----------------------------------------------------------------------
 
 Vue.config.productionTip = false;
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "AIzaSyCV67QdhRZoNL578TlKQnjwMxdfUpGx9lw",
+    libraries: "places"
+  }
+});
 
 new Vue({
   router,

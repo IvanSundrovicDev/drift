@@ -1,22 +1,18 @@
 <template>
   <app-layout>
-    <div>
-      <h1 style="height: 100px">Welcome to the dashboard</h1>
-      <ul>
-        <li v-for="ttt in test" :key="ttt.id">{{ ttt.username }}</li>
-      </ul>
-    </div>
+    <GoogleMap style="margin-left: 200px;margin-top: 100px"></GoogleMap>
   </app-layout>
 </template>
 
 <script>
 import AppLayout from "./layouts/AppLayout";
-import authHeader from "../helpers/auth-header";
+import GoogleMap from "../components/GoogleMap";
 
 export default {
   name: "Dashboard",
   components: {
-    AppLayout
+    AppLayout,
+    GoogleMap
   },
   data: function() {
     return {

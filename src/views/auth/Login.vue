@@ -21,6 +21,8 @@
               v-model="user.email"
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your e-mail address"
+              @keyup.enter="login"
+              autofocus
             />
           </div>
 
@@ -38,6 +40,7 @@
               v-model="user.password"
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your password"
+              @keyup.enter="login"
             />
             <button class="designColorText" @click="goToForgotPassword">
               Forgot password?
@@ -47,7 +50,7 @@
           <div class="pt-7">
             <button
               class="rounded-lg py-1 w-full designActionButton"
-              @click="login()"
+              @click="login"
             >
               Login
             </button>
@@ -79,7 +82,6 @@ export default {
           this.$router.push("/Dashboard");
         },
         error => {
-          console.log(this.user);
           console.log(error);
         }
       );

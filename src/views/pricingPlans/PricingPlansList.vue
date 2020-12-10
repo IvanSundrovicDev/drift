@@ -98,6 +98,7 @@
                           href="#"
                           class="block w-full text-center rounded-lg designActionButton py-2"
                           aria-describedby="tier-hobby"
+                          @click="$router.push({ name: 'Dashboard' })"
                         >
                           Choose Trial
                         </a>
@@ -204,6 +205,7 @@
                         href="#"
                         class="block w-full text-center rounded-lg designActionButton py-3"
                         aria-describedby="tier-growth"
+                        @click="$router.push({ name: 'Dashboard' })"
                       >
                         Choose Starter
                       </a>
@@ -299,6 +301,7 @@
                           href="#"
                           class="block w-full text-center rounded-lg designActionButton py-2"
                           aria-describedby="tier-scale"
+                          @click="$router.push({ name: 'Dashboard' })"
                         >
                           Choose Pro
                         </a>

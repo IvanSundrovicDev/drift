@@ -1,6 +1,47 @@
 <template>
   <auth-layout>
     <div class="p-5 rounded-r-2xl" style="background-color: white">
+      <div class="rounded-md bg-red-50 p-4" v-if="errors">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <!-- Heroicon name: x-circle -->
+            <svg
+              class="h-5 w-5 text-red-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3
+              class="text-sm font-medium text-red-800"
+              v-if="errors.length < 2"
+            >
+              There was an error with your submission
+            </h3>
+
+            <h3 class="text-sm font-medium text-red-800" v-else>
+              There were {{ errors.length }} errors with your submission
+            </h3>
+
+            <div class="mt-2 text-sm text-red-700">
+              <ul class="list-disc pl-5 space-y-1">
+                <li v-for="error in errors" :key="error">
+                  {{ error }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="forgot-pwd-step1" v-show="forgotPwdStep === 1">
         <h1 class="m-auto mt-10 mb-5 text-2xl font-semibold">
           Forgot your password? <br />
@@ -24,12 +65,15 @@
               v-model="user.email"
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your e-mail address"
+              autofocus
+              @keyup.enter="verifyEmail"
             />
           </div>
 
           <div class="pt-16">
             <button
-              class="rounded-lg py-1 w-full authActionButton"
+              class="rounded-lg py-1 w-full designActionButton"
+              :disabled="!user.email"
               @click="verifyEmail"
             >
               Next
@@ -61,12 +105,13 @@
             v-model="user.security_question_answer"
             class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
             placeholder="Enter your answer here"
+            @keyup.enter="verifySecurityQuestion"
           />
         </div>
 
         <div class="pt-16">
           <button
-            class="rounded-lg py-1 w-full authActionButton"
+            class="rounded-lg py-1 w-full designActionButton"
             @click="verifySecurityQuestion"
           >
             Next
@@ -106,10 +151,19 @@
             placeholder="Enter your password confirmation"
           />
         </div>
+        <small
+          v-if="
+            user.password !== user.password_confirmation &&
+              user.password_confirmation !== ''
+          "
+          class="text-red-500"
+        >
+          Passwords must match!
+        </small>
 
         <div class="pt-16">
           <button
-            class="rounded-lg py-1 w-full authActionButton"
+            class="rounded-lg py-1 w-full designActionButton"
             @click="resetPassword"
           >
             Next
@@ -134,34 +188,52 @@ export default {
       user: new User(),
       forgotPwdStep: 1,
       security_question: "",
-      authorization: ""
+      authorization: "",
+      errors: false
     };
   },
   methods: {
     verifyEmail() {
-      this.$axios.get("security/" + this.user.email + "/verify").then(res => {
-        this.user.security_question = res.data.id;
-        this.security_question = res.data.question;
-        this.forgotPwdStep = 2;
-      });
+      this.errors = false;
+      this.$axios
+        .get(`security/${this.user.email}/verify/`)
+        .then(res => {
+          this.user.security_question = res.data.security_question.id;
+          this.security_question = res.data.security_question.question;
+          this.forgotPwdStep = 2;
+        })
+        .catch(error => {
+          this.errors = error.response.data.errors;
+        });
     },
     verifySecurityQuestion() {
+      this.errors = false;
       this.$axios
-        .post("security/answer/verify/", { user: this.user })
+        .post("security/answer/verify/", {
+          email: this.user.email,
+          security_question: this.user.security_question,
+          security_answer: this.user.security_question_answer
+        })
         .then(res => {
           this.authorization = res.data.access;
           this.forgotPwdStep = 3;
+        })
+        .catch(error => {
+          this.errors = error.response.data.errors;
         });
     },
     resetPassword() {
       this.$axios
         .post(
           "security/reset_password/",
-          { user: this.user },
+          { new_password: this.user.password },
           { headers: { Authorization: "JWT " + this.authorization } }
         )
         .then(res => {
           this.$router.push({ name: "Login" });
+        })
+        .catch(error => {
+          this.errors = error.response.data.errors;
         });
     }
   }
