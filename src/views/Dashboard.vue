@@ -1,6 +1,6 @@
 <template>
   <app-layout>
-    <GoogleMap style="margin-left: 200px;margin-top: 100px"></GoogleMap>
+    <GoogleMap></GoogleMap>
   </app-layout>
 </template>
 
@@ -18,11 +18,6 @@ export default {
     return {
       test: []
     };
-  },
-  mounted() {
-    this.$axios.get("users").then(data => {
-      this.test = data.data;
-    });
   }
 };
 </script>

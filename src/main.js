@@ -27,7 +27,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "AIzaSyCV67QdhRZoNL578TlKQnjwMxdfUpGx9lw",
+    key: "AIzaSyAftK2SylPJvsiWTYVVPORDauFzmQsrKHs",
     libraries: "places"
   }
 });
