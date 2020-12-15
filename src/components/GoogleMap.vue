@@ -1,12 +1,17 @@
 <template>
   <div class="flex h-full">
-    <gmap-map :center="center" :zoom="12" class="h-full w-full">
-      <gmap-marker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center = m.position"
-      ></gmap-marker>
+    <gmap-map
+      :center="center"
+      :zoom="12"
+      class="h-full w-full"
+      map-type-id="satellite"
+    >
+      <gmap-polygon
+        :paths="paths"
+        :editable="true"
+        @paths_changed="updateEdited($event)"
+      >
+      </gmap-polygon>
     </gmap-map>
   </div>
 </template>
@@ -18,39 +23,36 @@ export default {
     return {
       // default to montreal to keep it simple
       // change this to whatever makes sense
-      center: { lat: 47.6062, lng: -122.3321 },
-      markers: [],
-      places: [],
-      currentPlace: null
+      center: { lat: 1.38, lng: 103.8 },
+      edited: null,
+      paths: [
+        [
+          { lat: 1.38, lng: 103.8 },
+          { lat: 1.38, lng: 103.81 },
+          { lat: 1.39, lng: 103.81 },
+          { lat: 1.39, lng: 103.8 }
+        ],
+        [
+          { lat: 1.382, lng: 103.802 },
+          { lat: 1.382, lng: 103.808 },
+          { lat: 1.388, lng: 103.808 },
+          { lat: 1.388, lng: 103.802 }
+        ]
+      ]
     };
   },
-  mounted() {
-    this.geolocate();
-  },
-
   methods: {
-    setPlace(place) {
-      this.currentPlace = place;
-    },
-    addMarker() {
-      if (this.currentPlace) {
-        const marker = {
-          lat: this.currentPlace.geometry.location.lat(),
-          lng: this.currentPlace.geometry.location.lng()
-        };
-        this.markers.push({ position: marker });
-        this.places.push(this.currentPlace);
-        this.center = marker;
-        this.currentPlace = null;
+    updateEdited(mvcArray) {
+      let paths = [];
+      for (let i = 0; i < mvcArray.getLength(); i++) {
+        let path = [];
+        for (let j = 0; j < mvcArray.getAt(i).getLength(); j++) {
+          let point = mvcArray.getAt(i).getAt(j);
+          path.push({ lat: point.lat(), lng: point.lng() });
+        }
+        paths.push(path);
       }
-    },
-    geolocate() {
-      /*navigator.geolocation.getCurrentPosition(position => {
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-      });*/
+      this.edited = paths;
     }
   }
 };

@@ -18,8 +18,14 @@ Vue.prototype.$user = JSON.parse(localStorage.getItem("user")) || null;
 
 // ---------------- Font Awesome ---------------------------------------
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-library.add(faEnvelope);
+import { faMap } from "@fortawesome/free-regular-svg-icons";
+import {
+  faTimes,
+  faSearch,
+  faMapMarkerAlt,
+  faPen
+} from "@fortawesome/free-solid-svg-icons";
+library.add(faTimes, faSearch, faMapMarkerAlt, faMap, faPen);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 // ----------------------------------------------------------------------
 
@@ -28,8 +34,9 @@ Vue.config.productionTip = false;
 Vue.use(VueGoogleMaps, {
   load: {
     key: "AIzaSyAftK2SylPJvsiWTYVVPORDauFzmQsrKHs",
-    libraries: "places"
-  }
+    libraries: "places, drawing"
+  },
+  installComponents: true
 });
 
 new Vue({

@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'h-full': farmOpen }">
     <div
-      v-on:click="farmOpen = !farmOpen"
+      v-on:click="toggle(farm.id)"
       class="flex cursor-pointer border-b-2 border-gray-200"
     >
       <div class="flex m-auto my-8 pl-6 ">
@@ -45,6 +45,12 @@ export default {
     return {
       farmOpen: false
     };
+  },
+  methods: {
+    toggle(id) {
+      this.farmOpen = !this.farmOpen;
+      this.$emit("toggle-farm", id);
+    }
   }
 };
 </script>

@@ -1,43 +1,51 @@
 <template>
-  <div class="ml-24 pt-16 fixed z-20 h-screen w-64 bg-white">
-    <div class="h-full pb-24">
-      <div class="max-h-full overflow-y-auto">
-        <div
-          v-for="item in farms"
-          :key="item.id"
-          v-on:click="activateFarm(item.id)"
-          class="max-h-full"
-        >
-          <MyFarm v-if="!active || active === item.id" :farm="item"></MyFarm>
+  <div class="ml-24 pt-16 fixed z-20 h-screen">
+    <div v-show="active === 'farmSidebar'" class=" h-full bg-white w-64">
+      <div class="h-full pb-24">
+        <div class="max-h-full overflow-y-auto">
+          <div v-for="item in farms" :key="item.id" class="max-h-full">
+            <MyFarm
+              v-if="!activeFarm || activeFarm === item.id"
+              v-on:toggle-farm="activateFarm($event)"
+              :farm="item"
+            ></MyFarm>
+          </div>
+        </div>
+      </div>
+      <div
+        v-on:click="active = 'addField'"
+        class="flex fixed w-64 z-20 bg-white bottom-0 cursor-pointer border-t-2 border-gray-200"
+      >
+        <div class="flex m-auto my-8 pl-6">
+          <h1 class="text-2xl text-drift-blue">Add Field</h1>
+          <img
+            class="m-auto ml-2"
+            src="../../assets/images/icons/add.png"
+            alt="add_field"
+          />
         </div>
       </div>
     </div>
-    <div
-      class="flex fixed w-64 z-20 bg-white bottom-0 cursor-pointer border-t-2 border-gray-200"
-    >
-      <div class="flex m-auto my-8 pl-6">
-        <h1 class="text-2xl text-drift-blue">Add Field</h1>
-        <img
-          class="m-auto ml-2"
-          src="../../assets/images/icons/add.png"
-          alt="add_field"
-        />
-      </div>
+    <div v-show="active === 'addField'">
+      <AddField v-on:toggle-farm-sidebar="active = 'farmSidebar'" />
     </div>
   </div>
 </template>
 
 <script>
 import MyFarm from "../my/MyFarm";
+import AddField from "../my/AddField";
 
 export default {
   name: "FarmSidebar",
   components: {
-    MyFarm
+    MyFarm,
+    AddField
   },
   data() {
     return {
-      active: null,
+      active: "farmSidebar",
+      activeFarm: null,
       farms: [
         { id: 1, name: "FASD" },
         { id: 2, name: "asd" },
@@ -54,10 +62,10 @@ export default {
   },
   methods: {
     activateFarm(id) {
-      if (!this.active) {
-        this.active = id;
+      if (!this.activeFarm) {
+        this.activeFarm = id;
       } else {
-        this.active = null;
+        this.activeFarm = null;
       }
     }
   }
