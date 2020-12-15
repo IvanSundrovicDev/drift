@@ -1,14 +1,16 @@
 module.exports = {
-  purge: [
-    './public/**/*.html',
-    './src/**/*.vue'
-  ],
+  purge: ["./public/**/*.html", "./src/**/*.vue"],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "drift-blue": "#28AAE1",
+        "drift-salmon": "#FF8966"
+      }
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
-}
+  plugins: []
+};

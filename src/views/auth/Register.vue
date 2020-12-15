@@ -1,6 +1,9 @@
 <template>
   <auth-layout>
-    <div class="p-5 rounded-r-2xl" style="background-color: white">
+    <div
+      class="w-full md:w-1/2 p-4 sm:p-8 rounded-2xl w-64 md:rounded-l-none md:rounded-r-2xl"
+      style="background-color: white"
+    >
       <div class="rounded-md bg-red-50 p-4" v-if="errors">
         <div class="flex">
           <div class="flex-shrink-0">
@@ -43,7 +46,7 @@
       </div>
 
       <div class="register-step-1" v-show="registerStep === 1">
-        <h1 class="m-auto mt-10 mb-5 text-center text-2xl font-semibold">
+        <h1 class="m-auto mb-10 mt-2 mb-5 text-center text-2xl font-semibold">
           Let's get started
         </h1>
 
@@ -114,7 +117,7 @@
               type="button"
               class="rounded-lg py-1 w-full designActionButton"
               :disabled="stepOneBtnDisabled"
-              @click="registerStep = 2"
+              @click="validate"
             >
               Continue
             </button>
@@ -207,7 +210,7 @@
             />
           </div>
 
-          <div class="pt-7">
+          <div class="pt-10">
             <button
               :disabled="stepTwoBtnDisabled"
               type="button"
@@ -249,6 +252,7 @@ export default {
       this.$store
         .dispatch("auth/register", this.user)
         .then(data => {
+          localStorage.setItem("user", JSON.stringify(data));
           this.$router.push({ name: "Pricing Plans" });
         })
         .catch(error => {
@@ -259,6 +263,18 @@ export default {
       this.$axios.get("security/questions").then(res => {
         this.security_questions = res.data.security_question;
       });
+    },
+    validateEmail(email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    validate() {
+      if (!this.validateEmail(this.user.email)) {
+        this.errors = { errors: "Please enter a valid e-mail address" };
+      } else {
+        this.errors = false;
+        this.registerStep = 2;
+      }
     }
   },
   computed: {

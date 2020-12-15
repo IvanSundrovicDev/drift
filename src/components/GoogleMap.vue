@@ -1,10 +1,6 @@
 <template>
-  <div>
-    <gmap-map
-      :center="center"
-      :zoom="12"
-      style="width: 100vw;height: 100vh; position: relative;margin-top:5rem;"
-    >
+  <div class="flex h-full">
+    <gmap-map :center="center" :zoom="12" class="h-full w-full">
       <gmap-marker
         :key="index"
         v-for="(m, index) in markers"
@@ -22,7 +18,7 @@ export default {
     return {
       // default to montreal to keep it simple
       // change this to whatever makes sense
-      center: { lat: 45.508, lng: -73.587 },
+      center: { lat: 47.6062, lng: -122.3321 },
       markers: [],
       places: [],
       currentPlace: null
@@ -48,13 +44,13 @@ export default {
         this.currentPlace = null;
       }
     },
-    geolocate: function() {
-      navigator.geolocation.getCurrentPosition(position => {
+    geolocate() {
+      /*navigator.geolocation.getCurrentPosition(position => {
         this.center = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-      });
+      });*/
     }
   }
 };

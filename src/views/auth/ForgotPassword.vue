@@ -1,6 +1,9 @@
 <template>
   <auth-layout>
-    <div class="p-5 rounded-r-2xl" style="background-color: white">
+    <div
+      class="w-full md:w-1/2 p-4 sm:p-8 rounded-2xl md:rounded-l-none md:rounded-r-2xl"
+      style="background-color: white"
+    >
       <div class="rounded-md bg-red-50 p-4" v-if="errors">
         <div class="flex">
           <div class="flex-shrink-0">
@@ -42,11 +45,12 @@
         </div>
       </div>
 
-      <div class="forgot-pwd-step1" v-show="forgotPwdStep === 1">
-        <h1 class="m-auto mt-10 mb-5 text-2xl font-semibold">
+      <div class="forgot-pwd-step1 h-full" v-show="forgotPwdStep === 1">
+        <h1
+          class="m-auto sm:mb-10 mt-2 text-xl sm:text-2xl text-center font-semibold"
+        >
           Forgot your password? <br />
-          No worries, just enter your <br />
-          email below
+          No worries, just enter your email below
         </h1>
 
         <div class="mx-5">
@@ -70,7 +74,7 @@
             />
           </div>
 
-          <div class="pt-16">
+          <div class="pt-8 sm:pt-16">
             <button
               class="rounded-lg py-1 w-full designActionButton"
               :disabled="!user.email"
@@ -161,7 +165,7 @@
           Passwords must match!
         </small>
 
-        <div class="pt-16">
+        <div class="">
           <button
             class="rounded-lg py-1 w-full designActionButton"
             @click="resetPassword"

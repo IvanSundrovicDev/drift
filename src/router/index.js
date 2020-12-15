@@ -5,6 +5,7 @@ import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
 import PricingPlansList from "../views/pricingPlans/PricingPlansList";
+import HerbicidesList from "../views/herbicides/HerbicidesList";
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes = [
     path: "/pricing_plans",
     name: "Pricing Plans",
     component: PricingPlansList
+  },
+  {
+    path: "/herbicides",
+    name: "Herbicides",
+    component: HerbicidesList
   }
 ];
 

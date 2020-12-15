@@ -15,33 +15,33 @@
         >Sign Up</router-link
       >
 
-      <div
-        class="grid grid-flow-col auto-cols-max h-screen justify-center w-auto"
-      >
-        <div>
-          <div class="flex items-center h-screen">
+      <div class="">
+        <div class="flex h-screen w-full">
+          <div class="m-auto w-full md:w-auto">
             <div
-              class="grid grid-cols-2 gap-x-0 rounded-lg shadow-lg rounded-2xl"
+              class="flex flex-wrap rounded-lg shadow-lg rounded-2xl mx-16 md:mx-8"
             >
-              <div class="rounded-l-2xl text-white authLeftSide h-auto">
+              <div
+                class="hidden md:block md:w-1/2 p-10 rounded-t-2xl md:rounded-t-none  md:rounded-l-2xl text-white authLeftSide h-auto"
+              >
                 <img
-                  class="m-auto my-10"
+                  class="m-auto mb-10"
                   src="../../assets/images/drift-logo-transparent.png"
                   alt="DRIFT"
                 />
-                <div class="mx-8">
+                <div class="mx-2">
                   <p class="abc">
                     Easily set up and manage your farms and fields
                   </p>
-                  <p class="mt-10 abc">
+                  <p class="mt-4 abc">
                     At the glance of a screen, know which field is best to spray
                     and why
                   </p>
-                  <p class="mt-10">
+                  <p class="mt-4">
                     See your drift pattern and it’s compatibility with
                     neighbouring fields
                   </p>
-                  <p class="mt-10">
+                  <p class="mt-4">
                     Create your favourite tank mixes
                   </p>
                 </div>
@@ -72,8 +72,7 @@ export default {
 }
 .authLeftSide {
   background-color: #28aae1;
-  height: 466px;
-  width: 650px;
+
   font-family: "SFProDisplay", Arial;
   font-style: normal;
   font-weight: 500;
