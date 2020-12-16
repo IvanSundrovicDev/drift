@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  web:
+    build:
+      context: .
+    image: drift-fe-v1
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 80:80
+      - 443:443
