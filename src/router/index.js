@@ -5,7 +5,7 @@ import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
 import PricingPlansList from "../views/pricingPlans/PricingPlansList";
-import HerbicidesList from "../views/herbicides/HerbicidesList";
+import HerbicideTraitList from "../views/herbicideTraits/HerbicideTraitList";
 
 Vue.use(VueRouter);
 
@@ -38,7 +38,12 @@ const routes = [
   {
     path: "/herbicides",
     name: "Herbicides",
-    component: HerbicidesList
+    component: HerbicideTraitList
+  },
+  {
+    path: "/traits",
+    name: "Traits",
+    component: HerbicideTraitList
   }
 ];
 

@@ -34,8 +34,10 @@
           </router-link>
         </li>
         <li class="navitem">
-          <router-link to="#">
-            <div class="flex h-20 justify-center items-center rounded-2xl">
+          <router-link to="/traits">
+            <div
+              class="flex h-20 justify-center items-center rounded-2xl"
+              :class="{ active: this.$route.name === 'Traits' }">
               <div class="mx-auto">
                 <Traits class="m-auto icon"></Traits>
                 <span>
