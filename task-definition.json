@@ -16,7 +16,7 @@
                     "containerPort": 8000
                 }
             ],
-            "image": "887193932254.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:latest",
+            "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:latest",
             "essential": true,
             "name": "drift_frontend"
         }
