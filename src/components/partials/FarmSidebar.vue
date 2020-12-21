@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-24 pt-16 fixed z-20 h-screen">
+  <div class="ml-24 pt-16 fixed z-500 h-screen">
     <div v-show="active === 'farmSidebar'" class=" h-full bg-white w-64">
       <div class="h-full pb-24">
         <div class="max-h-full overflow-y-auto">
@@ -46,18 +46,7 @@ export default {
     return {
       active: "farmSidebar",
       activeFarm: null,
-      farms: [
-        { id: 1, name: "FASD" },
-        { id: 2, name: "asd" },
-        { id: 3, name: "dasda" },
-        { id: 4, name: "asdc" },
-        { id: 5, name: "gfdg" },
-        { id: 6, name: "hzgfd" },
-        { id: 7, name: "bngf" },
-        { id: 8, name: "rgegd" },
-        { id: 9, name: "hgfgdf" },
-        { id: 10, name: "233" }
-      ]
+      farms: [{ id: 1, name: "Test Farm" }]
     };
   },
   methods: {
@@ -71,3 +60,8 @@ export default {
   }
 };
 </script>
+<style>
+.z-500 {
+  z-index: 500;
+}
+</style>

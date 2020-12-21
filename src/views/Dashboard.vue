@@ -1,18 +1,16 @@
 <template>
-  <app-layout>
-    <GoogleMap></GoogleMap>
-  </app-layout>
+  <app-layout><Map></Map></app-layout>
 </template>
 
 <script>
 import AppLayout from "./layouts/AppLayout";
-import GoogleMap from "../components/GoogleMap";
+import Map from "./../components/Map";
 
 export default {
   name: "Dashboard",
   components: {
     AppLayout,
-    GoogleMap
+    Map
   },
   data: function() {
     return {

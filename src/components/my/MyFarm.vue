@@ -17,18 +17,6 @@
       <MyField />
       <MyField />
       <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
-      <MyField />
     </div>
   </div>
 </template>
