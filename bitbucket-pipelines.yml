@@ -29,8 +29,8 @@ definitions:
             AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
             AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
             AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            CLUSTER_NAME: 'Drift'
-            SERVICE_NAME: 'drift_frontend'
+            CLUSTER_NAME: 'drift-dev'
+            SERVICE_NAME: 'drift-frontend-service'
             TASK_DEFINITION: "task-definition.json"
 
 pipelines:
