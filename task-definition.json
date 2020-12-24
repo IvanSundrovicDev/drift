@@ -4,9 +4,9 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "/ecs/drift_frontend",
+                    "awslogs-group": "/ecs-drift-dev/",
                     "awslogs-region": "us-east-1",
-                    "awslogs-stream-prefix": "ecs"
+                    "awslogs-stream-prefix": "fe"
                 }
             },
             "portMappings": [
