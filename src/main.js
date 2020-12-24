@@ -9,7 +9,7 @@ import user from "./models/user";
 import authHeader from "./helpers/auth-header";
 import "@/assets/css/global.css";
 
-axios.defaults.baseURL = "http://localhost:8000/auth/";
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.headers.common = authHeader();
 Vue.prototype.$axios = axios;
 
