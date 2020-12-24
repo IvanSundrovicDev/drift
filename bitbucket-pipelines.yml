@@ -11,7 +11,7 @@ definitions:
         - docker
       script:
         - export BUILD_ID=$BITBUCKET_BRANCH_$BITBUCKET_COMMIT_$BITBUCKET_BUILD_NUMBER
-        - export DOCKER_URI=$DOCKER_IMAGE_URL:latest
+        - export DOCKER_URI=$DOCKER_IMAGE_URL:$BITBUCKET_BRANCH
         # Login to docker registry on AWS
         - eval $(aws ecr get-login --no-include-email)
         # Build image
