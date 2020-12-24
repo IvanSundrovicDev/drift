@@ -1,4 +1,5 @@
 {
+    "executionRoleArn": "arn:aws:iam::133634153917:role/ecs_task_drift",
     "containerDefinitions": [
         {
             "logConfiguration": {
@@ -11,9 +12,9 @@
             },
             "portMappings": [
                 {
-                    "hostPort": 8000,
+                    "hostPort": 80,
                     "protocol": "tcp",
-                    "containerPort": 8000
+                    "containerPort": 80
                 }
             ],
             "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:master",
