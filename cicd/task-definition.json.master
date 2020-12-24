@@ -1,29 +1,32 @@
 {
+    "executionRoleArn": "arn:aws:iam::133634153917:role/ecs_task_drift",
     "containerDefinitions": [
         {
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "/ecs/drift_frontend",
+                    "awslogs-group": "/ecs-drift-dev/",
                     "awslogs-region": "us-east-1",
-                    "awslogs-stream-prefix": "ecs"
+                    "awslogs-stream-prefix": "fe"
                 }
             },
             "portMappings": [
                 {
-                    "hostPort": 8000,
+                    "hostPort": 80,
                     "protocol": "tcp",
-                    "containerPort": 8000
+                    "containerPort": 80
                 }
             ],
-            "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:latest",
+            "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:master",
             "essential": true,
             "name": "drift_frontend"
         }
     ],
     "requiresCompatibilities": [
         "FARGATE"
-    ], 
-    "memory": "2048",
-    "family": "drift_frontend"
+    ],
+    "cpu": "256", 
+    "memory": "512",
+    "networkMode": "awsvpc", 
+    "family": "frontend-app-task"
 }
