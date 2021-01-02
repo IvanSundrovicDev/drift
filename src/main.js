@@ -1,4 +1,5 @@
 import Vue from "vue";
+import Vuex from "vuex";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
@@ -8,6 +9,8 @@ import "@/assets/css/tailwind.css";
 import user from "./models/user";
 import authHeader from "./helpers/auth-header";
 import "@/assets/css/global.css";
+
+Vue.use(Vuex);
 
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.headers.common = authHeader();

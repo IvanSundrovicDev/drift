@@ -29,29 +29,33 @@
           v-on:click="activeLocation = null"
         ></font-awesome-icon>
         <h1 class="w-full text-xl ml-4">
-          {{ `${activeLocation.name} ${activeLocation.id}` }}
+          {{ activeLocation }}
         </h1>
       </div>
     </div>
-    <div v-if="open && !activeLocation" class="border-t-2 border-gray-200">
+    <div v-if="locations && !activeLocation" class="border-t-2 border-gray-200">
       <div
         v-for="item in locations"
         :key="item.id"
         class="flex py-3 hover:bg-gray-200 cursor-pointer px-8"
-        v-on:click="activeLocation = item"
+        v-on:click="getLocations(item)"
       >
         <font-awesome-icon
           class="fa-lg pt-1 text-drift-salmon "
           icon="map-marker-alt"
         ></font-awesome-icon>
-        <h3 class="text-xl ml-5">{{ `${item.name} ${item.id}` }}</h3>
+        <h3 class="text-xl ml-5">{{ item.text }}</h3>
       </div>
     </div>
     <div v-else-if="activeLocation">
       <div class="border-t-2 border-gray-200">
-        <div v-on:click="fieldCoordinates = 13" class="flex py-3 px-8">
+        <div
+          v-on:click="initPolygonDraw"
+          class="flex py-3 px-8 cursor-pointer"
+          :class="{ 'bg-drift-blue': this.$store.state.polygonDraw }"
+        >
           <font-awesome-icon
-            :class="{ 'text-drift-blue': !fieldCoordinates }"
+            :class="{ 'text-drift-blue': !this.$store.state.polygonDraw }"
             class="fa-lg mt-1"
             :icon="['far', 'map']"
           ></font-awesome-icon>
@@ -90,24 +94,55 @@ export default {
       activeLocation: null,
       fieldCoordinates: null,
       fieldName: "",
-      locations: [
-        { id: 1, name: "Adress" },
-        { id: 2, name: "Adress" },
-        { id: 3, name: "Adress" },
-        { id: 4, name: "Adress" },
-        { id: 5, name: "Adress" },
-        { id: 6, name: "Adress" }
-      ],
-      open: false
+      locations: []
     };
+  },
+  computed: {
+    coordinatesChange() {
+      return this.$store.state.polygonCoordinates;
+    }
+  },
+  watch: {
+    coordinatesChange(newCoordinates, oldCordinates) {
+      this.fieldCoordinates = newCoordinates;
+    }
   },
   methods: {
     search() {
       if (this.searchField.length >= 1) {
-        this.open = true;
-      } else {
-        this.open = false;
+        let axiosNoAuth = this.$axios.create();
+        delete axiosNoAuth.defaults.headers.common["Authorization"];
+
+        axiosNoAuth
+          .get(
+            `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`,
+            {}
+          )
+          .then(res => {
+            this.locations = res.data.suggestions;
+          });
       }
+    },
+    getLocations(item) {
+      this.activeLocation = item.text;
+      let axiosNoAuth = this.$axios.create();
+      delete axiosNoAuth.defaults.headers.common["Authorization"];
+
+      axiosNoAuth
+        .get(
+          `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`,
+          {}
+        )
+        .then(res => {
+          let activeLocation = [
+            res.data.candidates[0].location.y,
+            res.data.candidates[0].location.x
+          ];
+          this.$store.dispatch("setActiveLocation", activeLocation);
+        });
+    },
+    initPolygonDraw() {
+      this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     }
   }
 };

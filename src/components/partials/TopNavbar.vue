@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <div class="w-full fixed bg-white z-20">
+    <div class="w-full fixed bg-white z-500">
       <nav class="bg-white">
         <div class="w-full">
           <div class="flex h-16">

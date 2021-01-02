@@ -1,5 +1,8 @@
 <template>
-  <div class="ml-24 pt-16 fixed z-500 h-screen">
+  <div
+    class="ml-24 pt-16 fixed z-500"
+    :class="{ 'h-screen': active === 'farmSidebar' }"
+  >
     <div v-show="active === 'farmSidebar'" class=" h-full bg-white w-64">
       <div class="h-full pb-24">
         <div class="max-h-full overflow-y-auto">
@@ -60,8 +63,3 @@ export default {
   }
 };
 </script>
-<style>
-.z-500 {
-  z-index: 500;
-}
-</style>

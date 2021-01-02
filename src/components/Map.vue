@@ -10,15 +10,36 @@ import L from "leaflet";
 import Draw from "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 import Editable from "leaflet-editable";
+import Search from "leaflet-search";
 
 export default {
   name: "Map",
   data: function() {
     return {
       map: null,
-      center: [47.6062, 122.3321],
+      center: [45.71550000000008, 18.091130000000078],
       fieldPolygon: []
     };
+  },
+  computed: {
+    locationChange() {
+      return this.$store.state.activeLocation;
+    },
+    initDrawPolygon() {
+      return this.$store.state.polygonDraw;
+    }
+  },
+  watch: {
+    locationChange(newLocation, oldLocation) {
+      this.map.panTo(new L.LatLng(newLocation[0], newLocation[1]));
+    },
+    initDrawPolygon(newState, oldState) {
+      if (newState) {
+        this.polygonDrawer.enable();
+      } else {
+        this.polygonDrawer.disable();
+      }
+    }
   },
   methods: {
     setupLeafletMap: function() {
@@ -71,7 +92,7 @@ export default {
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: false
+          remove: true
         }
       };
 
@@ -80,6 +101,10 @@ export default {
       this.map.addControl(drawControl);
 
       let scopeThis = this;
+
+      let store = this.$store;
+
+      this.polygonDrawer = new L.Draw.Polygon(this.map);
 
       // catch drawn polygon
       this.map.on("draw:created", function(e) {
@@ -90,6 +115,9 @@ export default {
         layer.editing.latlngs[0][0].map(function(value, key) {
           newCoords.push([value.lat, value.lng]);
         });
+
+        store.dispatch("setPolygonCoordinates", newCoords);
+        store.dispatch("setPolygonDraw", !store.state.polygonDraw);
 
         scopeThis.fieldPolygon = newCoords;
 
@@ -121,4 +149,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.leaflet-draw-toolbar-top {
+  display: none;
+}
+</style>
