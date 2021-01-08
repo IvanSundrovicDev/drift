@@ -25,9 +25,25 @@ import {
   faTimes,
   faSearch,
   faMapMarkerAlt,
-  faPen
+  faPen,
+  faEllipsisH,
+  faPlusCircle,
+  faArrowAltCircleLeft,
+  faArrowAltCircleRight,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
-library.add(faTimes, faSearch, faMapMarkerAlt, faMap, faPen);
+library.add(
+  faTimes,
+  faSearch,
+  faMapMarkerAlt,
+  faMap,
+  faPen,
+  faEllipsisH,
+  faPlusCircle,
+  faArrowAltCircleLeft,
+  faArrowAltCircleRight,
+  faUser
+);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 // ----------------------------------------------------------------------
 

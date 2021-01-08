@@ -78,7 +78,7 @@
 
           <div class="pt-10">
             <button
-              class="rounded-lg py-1 w-full designActionButton"
+              class="rounded-lg py-1 w-full outline-none designActionButton"
               @click="login"
             >
               Login

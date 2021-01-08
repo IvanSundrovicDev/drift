@@ -37,7 +37,8 @@
           <router-link to="/traits">
             <div
               class="flex h-20 justify-center items-center rounded-2xl"
-              :class="{ active: this.$route.name === 'Traits' }">
+              :class="{ active: this.$route.name === 'Traits' }"
+            >
               <div class="mx-auto">
                 <Traits class="m-auto icon"></Traits>
                 <span>
@@ -48,7 +49,7 @@
           </router-link>
         </li>
         <li class="navitem">
-          <router-link to="#">
+          <router-link to="/tank_mix">
             <div class="flex h-20 justify-center items-center rounded-2xl">
               <div class="mx-auto">
                 <TankMix class="m-auto icon"></TankMix>
@@ -85,7 +86,7 @@
               </svg>
           </button>-->
     </div>
-    <FarmSidebar v-if="farmSidebarOpen" />
+    <FarmSidebar v-show="farmSidebarOpen" />
   </div>
 </template>
 

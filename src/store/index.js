@@ -9,7 +9,9 @@ export default new Vuex.Store({
   state: {
     activeLocation: "",
     polygonDraw: false,
-    polygonCoordinates: []
+    polygonCoordinates: [],
+    fieldPolygon: [],
+    removedPolygon: true
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -20,6 +22,12 @@ export default new Vuex.Store({
     },
     setPolygonCoordinates(state, value) {
       state.polygonCoordinates = value;
+    },
+    setFieldPolygon(state, value) {
+      state.fieldPolygon = value;
+    },
+    setRemovedPolygon(state, value) {
+      state.removedPolygon = value;
     }
   },
   actions: {
@@ -31,6 +39,12 @@ export default new Vuex.Store({
     },
     setPolygonCoordinates(context, value) {
       context.commit("setPolygonCoordinates", value);
+    },
+    setFieldPolygon(context, value) {
+      context.commit("setFieldPolygon", value);
+    },
+    setRemovedPolygon(context, value) {
+      context.commit("setRemovedPolygon", value);
     }
   },
   modules: { auth }

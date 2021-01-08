@@ -5,7 +5,10 @@ import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
 import PricingPlansList from "../views/pricingPlans/PricingPlansList";
-import HerbicideTraitList from "../views/herbicideTraits/HerbicideTraitList";
+import PaymentDetails from "../views/pricingPlans/PaymentDetails";
+import HerbicideList from "../views/HerbicideList";
+import TraitList from "../views/TraitList";
+import TankMix from "../views/TankMix";
 
 Vue.use(VueRouter);
 
@@ -36,14 +39,24 @@ const routes = [
     component: PricingPlansList
   },
   {
+    path: "/payment_details",
+    name: "Payment Details",
+    component: PaymentDetails
+  },
+  {
     path: "/herbicides",
     name: "Herbicides",
-    component: HerbicideTraitList
+    component: HerbicideList
   },
   {
     path: "/traits",
     name: "Traits",
-    component: HerbicideTraitList
+    component: TraitList
+  },
+  {
+    path: "/tank_mix",
+    name: "Tank Mix",
+    component: TankMix
   }
 ];
 
@@ -54,7 +67,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/", "/register", "/password_reset", "/pricing_plans"];
+  const publicPages = [
+    "/",
+    "/register",
+    "/password_reset",
+    "/pricing_plans",
+    "/payment_details"
+  ];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
 

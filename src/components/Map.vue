@@ -17,7 +17,8 @@ export default {
   data: function() {
     return {
       map: null,
-      center: [45.71550000000008, 18.091130000000078],
+      center: [45.72727000000003, 18.10650000000004],
+      active: false,
       fieldPolygon: []
     };
   },
@@ -27,6 +28,12 @@ export default {
     },
     initDrawPolygon() {
       return this.$store.state.polygonDraw;
+    },
+    drawPolygon() {
+      return this.$store.state.fieldPolygon;
+    },
+    removedPolygon() {
+      return this.$store.state.removedPolygon;
     }
   },
   watch: {
@@ -39,6 +46,14 @@ export default {
       } else {
         this.polygonDrawer.disable();
       }
+    },
+    drawPolygon(newPolygon, oldPolygon) {
+      this.removePolygon();
+      var polygon = L.polygon(newPolygon).addTo(this.map);
+    },
+    removedPolygon(newState, oldState) {
+      this.removePolygon();
+      this.$store.dispatch("setRemovedPolygon", true);
     }
   },
   methods: {
@@ -141,6 +156,17 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
+    },
+    removePolygon() {
+      for (let i in this.map._layers) {
+        if (this.map._layers[i]._path !== undefined) {
+          try {
+            this.map.removeLayer(this.map._layers[i]);
+          } catch (e) {
+            console.log("problem with " + e + this.map._layers[i]);
+          }
+        }
+      }
     }
   },
   mounted() {
@@ -152,5 +178,8 @@ export default {
 <style>
 .leaflet-draw-toolbar-top {
   display: none;
+}
+.leaflet-draw-edit-remove {
+  display: none !important;
 }
 </style>

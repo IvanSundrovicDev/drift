@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- This example requires Tailwind CSS v2.0+ -->
-    <div class="w-full fixed bg-white z-500">
+    <div class="w-full fixed border-b border-gray-200 bg-white z-501">
       <nav class="bg-white">
         <div class="w-full">
           <div class="flex h-16">
@@ -37,14 +37,13 @@
               >
                 <div>
                   <button
-                    class="h-8 w-8 bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class="h-8 w-8 bg-white flex items-center text-sm rounded-full focus:outline-none"
                     id="user-menu"
                     aria-haspopup="true"
                   >
                     <img
-                      class="h-8 w-8 rounded-full"
+                      class="h-8 w-8 rounded-md "
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
                     />
                   </button>
                 </div>
@@ -92,31 +91,7 @@
         </div>
 
         <!-- Profile menu -->
-        <div v-if="profileMenuOpen" class="fixed right-0 bg-white">
-          <div class="m-5">
-            <a
-              href="#"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-            >
-              Your Profile
-            </a>
-
-            <a
-              href="#"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-            >
-              Settings
-            </a>
-
-            <a
-              href="#"
-              @click="logout"
-              class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-            >
-              Sign out
-            </a>
-          </div>
-        </div>
+        <ProfileMenu v-show="profileMenuOpen" />
 
         <div v-if="menuOpen" class="block h-screen sm:hidden">
           <div class="pt-4 pb-1 border-t border-gray-200">
@@ -211,6 +186,7 @@
 </template>
 
 <script>
+import ProfileMenu from "./ProfileMenu";
 import Close from "../../assets/images/navbar-icons/close.svg";
 import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
@@ -221,6 +197,7 @@ import Analitics from "../../assets/images/navbar-icons/analitics.svg";
 export default {
   name: "TopNavbar",
   components: {
+    ProfileMenu,
     Close,
     Farms,
     Herbicides,
@@ -233,12 +210,6 @@ export default {
       menuOpen: false,
       profileMenuOpen: false
     };
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch("auth/logout");
-      this.$router.push("/");
-    }
   }
 };
 </script>

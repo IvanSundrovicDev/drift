@@ -32,3 +32,29 @@
 .z-500 {
     z-index: 500;
 }
+.z-501 {
+    z-index: 501;
+}
+.fit-content{
+    height: fit-content;
+}
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #28aae1;
+}
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #28aae1;
+}
+.custom-item:hover .salmon-border {
+    border-bottom-color: #ff8966;
+}
+.salmon-border-selected{
+    border-bottom-color: #ff8966;
+}

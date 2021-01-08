@@ -4,7 +4,7 @@
       <font-awesome-icon
         class="float-right fa-lg hover:text-red-600 cursor-pointer"
         icon="times"
-        v-on:click="$emit('toggle-farm-sidebar')"
+        v-on:click="close"
       ></font-awesome-icon>
       <div class="px-32">
         <div class="flex m-auto">
@@ -19,21 +19,24 @@
         type="text"
         v-model="searchField"
         v-on:input="search"
-        v-if="!activeLocation"
+        v-if="!activeLocationName"
         placeholder="Search address"
       />
       <div v-else class="w-full">
         <font-awesome-icon
           class="float-right fa-lg hover:text-red-600 cursor-pointer"
           icon="times"
-          v-on:click="activeLocation = null"
+          v-on:click="removeLocation"
         ></font-awesome-icon>
         <h1 class="w-full text-xl ml-4">
-          {{ activeLocation }}
+          {{ activeLocationName }}
         </h1>
       </div>
     </div>
-    <div v-if="locations && !activeLocation" class="border-t-2 border-gray-200">
+    <div
+      v-if="locations && !activeLocationName"
+      class="border-t-2 border-gray-200"
+    >
       <div
         v-for="item in locations"
         :key="item.id"
@@ -47,8 +50,8 @@
         <h3 class="text-xl ml-5">{{ item.text }}</h3>
       </div>
     </div>
-    <div v-else-if="activeLocation">
-      <div class="border-t-2 border-gray-200">
+    <div v-else-if="activeLocationName">
+      <div v-if="!fieldCoordinates" class="border-t-2 border-gray-200">
         <div
           v-on:click="initPolygonDraw"
           class="flex py-3 px-8 cursor-pointer"
@@ -60,6 +63,24 @@
             :icon="['far', 'map']"
           ></font-awesome-icon>
           <h3 class="text-xl ml-5">Select field location</h3>
+        </div>
+      </div>
+      <div v-if="fieldCoordinates" class="border-t-2 border-gray-200">
+        <div class="flex py-3 px-8 pr-4">
+          <font-awesome-icon
+            class="fa-lg mt-1"
+            :icon="['far', 'map']"
+          ></font-awesome-icon>
+          <div class="w-full">
+            <font-awesome-icon
+              class="float-right fa-lg hover:text-red-600 cursor-pointer"
+              icon="times"
+              v-on:click="removeField"
+            ></font-awesome-icon>
+            <h1 class="w-full text-xl ml-4">
+              Field selected
+            </h1>
+          </div>
         </div>
       </div>
       <div v-if="fieldCoordinates">
@@ -77,21 +98,36 @@
         </div>
         <div
           class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
+          v-on:click="saveField"
         >
-          <h1 class="text-2xl m-auto text-drift-blue">Save</h1>
+          <h1 class="text-2xl m-auto text-drift-blue">
+            Save
+          </h1>
         </div>
       </div>
+    </div>
+    <div
+      v-if="activeLocationName"
+      class="fixed border-t border-gray-200 top-16 right-0 bg-white"
+    >
+      <FieldData :no-calendar="true" />
     </div>
   </div>
 </template>
 
 <script>
+import FieldData from "./FieldData";
+
 export default {
   name: "AddField",
+  components: {
+    FieldData
+  },
   data() {
     return {
       searchField: "",
-      activeLocation: null,
+      activeLocationName: null,
+      activeLocationCoordinates: null,
       fieldCoordinates: null,
       fieldName: "",
       locations: []
@@ -124,7 +160,7 @@ export default {
       }
     },
     getLocations(item) {
-      this.activeLocation = item.text;
+      this.activeLocationName = item.text;
       let axiosNoAuth = this.$axios.create();
       delete axiosNoAuth.defaults.headers.common["Authorization"];
 
@@ -138,11 +174,33 @@ export default {
             res.data.candidates[0].location.y,
             res.data.candidates[0].location.x
           ];
+          this.activeLocationCoordinates = activeLocation;
           this.$store.dispatch("setActiveLocation", activeLocation);
         });
     },
     initPolygonDraw() {
-      this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
+      this.$store.dispatch("setPolygonDraw", !this.$store.polygonDraw);
+    },
+    saveField() {
+      let data = {
+        activeLocationCoordinates: this.activeLocationCoordinates,
+        fieldCoordinates: this.fieldCoordinates,
+        fieldName: this.fieldName
+      };
+      console.log(data);
+    },
+    close() {
+      this.$emit("toggle-farm-sidebar");
+      this.$store.dispatch("setRemovedPolygon", false);
+    },
+    removeLocation() {
+      this.activeLocationName = null;
+      this.fieldCoordinates = null;
+      this.$store.dispatch("setRemovedPolygon", false);
+    },
+    removeField() {
+      this.fieldCoordinates = null;
+      this.$store.dispatch("setRemovedPolygon", false);
     }
   }
 };
