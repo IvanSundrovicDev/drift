@@ -177,12 +177,7 @@ export default {
       searchHerbicide: "",
       mixName: "",
       searchMix: "",
-      herbicides: [
-        { id: 1, name: "Herbicide" },
-        { id: 2, name: "Herbicide" },
-        { id: 3, name: "Herbicide" },
-        { id: 4, name: "Herbicide" }
-      ],
+      herbicides: [],
       selectedHerbicides: [],
       mix: [],
       selectedMix: []
@@ -223,6 +218,17 @@ export default {
         this.selectedMix = [];
       }
     }
+  },
+  beforeMount() {
+    this.$axios
+      .get(`../herbicides/me/`)
+      .then(res => {
+        this.herbicides = res.data.herbicides;
+        console.log(this.herbicides);
+      })
+      .catch(err => {
+        console.log({ err });
+      });
   }
 };
 </script>

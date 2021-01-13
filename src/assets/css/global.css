@@ -58,3 +58,6 @@
 .salmon-border-selected{
     border-bottom-color: #ff8966;
 }
+.herbicide-trait-button{
+    min-height: 4rem;
+}

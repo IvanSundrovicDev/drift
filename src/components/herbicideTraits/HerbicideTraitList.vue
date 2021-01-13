@@ -17,41 +17,42 @@
           Add {{ name }}
         </div>
       </div>
-      <div class="flex w-64 mt-12 shadow-md p-2 rounded-lg">
-        <font-awesome-icon
-          class="fa-lg pt-1 mt-1 text-gray-400"
-          icon="search"
-        ></font-awesome-icon>
-        <input
-          class="w-full text-xl ml-4 focus:outline-none"
-          type="text"
-          v-model="searchField"
-          placeholder="Search"
-        />
-      </div>
+
       <div v-if="active === 'list'">
+        <div class="flex w-64 mt-12 shadow-md p-2 rounded-lg">
+          <font-awesome-icon
+            class="fa-lg pt-1 mt-1 text-gray-400"
+            icon="search"
+          ></font-awesome-icon>
+          <input
+            class="w-full text-xl ml-4 focus:outline-none"
+            type="text"
+            v-model="myItemsSearch"
+            placeholder="Search"
+          />
+        </div>
         <div class="mt-12 ml-12 list">
           <div class="flex flex-wrap">
             <div
-              v-for="item in data"
+              v-for="item in displayedMyItems"
               :key="item.id"
               v-on:click="removeItem(item.id)"
               :class="{ 'bg-drift-blue': removeList.includes(item.id) }"
               class="w-64 my-12 mr-16 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
-              <div class="flex">
-                <div class="flex m-auto py-4 text-xl">
+              <div class="flex herbicide-trait-button h-full py-2 px-4">
+                <div class="flex m-auto text-center text-xl">
                   <img
                     class="h-5 w-5 mt-1 mr-2"
                     v-if="item.logo"
                     :src="item.logo"
                   />
-                  <h1>{{ item.name }}</h1>
+                  <h1>{{ item.name || item.long_name }}</h1>
                 </div>
               </div>
             </div>
           </div>
-          <div class="float-right">
+          <div class="float-right mb-20">
             <div
               class="w-64 py-4 mr-16 text-xl shadow-md rounded-lg text-red-500 cursor-pointer hover:bg-red-500 hover:text-white"
               v-on:click="postRemovedItems"
@@ -61,29 +62,42 @@
           </div>
         </div>
       </div>
+
       <div v-if="active === 'add'">
+        <div class="flex w-64 mt-12 shadow-md p-2 rounded-lg">
+          <font-awesome-icon
+            class="fa-lg pt-1 mt-1 text-gray-400"
+            icon="search"
+          ></font-awesome-icon>
+          <input
+            class="w-full text-xl ml-4 focus:outline-none"
+            type="text"
+            v-model="allItemsSearch"
+            placeholder="Search"
+          />
+        </div>
         <div class="mt-12 ml-12 list">
           <div class="flex flex-wrap">
             <div
-              v-for="item in data"
+              v-for="item in displayedAddItems"
               :key="item.id"
               v-on:click="addItem(item.id)"
               :class="{ 'bg-drift-blue': addList.includes(item.id) }"
               class="w-64 my-12 mr-16 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
-              <div class="flex">
-                <div class="flex m-auto py-4 text-xl">
+              <div class="flex herbicide-trait-button h-full py-2 px-4">
+                <div class="flex m-auto text-center text-xl">
                   <img
                     class="h-5 w-5 mt-1 mr-2"
                     v-if="item.logo"
                     :src="item.logo"
                   />
-                  <h1>{{ item.name }}</h1>
+                  <h1>{{ item.name || item.long_name }}</h1>
                 </div>
               </div>
             </div>
           </div>
-          <div class="float-right">
+          <div class="float-right mb-20">
             <div
               class="w-64 py-4 mr-16 text-xl shadow-md rounded-lg text-drift-green cursor-pointer hover:bg-drift-green hover:text-white"
               v-on:click="postAddedItems"
@@ -109,10 +123,25 @@ export default {
   data() {
     return {
       active: "list",
-      searchField: "",
       removeList: [],
-      addList: []
+      addList: [],
+      myItemsSearch: "",
+      allItemsSearch: ""
     };
+  },
+  computed: {
+    displayedAddItems() {
+      console.log(this.data.allItems);
+      return this.data.allItems.filter(el =>
+        el.name.toLowerCase().includes(this.allItemsSearch.toLocaleLowerCase())
+      );
+    },
+    displayedMyItems() {
+      console.log(this.data.selectedItems);
+      return this.data.selectedItems.filter(el =>
+        el.name.toLowerCase().includes(this.myItemsSearch.toLocaleLowerCase())
+      );
+    }
   },
   methods: {
     removeItem(id) {
@@ -133,7 +162,8 @@ export default {
       console.log(this.removeList);
     },
     postAddedItems() {
-      console.log(this.addList);
+      this.$emit("postAddedItems", this.addList);
+      this.active = "list";
     }
   }
 };
