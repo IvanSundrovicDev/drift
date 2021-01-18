@@ -131,13 +131,11 @@ export default {
   },
   computed: {
     displayedAddItems() {
-      console.log(this.data.allItems);
       return this.data.allItems.filter(el =>
         el.name.toLowerCase().includes(this.allItemsSearch.toLocaleLowerCase())
       );
     },
     displayedMyItems() {
-      console.log(this.data.selectedItems);
       return this.data.selectedItems.filter(el =>
         el.name.toLowerCase().includes(this.myItemsSearch.toLocaleLowerCase())
       );

@@ -24,9 +24,8 @@ export default {
   },
   methods: {
     postAddedItems(items) {
-      let allSelectedItems = this.data.selectedItemsId.concat(items);
       this.$axios
-        .post(`../herbicides/me/`, { herbicides: allSelectedItems })
+        .post(`../herbicides/me/`, { herbicide_ids: items })
         .then(res => {
           this.getHerbicides();
         })
@@ -39,16 +38,19 @@ export default {
         .get(`../herbicides/`)
         .then(res => {
           this.data.allItems = res.data.herbicide;
+          console.log(res.data);
           this.$axios
             .get(`../herbicides/me/`)
             .then(res => {
-              this.data.selectedItemsId = res.data.herbicides;
-              this.data.selectedItems = this.data.allItems.filter(el =>
-                this.data.selectedItemsId.includes(el.id)
-              );
-              this.data.allItems = this.data.allItems.filter(
-                el => !this.data.selectedItems.includes(el)
-              );
+              this.data.selectedItems = res.data.my_herbicide.herbicides;
+              let selectedItems = this.data.selectedItems;
+              this.data.allItems = this.data.allItems.filter(function(
+                objFromA
+              ) {
+                return !selectedItems.find(function(objFromB) {
+                  return objFromA.id === objFromB.id;
+                });
+              });
             })
             .catch(err => {
               console.log({ err });

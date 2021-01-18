@@ -37,10 +37,16 @@
       </div>
     </div>
     <div v-if="active === 'addField'">
-      <AddField v-on:toggle-farm-sidebar="active = 'farmSidebar'" />
+      <AddField
+        v-on:toggle-farm-sidebar="active = 'farmSidebar'"
+        :farmId="activeFarm"
+      />
     </div>
     <div v-if="active === 'addFarm'">
-      <AddFarm v-on:toggle-farm-sidebar="active = 'farmSidebar'" />
+      <AddFarm
+        v-on:toggle-farm-sidebar="active = 'farmSidebar'"
+        v-on:farmAdded="closeAndRefreshFarms"
+      />
     </div>
   </div>
 </template>
@@ -61,14 +67,20 @@ export default {
     return {
       active: "farmSidebar",
       activeFarm: null,
-      farms: [
-        { id: 1, name: "Test Farm" },
-        { id: 2, name: "Test Farm" },
-        { id: 3, name: "Test Farm" }
-      ]
+      farms: []
     };
   },
   methods: {
+    getFarms() {
+      this.$axios
+        .get(`../farms/`)
+        .then(res => {
+          this.farms = res.data.farm;
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+    },
     activateFarm(id) {
       if (!this.activeFarm) {
         this.activeFarm = id;
@@ -83,7 +95,14 @@ export default {
     activateAddFarm() {
       this.active = "addFarm";
       this.$store.dispatch("setRemovedPolygon", false);
+    },
+    closeAndRefreshFarms() {
+      this.active = "farmSidebar";
+      this.getFarms();
     }
+  },
+  beforeMount() {
+    this.getFarms();
   }
 };
 </script>

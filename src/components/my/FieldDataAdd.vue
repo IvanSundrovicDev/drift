@@ -1,29 +1,6 @@
 <template>
-  <div class="field-data">
-    <div
-      v-on:click="activate('calendar')"
-      v-if="!noCalendar"
-      v-show="active === 'calendar' || !active"
-      class="flex py-8 px-8 cursor-pointer"
-    >
-      <div v-if="!active" class="arrow-down my-auto mr-2"></div>
-      <div v-else class="arrow-up my-auto mr-2"></div>
-      <h1 class="text-xl m-auto">
-        {{
-          `${date.toLocaleString("default", {
-            month: "long"
-          })} ${date.getDate()}`
-        }}
-      </h1>
-    </div>
-    <div v-show="active === 'calendar'">
-      <DatePicker v-model="date"></DatePicker>
-    </div>
-    <div
-      v-show="!active"
-      class="flex m-auto border-b border-gray-200 py-8 px-3"
-      :class="{ 'border-t': !noCalendar }"
-    >
+  <div>
+    <div class="flex m-auto border-b border-gray-200 py-8 px-3">
       <div class="flex m-auto">
         <img class="h-5" src="../../assets/images/icons/temperature.png" />
         <h3 class="text-sm ml-2 mr-4">52°F</h3>
@@ -40,20 +17,22 @@
     >
       <div v-if="!active" class="arrow-down my-auto mr-2"></div>
       <div v-else class="arrow-up my-auto mr-2"></div>
-      <h1 class="text-xl m-auto">Crop</h1>
+      <h1 class="text-xl m-auto">
+        {{ selectedCrop.id ? selectedCrop.name : "Crops" }}
+      </h1>
     </div>
     <div class="w-full overflow-auto h-96" v-show="active === 'crop'">
       <div
-        v-for="item in items"
-        v-on:click="select('crops', item)"
-        :key="item"
+        v-for="item in crops"
+        v-on:click="selectCrop(item)"
+        :key="item.id"
         class="custom-item cursor-pointer hover:bg-gray-200"
       >
         <div
-          :class="{ 'salmon-border-selected': selectedCrops.includes(item) }"
+          :class="{ 'salmon-border-selected': selectedCrop.id === item.id }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
-          <h1 class="text-lg">Crop {{ item }}</h1>
+          <h1 class="text-lg">{{ item.name }}</h1>
         </div>
       </div>
     </div>
@@ -64,13 +43,20 @@
     >
       <div v-if="!active" class="arrow-down my-auto mr-2"></div>
       <div v-else class="arrow-up my-auto mr-2"></div>
-      <h1 class="text-xl m-auto">Herbicide</h1>
+      <div class="text-center m-auto">
+        <h1 class="text-xl">Herbicide</h1>
+        <p class="text-drift-blue" v-if="selectedHerbicides[0]">
+          {{ selectedHerbicides.length }}
+          {{ selectedHerbicides.length > 1 ? "herbicides" : "herbicide" }}
+          selected
+        </p>
+      </div>
     </div>
     <div class="w-full overflow-auto h-96" v-show="active === 'herbicide'">
       <div
-        v-for="item in items"
+        v-for="item in herbicides"
         v-on:click="select('herbicides', item)"
-        :key="item"
+        :key="item.id"
         class="custom-item cursor-pointer hover:bg-gray-200"
       >
         <div
@@ -79,7 +65,7 @@
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
-          <h1 class="text-lg">Herbicide {{ item }}</h1>
+          <h1 class="text-lg">{{ item.name }}</h1>
         </div>
       </div>
     </div>
@@ -113,20 +99,17 @@
 </template>
 
 <script>
-import DatePicker from "v-calendar/lib/components/date-picker.umd";
-
 export default {
   name: "FieldData",
-  components: {
-    DatePicker
-  },
-  props: ["noCalendar"],
   data() {
     return {
       date: "",
-      active: "",
       items: 10,
-      selectedCrops: [],
+      active: "",
+      crops: [],
+      herbicides: [],
+      traits: [],
+      selectedCrop: "",
       selectedHerbicides: [],
       selectedTraits: []
     };
@@ -137,15 +120,15 @@ export default {
         this.active = id;
       } else this.active = "";
     },
+    selectCrop(crop) {
+      if (!this.selectedCrop || this.selectedCrop.id !== crop.id) {
+        this.selectedCrop = crop;
+      } else {
+        this.selectedCrop = "";
+      }
+    },
     select(item, id) {
       switch (item) {
-        case "crops":
-          if (this.selectedCrops.find(element => element === id)) {
-            this.selectedCrops = this.selectedCrops.filter(item => item !== id);
-          } else {
-            this.selectedCrops.push(id);
-          }
-          break;
         case "herbicides":
           if (this.selectedHerbicides.find(element => element === id)) {
             this.selectedHerbicides = this.selectedHerbicides.filter(
@@ -169,7 +152,30 @@ export default {
   },
   beforeMount() {
     this.date = new Date();
-    console.log(this.date.toLocaleString("default", { month: "long" }));
+    this.$axios
+      .get(`../farms/crops/`)
+      .then(res => {
+        this.crops = res.data.crop;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+    this.$axios
+      .get(`../farms/crops/`)
+      .then(res => {
+        this.crops = res.data.crop;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+    this.$axios
+      .get(`../herbicides/me/`)
+      .then(res => {
+        this.herbicides = res.data.my_herbicide.herbicides;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
   }
 };
 </script>

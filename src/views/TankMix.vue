@@ -17,15 +17,17 @@
           ></font-awesome-icon>
         </div>
         <div class="flex flex-col h-full">
-          <div class="flex">
+          <div class="w-full">
             <div
               class="m-auto bg-drift-blue text-white text-2xl w-56 text-center py-4"
             >
               My Herbicides
             </div>
           </div>
-          <div class="flex h-full">
-            <div class="w-96 px-4 py-5 h-full mx-auto bg-drift-light-blue">
+          <div class="flex-grow h-64">
+            <div
+              class="w-96 overflow-auto px-4 py-5 h-full mx-auto bg-drift-light-blue"
+            >
               <div class="flex bg-white shadow-sm p-2 rounded-lg">
                 <font-awesome-icon
                   class="fa-lg pt-1 mt-0.5 text-gray-400"
@@ -76,8 +78,10 @@
               Mix
             </div>
           </div>
-          <div class="flex h-full">
-            <div class="w-96 px-4 py-5 h-full mx-auto bg-drift-light-blue">
+          <div class="flex-grow h-64">
+            <div
+              class="w-96 overflow-auto px-4 py-5 h-full mx-auto bg-drift-light-blue"
+            >
               <div class="flex bg-white shadow-sm p-2">
                 <input
                   class="w-full text-xl focus:outline-none"
@@ -86,7 +90,7 @@
                   placeholder="Name mix"
                 />
                 <font-awesome-icon
-                  class="custom-icon-size mt-0.5 right-0 text-drift-lighter-blue hover:text-drift-blue cursor-pointer"
+                  class="custom-icon-size mt-0.5 right-0 ml-2 text-drift-lighter-blue hover:text-drift-blue cursor-pointer"
                   icon="plus-circle"
                 ></font-awesome-icon>
               </div>
@@ -125,8 +129,10 @@
               My Mixes
             </div>
           </div>
-          <div class="flex h-full">
-            <div class="w-96 px-4 py-5 h-full mx-auto bg-drift-light-blue">
+          <div class="flex-grow h-64">
+            <div
+              class="w-96 overflow-auto px-4 py-5 h-full mx-auto bg-drift-light-blue"
+            >
               <div class="flex bg-white shadow-sm p-2 rounded-lg">
                 <font-awesome-icon
                   class="fa-lg pt-1 mt-0.5 text-gray-400"
@@ -140,7 +146,7 @@
                 />
               </div>
               <div class="w-full mt-4">
-                <div class="flex mb-8">
+                <div v-for="item in mixes" class="flex mb-8" :key="item.id">
                   <div
                     class="w-full block m-auto rounded-lg bg-white cursor-pointer"
                   >
@@ -149,8 +155,8 @@
                       icon="ellipsis-h"
                     ></font-awesome-icon>
                     <div>
-                      <h1 class="text-center w-16 m-auto my-4 text-2xl">
-                        Mix 1
+                      <h1 class="text-center m-auto my-4 text-2xl">
+                        {{ item.name }}
                       </h1>
                     </div>
                   </div>
@@ -180,7 +186,8 @@ export default {
       herbicides: [],
       selectedHerbicides: [],
       mix: [],
-      selectedMix: []
+      selectedMix: [],
+      mixes: []
     };
   },
   methods: {
@@ -223,8 +230,18 @@ export default {
     this.$axios
       .get(`../herbicides/me/`)
       .then(res => {
-        this.herbicides = res.data.herbicides;
+        this.herbicides = res.data.my_herbicide.herbicides;
         console.log(this.herbicides);
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+
+    this.$axios
+      .get(`../herbicides/tank-mixes/`)
+      .then(res => {
+        this.mixes = res.data.tank_mix;
+        console.log(res.data);
       })
       .catch(err => {
         console.log({ err });

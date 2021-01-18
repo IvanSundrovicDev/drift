@@ -24,9 +24,9 @@ export default {
   },
   methods: {
     postAddedItems(items) {
-      let allSelectedItems = this.data.selectedItemsId.concat(items);
+      console.log(items);
       this.$axios
-        .post(`../farms/crop-traits/me/`, { crop_traits: allSelectedItems })
+        .post(`../farms/crop-traits/me/`, { crop_trait_ids: items })
         .then(res => {
           this.getTraits();
         })
@@ -42,13 +42,15 @@ export default {
           this.$axios
             .get(`../farms/crop-traits/me/`)
             .then(res => {
-              this.data.selectedItemsId = res.data.crop_traits;
-              this.data.selectedItems = this.data.allItems.filter(el =>
-                this.data.selectedItemsId.includes(el.id)
-              );
-              this.data.allItems = this.data.allItems.filter(
-                el => !this.data.selectedItems.includes(el)
-              );
+              this.data.selectedItems = res.data.my_crop_trait.crop_traits;
+              let selectedItems = this.data.selectedItems;
+              this.data.allItems = this.data.allItems.filter(function(
+                objFromA
+              ) {
+                return !selectedItems.find(function(objFromB) {
+                  return objFromA.id === objFromB.id;
+                });
+              });
             })
             .catch(err => {
               console.log({ err });

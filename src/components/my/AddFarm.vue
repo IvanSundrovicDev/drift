@@ -16,7 +16,7 @@
       <input
         class="w-full text-xl ml-4 focus:outline-none"
         type="text"
-        v-model="name"
+        v-model="farm.name"
         placeholder="Name your farm"
       />
     </div>
@@ -36,12 +36,22 @@ export default {
   name: "AddFarm",
   data() {
     return {
-      name: ""
+      farm: {
+        name: "",
+        account: 1
+      }
     };
   },
   methods: {
     saveFarm() {
-      console.log(this.name);
+      this.$axios
+        .post(`../farms/`, this.farm)
+        .then(res => {
+          this.$emit("farmAdded");
+        })
+        .catch(err => {
+          console.log({ err });
+        });
     }
   }
 };

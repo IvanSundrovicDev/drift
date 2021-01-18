@@ -110,19 +110,20 @@
       v-if="activeLocationName"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
-      <FieldData :no-calendar="true" />
+      <FieldDataAdd />
     </div>
   </div>
 </template>
 
 <script>
-import FieldData from "./FieldData";
+import FieldDataAdd from "./FieldDataAdd";
 
 export default {
   name: "AddField",
   components: {
-    FieldData
+    FieldDataAdd
   },
+  props: ["farmId"],
   data() {
     return {
       searchField: "",
@@ -182,12 +183,21 @@ export default {
       this.$store.dispatch("setPolygonDraw", !this.$store.polygonDraw);
     },
     saveField() {
-      let data = {
-        activeLocationCoordinates: this.activeLocationCoordinates,
-        fieldCoordinates: this.fieldCoordinates,
-        fieldName: this.fieldName
+      this.fieldCoordinates.push(this.fieldCoordinates[0]);
+      console.log(this.fieldCoordinates);
+      let field = {
+        name: this.fieldName,
+        mpoly: this.fieldCoordinates,
+        crop: 1
       };
-      console.log(data);
+      this.$axios
+        .post(`../farms/${this.farmId}/fields/`, field)
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log({ err });
+        });
     },
     close() {
       this.$emit("toggle-farm-sidebar");

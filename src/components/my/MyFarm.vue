@@ -14,10 +14,10 @@
       <div v-if="farmOpen" class="overflow-y-auto">
         <MyField
           v-for="item in fields"
-          :id="item"
+          :field="item"
           :active-field="fieldActive"
           v-on:activate="fieldActive = item"
-          :key="item"
+          :key="item.id"
         />
       </div>
     </div>
@@ -25,26 +25,26 @@
       v-if="farmOpen && fieldActive"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
-      <FieldData />
+      <FieldDataEdit />
     </div>
   </div>
 </template>
 
 <script>
 import MyField from "./MyField";
-import FieldData from "./FieldData";
+import FieldDataEdit from "./FieldDataEdit";
 
 export default {
   name: "MyFarm",
   components: {
     MyField,
-    FieldData
+    FieldDataEdit
   },
   props: ["farm"],
   data() {
     return {
       farmOpen: false,
-      fields: 5,
+      fields: [],
       fieldActive: ""
     };
   },
@@ -54,6 +54,15 @@ export default {
       this.fieldActive = "";
       this.$emit("toggle-farm", id);
       this.$store.dispatch("setRemovedPolygon", false);
+      this.$axios
+        .get(`../farms/${id}/fields/`)
+        .then(res => {
+          console.log(res.data);
+          this.fields = res.data.field;
+        })
+        .catch(err => {
+          console.log({ err });
+        });
     }
   }
 };
