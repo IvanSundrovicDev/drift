@@ -16,9 +16,16 @@
           v-for="item in fields"
           :field="item"
           :active-field="fieldActive"
-          v-on:activate="fieldActive = item"
+          v-on:activate="fieldActive = item.id"
           :key="item.id"
         />
+        <div v-if="!fields[0] && fieldsLoading" class="mt-12 mx-8">
+          <AddField class="m-auto" />
+          <p>
+            What’s a farm without a field. Add a field by clicking the “Add
+            Field” button below
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -33,34 +40,57 @@
 <script>
 import MyField from "./MyField";
 import FieldDataEdit from "./FieldDataEdit";
+import AddField from "../../assets/images/icons/addField.svg";
 
 export default {
   name: "MyFarm",
   components: {
     MyField,
-    FieldDataEdit
+    FieldDataEdit,
+    AddField
   },
   props: ["farm"],
   data() {
     return {
       farmOpen: false,
       fields: [],
-      fieldActive: ""
+      fieldActive: "",
+      fieldsLoading: true
     };
+  },
+  computed: {
+    newActiveField() {
+      return this.$store.state.addedField;
+    }
+  },
+  watch: {
+    newActiveField(newField, oldField) {
+      this.$axios
+        .get(`../farms/${newField.farm}/fields/`)
+        .then(res => {
+          this.fields = res.data.field;
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+      this.fieldActive = newField.id;
+    }
   },
   methods: {
     toggle(id) {
       this.farmOpen = !this.farmOpen;
+      this.$store.dispatch("setRemovedPolygon", false);
       this.fieldActive = "";
       this.$emit("toggle-farm", id);
-      this.$store.dispatch("setRemovedPolygon", false);
+      this.fieldsLoading = false;
       this.$axios
         .get(`../farms/${id}/fields/`)
         .then(res => {
-          console.log(res.data);
           this.fields = res.data.field;
+          this.fieldsLoading = true;
         })
         .catch(err => {
+          this.fieldsLoading = true;
           console.log({ err });
         });
     }

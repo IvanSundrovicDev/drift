@@ -3,6 +3,7 @@
     :name="name"
     :data="data"
     v-on:postAddedItems="postAddedItems"
+    v-on:deleteAddedItems="deleteAddedItems"
   />
 </template>
 
@@ -24,8 +25,21 @@ export default {
   },
   methods: {
     postAddedItems(items) {
+      let baseItems = [];
+      this.data.selectedItems.forEach(item => baseItems.push(item.id));
+      let postItems = baseItems.concat(items);
       this.$axios
-        .post(`../herbicides/me/`, { herbicide_ids: items })
+        .post(`../herbicides/me/`, { herbicide_ids: postItems })
+        .then(res => {
+          this.getHerbicides();
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+    },
+    deleteAddedItems(items) {
+      this.$axios
+        .delete(`../herbicides/me/`, { herbicide_ids: items })
         .then(res => {
           this.getHerbicides();
         })
@@ -38,7 +52,6 @@ export default {
         .get(`../herbicides/`)
         .then(res => {
           this.data.allItems = res.data.herbicide;
-          console.log(res.data);
           this.$axios
             .get(`../herbicides/me/`)
             .then(res => {

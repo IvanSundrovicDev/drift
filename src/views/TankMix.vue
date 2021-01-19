@@ -72,7 +72,7 @@
             <div
               class="m-auto text-drift-blue text-2xl shadow-sm w-56 text-center py-4"
               :class="{
-                'mix-active': mix[0]
+                'mix-active': data.mix[0]
               }"
             >
               Mix
@@ -86,17 +86,22 @@
                 <input
                   class="w-full text-xl focus:outline-none"
                   type="text"
-                  v-model="mixName"
+                  v-model="data.mixName"
                   placeholder="Name mix"
                 />
                 <font-awesome-icon
-                  class="custom-icon-size mt-0.5 right-0 ml-2 text-drift-lighter-blue hover:text-drift-blue cursor-pointer"
+                  v-on:click="postTankMix"
+                  class="custom-icon-size mt-0.5 right-0 ml-2 text-drift-lighter-blue"
+                  :class="{
+                    'hover:text-drift-blue cursor-pointer':
+                      data.mixName && data.mix[0]
+                  }"
                   icon="plus-circle"
                 ></font-awesome-icon>
               </div>
               <div class="w-full mt-4">
                 <div
-                  v-for="item in mix"
+                  v-for="item in data.mix"
                   class="flex mb-8"
                   :key="item.id"
                   :class="{
@@ -151,7 +156,7 @@
                     class="w-full block m-auto rounded-lg bg-white cursor-pointer"
                   >
                     <font-awesome-icon
-                      class="fa-2x mt-1 mr-2 float-right hover:text-drift-blue"
+                      class="fa-2x mt-1 mr-2 float-right  hover:text-drift-blue"
                       icon="ellipsis-h"
                     ></font-awesome-icon>
                     <div>
@@ -180,17 +185,40 @@ export default {
   },
   data() {
     return {
+      data: {
+        mix: [],
+        mixName: ""
+      },
       searchHerbicide: "",
-      mixName: "",
       searchMix: "",
       herbicides: [],
       selectedHerbicides: [],
-      mix: [],
       selectedMix: [],
       mixes: []
     };
   },
   methods: {
+    getData() {
+      this.$axios
+        .get(`../herbicides/me/`)
+        .then(res => {
+          this.herbicides = res.data.my_herbicide.herbicides;
+          console.log(this.herbicides);
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+
+      this.$axios
+        .get(`../herbicides/tank-mixes/`)
+        .then(res => {
+          this.mixes = res.data.tank_mix;
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+    },
     addHerbicide(item) {
       if (this.selectedHerbicides.find(element => element === item)) {
         this.selectedHerbicides = this.selectedHerbicides.filter(
@@ -202,7 +230,7 @@ export default {
     },
     addToMix() {
       if (this.selectedHerbicides[0]) {
-        this.mix = this.mix.concat(this.selectedHerbicides);
+        this.data.mix = this.data.mix.concat(this.selectedHerbicides);
         this.herbicides = this.herbicides.filter(
           el => !this.selectedHerbicides.includes(el)
         );
@@ -221,31 +249,36 @@ export default {
     addToHerbicides() {
       if (this.selectedMix[0]) {
         this.herbicides = this.herbicides.concat(this.selectedMix);
-        this.mix = this.mix.filter(el => !this.selectedMix.includes(el));
+        this.data.mix = this.data.mix.filter(
+          el => !this.selectedMix.includes(el)
+        );
         this.selectedMix = [];
+      }
+    },
+    postTankMix() {
+      if (this.data.mixName && this.data.mix[0]) {
+        let TankMix = {
+          name: this.data.mixName,
+          tank: 1,
+          herbicides: this.data.mix.map(el => el.id)
+        };
+        this.$axios
+          .post(`../herbicides/tank-mixes/`, TankMix)
+          .then(res => {
+            this.getData();
+            this.data = {
+              mix: [],
+              mixName: ""
+            };
+          })
+          .catch(err => {
+            console.log({ err });
+          });
       }
     }
   },
   beforeMount() {
-    this.$axios
-      .get(`../herbicides/me/`)
-      .then(res => {
-        this.herbicides = res.data.my_herbicide.herbicides;
-        console.log(this.herbicides);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
-
-    this.$axios
-      .get(`../herbicides/tank-mixes/`)
-      .then(res => {
-        this.mixes = res.data.tank_mix;
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
+    this.getData();
   }
 };
 </script>

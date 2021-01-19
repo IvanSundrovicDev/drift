@@ -3,6 +3,7 @@
     :name="name"
     :data="data"
     v-on:postAddedItems="postAddedItems"
+    v-on:deleteAddedItems="deleteAddedItems"
   />
 </template>
 
@@ -24,9 +25,21 @@ export default {
   },
   methods: {
     postAddedItems(items) {
-      console.log(items);
+      let baseItems = [];
+      this.data.selectedItems.forEach(item => baseItems.push(item.id));
+      let postItems = baseItems.concat(items);
       this.$axios
-        .post(`../farms/crop-traits/me/`, { crop_trait_ids: items })
+        .post(`../farms/crop-traits/me/`, { crop_trait_ids: postItems })
+        .then(res => {
+          this.getTraits();
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+    },
+    deleteAddedItems(items) {
+      this.$axios
+        .delete(`../farms/crop-traits/me/`, { herbicide_ids: items })
         .then(res => {
           this.getTraits();
         })

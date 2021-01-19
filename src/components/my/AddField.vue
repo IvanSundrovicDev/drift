@@ -96,21 +96,22 @@
             placeholder="Name your field"
           />
         </div>
-        <div
-          class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
-          v-on:click="saveField"
-        >
-          <h1 class="text-2xl m-auto text-drift-blue">
-            Save
-          </h1>
-        </div>
+      </div>
+      <div
+        v-if="fieldName && fieldCoordinates"
+        class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
+        v-on:click="saveField"
+      >
+        <h1 class="text-2xl m-auto text-drift-blue">
+          Save
+        </h1>
       </div>
     </div>
     <div
       v-if="activeLocationName"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
-      <FieldDataAdd />
+      <FieldDataAdd v-on:fieldDataUpdate="updateFieldData($event)" />
     </div>
   </div>
 </template>
@@ -131,7 +132,8 @@ export default {
       activeLocationCoordinates: null,
       fieldCoordinates: null,
       fieldName: "",
-      locations: []
+      locations: [],
+      fieldData: {}
     };
   },
   computed: {
@@ -184,16 +186,18 @@ export default {
     },
     saveField() {
       this.fieldCoordinates.push(this.fieldCoordinates[0]);
-      console.log(this.fieldCoordinates);
       let field = {
+        herbicide: this.fieldData.selectedHerbicide.id,
+        tank_mix: this.fieldData.selectedMix.id,
+        crop_trait: this.fieldData.selectedTrait.id,
         name: this.fieldName,
         mpoly: this.fieldCoordinates,
-        crop: 1
+        crop: this.fieldData.selectedCrop.id
       };
       this.$axios
         .post(`../farms/${this.farmId}/fields/`, field)
         .then(res => {
-          console.log(res.data);
+          this.$store.dispatch("setAddedField", res.data.field);
         })
         .catch(err => {
           console.log({ err });
@@ -211,6 +215,9 @@ export default {
     removeField() {
       this.fieldCoordinates = null;
       this.$store.dispatch("setRemovedPolygon", false);
+    },
+    updateFieldData(data) {
+      this.fieldData = data;
     }
   }
 };

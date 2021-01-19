@@ -157,10 +157,12 @@ export default {
       }
     },
     postRemovedItems() {
-      console.log(this.removeList);
+      this.$emit("deleteAddedItems", this.removeList);
+      this.removeList = [];
     },
     postAddedItems() {
       this.$emit("postAddedItems", this.addList);
+      this.addList = [];
       this.active = "list";
     }
   }

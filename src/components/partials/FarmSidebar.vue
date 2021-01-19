@@ -48,6 +48,12 @@
         v-on:farmAdded="closeAndRefreshFarms"
       />
     </div>
+    <div class="tutorial-active" v-if="tutorial && activeFarm">
+      <Tutorial
+        v-on:exit="tutorial = false"
+        class="top-0 left-12 fixed ml-80 mt-48"
+      />
+    </div>
   </div>
 </template>
 
@@ -55,20 +61,34 @@
 import MyFarm from "../my/MyFarm";
 import AddField from "../my/AddField";
 import AddFarm from "../my/AddFarm";
+import Tutorial from "../common/Tutorial";
 
 export default {
   name: "FarmSidebar",
   components: {
     MyFarm,
     AddField,
-    AddFarm
+    AddFarm,
+    Tutorial
   },
   data() {
     return {
       active: "farmSidebar",
       activeFarm: null,
-      farms: []
+      farms: [],
+      tutorial: true
     };
+  },
+  computed: {
+    newActiveField() {
+      return this.$store.state.addedField;
+    }
+  },
+  watch: {
+    newActiveField(newField, oldField) {
+      this.active = "farmSidebar";
+      this.activeFarm = newField.farm;
+    }
   },
   methods: {
     getFarms() {

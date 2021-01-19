@@ -1,35 +1,27 @@
 <template>
   <div>
-    <div class="flex m-auto border-b border-gray-200 py-8 px-3">
-      <div class="flex m-auto">
-        <img class="h-5" src="../../assets/images/icons/temperature.png" />
-        <h3 class="text-sm ml-2 mr-4">52°F</h3>
-        <img class="h-6" src="../../assets/images/icons/weather.png" />
-        <h3 class="text-sm ml-2 mr-4">10%</h3>
-        <img class="h-5" src="../../assets/images/icons/wind.png" />
-        <h3 class="text-sm ml-2 mr-4">10mph</h3>
-      </div>
-    </div>
     <div
       v-on:click="activate('crop')"
       v-show="active === 'crop' || !active"
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
-      <div v-if="!active" class="arrow-down my-auto mr-2"></div>
+      <div v-if="!active" class="arrow-down my-auto mr-3"></div>
       <div v-else class="arrow-up my-auto mr-2"></div>
       <h1 class="text-xl m-auto">
-        {{ selectedCrop.id ? selectedCrop.name : "Crops" }}
+        {{ data.selectedCrop.id ? data.selectedCrop.name : "Crop" }}
       </h1>
     </div>
     <div class="w-full overflow-auto h-96" v-show="active === 'crop'">
       <div
         v-for="item in crops"
-        v-on:click="selectCrop(item)"
+        v-on:click="select('crop', item)"
         :key="item.id"
         class="custom-item cursor-pointer hover:bg-gray-200"
       >
         <div
-          :class="{ 'salmon-border-selected': selectedCrop.id === item.id }"
+          :class="{
+            'salmon-border-selected': data.selectedCrop.id === item.id
+          }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
           <h1 class="text-lg">{{ item.name }}</h1>
@@ -41,31 +33,44 @@
       v-show="active === 'herbicide' || !active"
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
-      <div v-if="!active" class="arrow-down my-auto mr-2"></div>
+      <div v-if="!active" class="arrow-down my-auto mr-3"></div>
       <div v-else class="arrow-up my-auto mr-2"></div>
       <div class="text-center m-auto">
-        <h1 class="text-xl">Herbicide</h1>
-        <p class="text-drift-blue" v-if="selectedHerbicides[0]">
-          {{ selectedHerbicides.length }}
-          {{ selectedHerbicides.length > 1 ? "herbicides" : "herbicide" }}
-          selected
-        </p>
+        <h1 class="text-xl">
+          {{ herbicideName }}
+        </h1>
       </div>
     </div>
     <div class="w-full overflow-auto h-96" v-show="active === 'herbicide'">
       <div
         v-for="item in herbicides"
-        v-on:click="select('herbicides', item)"
+        v-on:click="select('herbicide', item)"
         :key="item.id"
         class="custom-item cursor-pointer hover:bg-gray-200"
       >
         <div
           :class="{
-            'salmon-border-selected': selectedHerbicides.includes(item)
+            'salmon-border-selected': data.selectedHerbicide.name === item.name
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
           <h1 class="text-lg">{{ item.name }}</h1>
+        </div>
+      </div>
+      <div
+        v-for="item in mixes"
+        v-on:click="select('mix', item)"
+        :key="item.id + 'mix'"
+        class="custom-item cursor-pointer hover:bg-gray-200"
+      >
+        <div
+          :class="{
+            'salmon-border-selected': data.selectedMix.name === item.name
+          }"
+          class="flex salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
+        >
+          <TankMix class="mr-2 mt-1 mix-icon"></TankMix>
+          <h1 class="m-auto text-lg">{{ item.name }}</h1>
         </div>
       </div>
     </div>
@@ -74,24 +79,26 @@
       v-show="active === 'trait' || !active"
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
-      <div v-if="!active" class="arrow-down my-auto mr-2"></div>
+      <div v-if="!active" class="arrow-down my-auto mr-3"></div>
       <div v-else class="arrow-up my-auto mr-2"></div>
-      <h1 class="text-xl m-auto">Trait</h1>
+      <h1 class="text-xl m-auto">
+        {{ data.selectedTrait.id ? data.selectedTrait.name : "Trait" }}
+      </h1>
     </div>
     <div class="w-full overflow-auto h-96" v-show="active === 'trait'">
       <div
-        v-for="item in items"
-        v-on:click="select('traits', item)"
-        :key="item"
+        v-for="item in traits"
+        v-on:click="select('trait', item)"
+        :key="item.id"
         class="custom-item cursor-pointer hover:bg-gray-200"
       >
         <div
           :class="{
-            'salmon-border-selected': selectedTraits.includes(item)
+            'salmon-border-selected': data.selectedTrait.id === item.id
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
-          <h1 class="text-lg">Trait {{ item }}</h1>
+          <h1 class="text-lg">{{ item.name }}</h1>
         </div>
       </div>
     </div>
@@ -99,8 +106,13 @@
 </template>
 
 <script>
+import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
+
 export default {
   name: "FieldData",
+  components: {
+    TankMix
+  },
   data() {
     return {
       date: "",
@@ -108,11 +120,26 @@ export default {
       active: "",
       crops: [],
       herbicides: [],
+      mixes: [],
       traits: [],
-      selectedCrop: "",
-      selectedHerbicides: [],
-      selectedTraits: []
+      data: {
+        selectedCrop: "",
+        selectedHerbicide: "",
+        selectedMix: "",
+        selectedTrait: ""
+      }
     };
+  },
+  computed: {
+    herbicideName() {
+      if (this.data.selectedHerbicide) {
+        return this.data.selectedHerbicide.name;
+      } else if (this.data.selectedMix) {
+        return this.data.selectedMix.name;
+      } else {
+        return "Herbicide";
+      }
+    }
   },
   methods: {
     activate(id) {
@@ -120,34 +147,56 @@ export default {
         this.active = id;
       } else this.active = "";
     },
-    selectCrop(crop) {
-      if (!this.selectedCrop || this.selectedCrop.id !== crop.id) {
-        this.selectedCrop = crop;
-      } else {
-        this.selectedCrop = "";
-      }
-    },
-    select(item, id) {
-      switch (item) {
-        case "herbicides":
-          if (this.selectedHerbicides.find(element => element === id)) {
-            this.selectedHerbicides = this.selectedHerbicides.filter(
-              item => item !== id
-            );
+    select(name, item) {
+      switch (name) {
+        case "crop":
+          if (
+            !this.data.selectedCrop ||
+            this.data.selectedCrop.id !== item.id
+          ) {
+            this.data.selectedCrop = item;
+            this.active = "";
           } else {
-            this.selectedHerbicides.push(id);
+            this.data.selectedCrop = "";
           }
           break;
-        case "traits":
-          if (this.selectedTraits.find(element => element === id)) {
-            this.selectedTraits = this.selectedTraits.filter(
-              item => item !== id
-            );
+        case "herbicide":
+          if (
+            !this.data.selectedHerbicide ||
+            this.data.selectedHerbicide.name !== item.name
+          ) {
+            this.data.selectedHerbicide = item;
+            this.data.selectedMix = "";
+            this.active = "";
           } else {
-            this.selectedTraits.push(id);
+            this.data.selectedHerbicide = "";
+          }
+          break;
+        case "mix":
+          if (
+            !this.data.selectedMix ||
+            this.data.selectedMix.name !== item.name
+          ) {
+            this.data.selectedMix = item;
+            this.data.selectedHerbicide = "";
+            this.active = "";
+          } else {
+            this.data.selectedMix = "";
+          }
+          break;
+        case "trait":
+          if (
+            !this.data.selectedTrait ||
+            this.data.selectedTrait.id !== item.id
+          ) {
+            this.data.selectedTrait = item;
+            this.active = "";
+          } else {
+            this.data.selectedTrait = "";
           }
           break;
       }
+      this.$emit("fieldDataUpdate", this.data);
     }
   },
   beforeMount() {
@@ -176,6 +225,22 @@ export default {
       .catch(err => {
         console.log({ err });
       });
+    this.$axios
+      .get(`../herbicides/tank-mixes/`)
+      .then(res => {
+        this.mixes = res.data.tank_mix;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+    this.$axios
+      .get(`../farms/crop-traits/me/`)
+      .then(res => {
+        this.traits = res.data.my_crop_trait.crop_traits;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
   }
 };
 </script>
@@ -183,5 +248,8 @@ export default {
 <style scoped>
 .field-data {
   width: 252px;
+}
+.mix-icon {
+  filter: brightness(0%);
 }
 </style>
