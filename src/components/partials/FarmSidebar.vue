@@ -93,7 +93,7 @@ export default {
   methods: {
     getFarms() {
       this.$axios
-        .get(`../farms/`)
+        .get(`farms/`)
         .then(res => {
           this.farms = res.data.farm;
         })

@@ -200,7 +200,7 @@ export default {
   methods: {
     getData() {
       this.$axios
-        .get(`../herbicides/me/`)
+        .get(`herbicides/me/`)
         .then(res => {
           this.herbicides = res.data.my_herbicide.herbicides;
           console.log(this.herbicides);
@@ -210,7 +210,7 @@ export default {
         });
 
       this.$axios
-        .get(`../herbicides/tank-mixes/`)
+        .get(`herbicides/tank-mixes/`)
         .then(res => {
           this.mixes = res.data.tank_mix;
           console.log(res.data);
@@ -263,7 +263,7 @@ export default {
           herbicides: this.data.mix.map(el => el.id)
         };
         this.$axios
-          .post(`../herbicides/tank-mixes/`, TankMix)
+          .post(`herbicides/tank-mixes/`, TankMix)
           .then(res => {
             this.getData();
             this.data = {
