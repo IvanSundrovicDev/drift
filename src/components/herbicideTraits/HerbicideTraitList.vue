@@ -108,16 +108,97 @@
         </div>
       </div>
     </div>
+    <div
+      class="tutorial-active"
+      v-if="
+        $store.state.herbicideTutorial === 0 &&
+          active === 'list' &&
+          $route.name === 'Herbicides'
+      "
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        :direction="'left'"
+        :text="
+          'This is your Herbicides Manager. Here you can manage the herbicides you want to have available to you.'
+        "
+        class="top-0 left-64 fixed ml-96 mt-56"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="
+        $store.state.herbicideTutorial === 1 &&
+          active === 'list' &&
+          $route.name === 'Herbicides'
+      "
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        :direction="'left'"
+        :text="'To add a Herbicide to your list, just select “Add Herbicides”'"
+        class="top-0 left-72 fixed ml-80 mt-36"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="
+        $store.state.herbicideTutorial === 2 &&
+          active === 'list' &&
+          $route.name === 'Herbicides'
+      "
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        :direction="'left'"
+        :text="
+          'Here, you can search for and select the herbicides you’d like to add to your list. '
+        "
+        class="top-0 left-4 fixed ml-96 mt-56"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="
+        $store.state.herbicideTutorial === 3 &&
+          active === 'add' &&
+          $route.name === 'Herbicides'
+      "
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        :direction="'left'"
+        :text="
+          'Once selected, simply click “Add Selected” and your selection will populate under “My Herbicides” '
+        "
+        class="top-0 left-64 fixed ml-96 mt-56"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="$store.state.herbicideTutorial === 4 && $route.name === 'Traits'"
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        :direction="'left'"
+        :text="
+          'Your Trait Manager has the same layout as your Herbicide Manager. Go ahead and try to add a few of your favourite traits. '
+        "
+        class="top-0 left-4 fixed ml-96 mt-56"
+      />
+    </div>
   </app-layout>
 </template>
 
 <script>
 import AppLayout from "../../views/layouts/AppLayout";
+import Tutorial from "../common/Tutorial";
 
 export default {
   name: "HerbicideTraitList",
   components: {
-    AppLayout
+    AppLayout,
+    Tutorial
   },
   props: ["name", "data"],
   data() {

@@ -48,10 +48,27 @@
         v-on:farmAdded="closeAndRefreshFarms"
       />
     </div>
-    <div class="tutorial-active" v-if="tutorial && activeFarm">
+    <div class="tutorial-active" v-if="$store.state.farmTutorial === 0">
       <Tutorial
-        v-on:exit="tutorial = false"
-        class="top-0 left-12 fixed ml-80 mt-48"
+        v-on:exit="$store.dispatch('setFarmTutorial')"
+        :direction="'left'"
+        :text="
+          'This is your farms page. Here you can view, edit and add farms. To view the fields within a farm, just select the farm from your list.'
+        "
+        class="top-0 left-12 fixed ml-80 mt-24"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="$store.state.farmTutorial === 1 && activeFarm"
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setFarmTutorial')"
+        :direction="'left'"
+        :text="
+          'Great! Under each farm, you’ll have a list of fields. There’s no field under this farm, just yet, so let’s go ahead and add one below'
+        "
+        class="top-0 left-12 fixed ml-80 mt-64"
       />
     </div>
   </div>
@@ -75,8 +92,7 @@ export default {
     return {
       active: "farmSidebar",
       activeFarm: null,
-      farms: [],
-      tutorial: true
+      farms: []
     };
   },
   computed: {
@@ -126,3 +142,4 @@ export default {
   }
 };
 </script>
+<style></style>

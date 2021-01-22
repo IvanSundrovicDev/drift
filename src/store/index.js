@@ -12,7 +12,10 @@ export default new Vuex.Store({
     polygonCoordinates: [],
     fieldPolygon: [],
     removedPolygon: true,
-    addedField: {}
+    addedField: {},
+    farmTutorial: 0,
+    herbicideTutorial: 0,
+    mixTutorial: 0
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -32,6 +35,15 @@ export default new Vuex.Store({
     },
     setAddedField(state, value) {
       state.addedField = value;
+    },
+    setFarmTutorial(state) {
+      state.farmTutorial = state.farmTutorial + 1;
+    },
+    setHerbicideTutorial(state) {
+      state.herbicideTutorial = state.herbicideTutorial + 1;
+    },
+    setMixTutorial(state) {
+      state.mixTutorial = state.mixTutorial + 1;
     }
   },
   actions: {
@@ -52,6 +64,15 @@ export default new Vuex.Store({
     },
     setAddedField(contex, value) {
       contex.commit("setAddedField", value);
+    },
+    setFarmTutorial(contex) {
+      contex.commit("setFarmTutorial");
+    },
+    setHerbicideTutorial(contex) {
+      contex.commit("setHerbicideTutorial");
+    },
+    setMixTutorial(contex) {
+      contex.commit("setMixTutorial");
     }
   },
   modules: { auth }

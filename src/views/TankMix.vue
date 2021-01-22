@@ -172,16 +172,58 @@
         </div>
       </div>
     </div>
+    <div class="tutorial-active" v-if="$store.state.mixTutorial === 0">
+      <Tutorial
+        v-on:exit="$store.dispatch('setMixTutorial')"
+        :direction="'left'"
+        :text="
+          'To create a tank mix, you can search for and select the herbicides you’d like to mix.'
+        "
+        class="top-0 left-1/3 fixed -ml-4 mt-52"
+      />
+    </div>
+    <div class="tutorial-active" v-if="$store.state.mixTutorial === 1">
+      <Tutorial
+        v-on:exit="$store.dispatch('setMixTutorial')"
+        :direction="'left'"
+        :text="
+          'Once selected, click the arrow to add to your mix. You can also remove herbicides from your mix.'
+        "
+        class="top-32 left-1/3 fixed ml-28 mt-72"
+      />
+    </div>
+    <div class="tutorial-active" v-if="$store.state.mixTutorial === 2">
+      <Tutorial
+        v-on:exit="$store.dispatch('setMixTutorial')"
+        :direction="'left'"
+        :text="
+          'When you’re ready to create your mix, name it here and click the + icon.'
+        "
+        class="top-0 left-2/3 fixed -ml-4 mt-52"
+      />
+    </div>
+    <div class="tutorial-active" v-if="$store.state.mixTutorial === 3">
+      <Tutorial
+        v-on:exit="$store.dispatch('setMixTutorial')"
+        :direction="'right'"
+        :text="
+          'Under “My Mixes” you can edit or delete all of the mixes you have created. '
+        "
+        class="top-0 right-1/3 -mr-24 fixed mt-64"
+      />
+    </div>
   </app-layout>
 </template>
 
 <script>
 import AppLayout from "./layouts/AppLayout";
+import Tutorial from "@/components/common/Tutorial";
 
 export default {
   name: "TankMix",
   components: {
-    AppLayout
+    AppLayout,
+    Tutorial
   },
   data() {
     return {
@@ -288,7 +330,7 @@ export default {
   width: 1.5rem !important;
 }
 .custom-arrows {
-  margin-top: 50%;
+  margin-top: 18rem;
   margin-right: -23px;
   position: relative;
 }

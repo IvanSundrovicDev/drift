@@ -34,6 +34,32 @@
     >
       <FieldDataEdit />
     </div>
+    <div
+      class="tutorial-active"
+      v-if="$store.state.farmTutorial === 2 && fields[0]"
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setFarmTutorial')"
+        :direction="'left'"
+        :text="
+          'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'
+        "
+        class="top-0 left-12 fixed ml-80 mt-48"
+      />
+    </div>
+    <div
+      class="tutorial-active"
+      v-if="$store.state.farmTutorial === 3 && fieldActive"
+    >
+      <Tutorial
+        v-on:exit="$store.dispatch('setFarmTutorial')"
+        :direction="'right'"
+        :text="
+          'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'
+        "
+        class="top-0 left-32 fixed ml-80 mt-80"
+      />
+    </div>
   </div>
 </template>
 
@@ -41,13 +67,15 @@
 import MyField from "./MyField";
 import FieldDataEdit from "./FieldDataEdit";
 import AddField from "../../assets/images/icons/addField.svg";
+import Tutorial from "../common/Tutorial";
 
 export default {
   name: "MyFarm",
   components: {
     MyField,
     FieldDataEdit,
-    AddField
+    AddField,
+    Tutorial
   },
   props: ["farm"],
   data() {

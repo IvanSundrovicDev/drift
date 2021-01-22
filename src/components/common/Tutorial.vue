@@ -1,6 +1,6 @@
 <template>
   <div class="flex tutorial">
-    <div class="arrow-left mt-4"></div>
+    <div v-if="direction === 'left'" class="arrow-left mt-4"></div>
     <div class="w-96 p-4 bg-drift-blue text-white rounded-2xl">
       <font-awesome-icon
         class="flex ml-auto text-white fa-lg hover:text-black cursor-pointer"
@@ -8,8 +8,7 @@
         v-on:click="$emit('exit')"
       ></font-awesome-icon>
       <p>
-        Great! Under each farm, you’ll have a list of fields. There’s no field
-        under this farm, just yet, so let’s go ahead and add one below
+        {{ text }}
       </p>
       <div
         v-on:click="$emit('exit')"
@@ -18,12 +17,14 @@
         Got it
       </div>
     </div>
+    <div v-if="direction === 'right'" class="arrow-right mt-4"></div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Tutorial"
+  name: "Tutorial",
+  props: ["text", "direction"]
 };
 </script>
 
