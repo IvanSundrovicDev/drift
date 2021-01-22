@@ -94,7 +94,7 @@ export default {
   watch: {
     newActiveField(newField, oldField) {
       this.$axios
-        .get(`../farms/${newField.farm}/fields/`)
+        .get(`farms/${newField.farm}/fields/`)
         .then(res => {
           this.fields = res.data.field;
         })
@@ -112,7 +112,7 @@ export default {
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;
       this.$axios
-        .get(`../farms/${id}/fields/`)
+        .get(`farms/${id}/fields/`)
         .then(res => {
           this.fields = res.data.field;
           this.fieldsLoading = true;

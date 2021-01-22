@@ -202,7 +202,7 @@ export default {
   beforeMount() {
     this.date = new Date();
     this.$axios
-      .get(`../farms/crops/`)
+      .get(`farms/crops/`)
       .then(res => {
         this.crops = res.data.crop;
       })
@@ -210,7 +210,7 @@ export default {
         console.log({ err });
       });
     this.$axios
-      .get(`../farms/crops/`)
+      .get(`farms/crops/`)
       .then(res => {
         this.crops = res.data.crop;
       })
@@ -218,7 +218,7 @@ export default {
         console.log({ err });
       });
     this.$axios
-      .get(`../herbicides/me/`)
+      .get(`herbicides/me/`)
       .then(res => {
         this.herbicides = res.data.my_herbicide.herbicides;
       })
@@ -226,7 +226,7 @@ export default {
         console.log({ err });
       });
     this.$axios
-      .get(`../herbicides/tank-mixes/`)
+      .get(`herbicides/tank-mixes/`)
       .then(res => {
         this.mixes = res.data.tank_mix;
       })
@@ -234,7 +234,7 @@ export default {
         console.log({ err });
       });
     this.$axios
-      .get(`../farms/crop-traits/me/`)
+      .get(`farms/crop-traits/me/`)
       .then(res => {
         this.traits = res.data.my_crop_trait.crop_traits;
       })

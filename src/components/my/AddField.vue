@@ -195,7 +195,7 @@ export default {
         crop: this.fieldData.selectedCrop.id
       };
       this.$axios
-        .post(`../farms/${this.farmId}/fields/`, field)
+        .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
           this.$store.dispatch("setAddedField", res.data.field);
         })

@@ -3,7 +3,7 @@ import axios from "axios";
 class AuthService {
   login(user) {
     return axios
-      .post("jwt/create/", {
+      .post("auth/jwt/create/", {
         email: user.email,
         password: user.password
       })
@@ -21,7 +21,7 @@ class AuthService {
   }
 
   register(user) {
-    return axios.post("users/", {
+    return axios.post("auth/users/", {
       full_name: user.full_name,
       farm_name: user.farm_name,
       email: user.email,

@@ -29,7 +29,7 @@ export default {
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
       this.$axios
-        .post(`../farms/crop-traits/me/`, { crop_trait_ids: postItems })
+        .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
         })
@@ -39,7 +39,7 @@ export default {
     },
     deleteAddedItems(items) {
       this.$axios
-        .delete(`../farms/crop-traits/me/`, { herbicide_ids: items })
+        .delete(`farms/crop-traits/me/`, { herbicide_ids: items })
         .then(res => {
           this.getTraits();
         })
@@ -49,11 +49,11 @@ export default {
     },
     getTraits() {
       this.$axios
-        .get(`../farms/crop-traits/`)
+        .get(`farms/crop-traits/`)
         .then(res => {
           this.data.allItems = res.data.crop_trait;
           this.$axios
-            .get(`../farms/crop-traits/me/`)
+            .get(`farms/crop-traits/me/`)
             .then(res => {
               this.data.selectedItems = res.data.my_crop_trait.crop_traits;
               let selectedItems = this.data.selectedItems;
