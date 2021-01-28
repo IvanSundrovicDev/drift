@@ -48,9 +48,12 @@
         v-on:farmAdded="closeAndRefreshFarms"
       />
     </div>
-    <div class="tutorial-active" v-if="$store.state.farmTutorial === 0">
+    <div
+      class="whitescreen-active"
+      v-if="!$store.state.farmTutorialDone && $store.state.farmTutorial === 0"
+    >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorial')"
+        v-on:exit="$store.dispatch('setFarmTutorialStep')"
         :direction="'left'"
         :text="
           'This is your farms page. Here you can view, edit and add farms. To view the fields within a farm, just select the farm from your list.'
@@ -59,11 +62,15 @@
       />
     </div>
     <div
-      class="tutorial-active"
-      v-if="$store.state.farmTutorial === 1 && activeFarm"
+      class="whitescreen-active"
+      v-if="
+        !$store.state.farmTutorialDone &&
+          $store.state.farmTutorial === 1 &&
+          activeFarm
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorial')"
+        v-on:exit="$store.dispatch('setFarmTutorialStep')"
         :direction="'left'"
         :text="
           'Great! Under each farm, you’ll have a list of fields. There’s no field under this farm, just yet, so let’s go ahead and add one below'

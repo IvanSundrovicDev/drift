@@ -109,15 +109,16 @@
       </div>
     </div>
     <div
-      class="tutorial-active"
+      class="whitescreen-active"
       v-if="
-        $store.state.herbicideTutorial === 0 &&
+        !$store.state.herbicideTutorialDone &&
+          $store.state.herbicideTutorial === 0 &&
           active === 'list' &&
           $route.name === 'Herbicides'
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        v-on:exit="$store.dispatch('setHerbicideTutorialStep')"
         :direction="'left'"
         :text="
           'This is your Herbicides Manager. Here you can manage the herbicides you want to have available to you.'
@@ -126,30 +127,32 @@
       />
     </div>
     <div
-      class="tutorial-active"
+      class="whitescreen-active"
       v-if="
-        $store.state.herbicideTutorial === 1 &&
+        !$store.state.herbicideTutorialDone &&
+          $store.state.herbicideTutorial === 1 &&
           active === 'list' &&
           $route.name === 'Herbicides'
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        v-on:exit="$store.dispatch('setHerbicideTutorialStep')"
         :direction="'left'"
         :text="'To add a Herbicide to your list, just select “Add Herbicides”'"
         class="top-0 left-72 fixed ml-80 mt-36"
       />
     </div>
     <div
-      class="tutorial-active"
+      class="whitescreen-active"
       v-if="
-        $store.state.herbicideTutorial === 2 &&
+        !$store.state.herbicideTutorialDone &&
+          $store.state.herbicideTutorial === 2 &&
           active === 'list' &&
           $route.name === 'Herbicides'
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        v-on:exit="$store.dispatch('setHerbicideTutorialStep')"
         :direction="'left'"
         :text="
           'Here, you can search for and select the herbicides you’d like to add to your list. '
@@ -158,15 +161,16 @@
       />
     </div>
     <div
-      class="tutorial-active"
+      class="whitescreen-active"
       v-if="
-        $store.state.herbicideTutorial === 3 &&
+        !$store.state.herbicideTutorialDone &&
+          $store.state.herbicideTutorial === 3 &&
           active === 'add' &&
           $route.name === 'Herbicides'
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        v-on:exit="$store.dispatch('setHerbicideTutorialDone')"
         :direction="'left'"
         :text="
           'Once selected, simply click “Add Selected” and your selection will populate under “My Herbicides” '
@@ -175,11 +179,11 @@
       />
     </div>
     <div
-      class="tutorial-active"
-      v-if="$store.state.herbicideTutorial === 4 && $route.name === 'Traits'"
+      class="whitescreen-active"
+      v-if="!$store.state.traitTutorialDone && $route.name === 'Traits'"
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setHerbicideTutorial')"
+        v-on:exit="$store.dispatch('setTraitTutorialDone')"
         :direction="'left'"
         :text="
           'Your Trait Manager has the same layout as your Herbicide Manager. Go ahead and try to add a few of your favourite traits. '

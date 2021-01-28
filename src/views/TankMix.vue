@@ -152,15 +152,24 @@
               </div>
               <div class="w-full mt-4">
                 <div v-for="item in mixes" class="flex mb-8" :key="item.id">
-                  <div
-                    class="w-full block m-auto rounded-lg bg-white cursor-pointer"
-                  >
-                    <font-awesome-icon
-                      class="fa-2x mt-1 mr-2 float-right  hover:text-drift-blue"
-                      icon="ellipsis-h"
-                    ></font-awesome-icon>
+                  <div class="w-full block m-auto px-12 rounded-lg bg-white">
+                    <div class="fixed ml-64">
+                      <font-awesome-icon
+                        v-on:click="openMenu(item)"
+                        class="fa-2x mt-1 mr-2 hover:text-drift-blue cursor-pointer"
+                        icon="ellipsis-h"
+                      ></font-awesome-icon>
+                      <div
+                        v-if="selectedItem === item && !deletePopUp"
+                        v-on:click="deletePopUp = true"
+                        class="text-center -ml-16 px-3 py-2 bg bg-gray-500 text-white hover:bg-red-600 cursor-pointer"
+                      >
+                        <h1>Delete</h1>
+                      </div>
+                    </div>
+
                     <div>
-                      <h1 class="text-center m-auto my-4 text-2xl">
+                      <h1 class="text-center my-4 text-2xl">
                         {{ item.name }}
                       </h1>
                     </div>
@@ -172,9 +181,53 @@
         </div>
       </div>
     </div>
-    <div class="tutorial-active" v-if="$store.state.mixTutorial === 0">
+    <div v-if="deletePopUp" class="whitescreen-active flex">
+      <div class="bg-white border-2 border-gray-300 m-auto w-96">
+        <div class="p-4 border-b-2 border-gray-200">
+          <font-awesome-icon
+            class="float-right fa-lg hover:text-red-600 cursor-pointer"
+            icon="times"
+            v-on:click="
+              deletePopUp = false;
+              selectedItem = '';
+            "
+          ></font-awesome-icon>
+          <div class="px-4">
+            <div class="flex m-auto">
+              <h1 class="text-2xl m-auto text-red-600">Delete tank mix</h1>
+            </div>
+          </div>
+        </div>
+        <div class="flex py-5 px-4 border-b-2 border-gray-200">
+          <p class="m-auto text-center">
+            Are you sure you want to delete {{ selectedItem.name }}?
+          </p>
+        </div>
+        <div class="flex py-4 px-8">
+          <div
+            v-on:click="deleteMix"
+            class="px-6 rounded-lg hover:bg-red-600 hover:border-red-600 hover:text-white text-xl border-2 border-drift-blue text-drift-blue cursor-pointer"
+          >
+            Yes
+          </div>
+          <div
+            v-on:click="
+              deletePopUp = false;
+              selectedItem = '';
+            "
+            class="ml-auto px-6 rounded-lg hover:bg-drift-blue hover:text-white text-xl border-2 border-drift-blue text-drift-blue cursor-pointer"
+          >
+            No
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="whitescreen-active"
+      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 0"
+    >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorial')"
+        v-on:exit="$store.dispatch('setMixTutorialStep')"
         :direction="'left'"
         :text="
           'To create a tank mix, you can search for and select the herbicides you’d like to mix.'
@@ -182,9 +235,12 @@
         class="top-0 left-1/3 fixed -ml-4 mt-52"
       />
     </div>
-    <div class="tutorial-active" v-if="$store.state.mixTutorial === 1">
+    <div
+      class="whitescreen-active"
+      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 1"
+    >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorial')"
+        v-on:exit="$store.dispatch('setMixTutorialStep')"
         :direction="'left'"
         :text="
           'Once selected, click the arrow to add to your mix. You can also remove herbicides from your mix.'
@@ -192,9 +248,12 @@
         class="top-32 left-1/3 fixed ml-28 mt-72"
       />
     </div>
-    <div class="tutorial-active" v-if="$store.state.mixTutorial === 2">
+    <div
+      class="whitescreen-active"
+      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 2"
+    >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorial')"
+        v-on:exit="$store.dispatch('setMixTutorialStep')"
         :direction="'left'"
         :text="
           'When you’re ready to create your mix, name it here and click the + icon.'
@@ -202,9 +261,12 @@
         class="top-0 left-2/3 fixed -ml-4 mt-52"
       />
     </div>
-    <div class="tutorial-active" v-if="$store.state.mixTutorial === 3">
+    <div
+      class="whitescreen-active"
+      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 3"
+    >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorial')"
+        v-on:exit="$store.dispatch('setMixTutorialDone')"
         :direction="'right'"
         :text="
           'Under “My Mixes” you can edit or delete all of the mixes you have created. '
@@ -231,6 +293,8 @@ export default {
         mix: [],
         mixName: ""
       },
+      selectedItem: "",
+      deletePopUp: false,
       searchHerbicide: "",
       searchMix: "",
       herbicides: [],
@@ -245,7 +309,6 @@ export default {
         .get(`herbicides/me/`)
         .then(res => {
           this.herbicides = res.data.my_herbicide.herbicides;
-          console.log(this.herbicides);
         })
         .catch(err => {
           console.log({ err });
@@ -255,7 +318,6 @@ export default {
         .get(`herbicides/tank-mixes/`)
         .then(res => {
           this.mixes = res.data.tank_mix;
-          console.log(res.data);
         })
         .catch(err => {
           console.log({ err });
@@ -264,7 +326,7 @@ export default {
     addHerbicide(item) {
       if (this.selectedHerbicides.find(element => element === item)) {
         this.selectedHerbicides = this.selectedHerbicides.filter(
-          filterIitem => filterIitem !== item
+          filterItem => filterItem !== item
         );
       } else {
         this.selectedHerbicides.push(item);
@@ -282,7 +344,7 @@ export default {
     addMixHerbicide(item) {
       if (this.selectedMix.find(element => element === item)) {
         this.selectedMix = this.selectedMix.filter(
-          filterIitem => filterIitem !== item
+          filterItem => filterItem !== item
         );
       } else {
         this.selectedMix.push(item);
@@ -317,6 +379,25 @@ export default {
             console.log({ err });
           });
       }
+    },
+    openMenu(item) {
+      if (item === this.selectedItem) {
+        this.selectedItem = "";
+      } else {
+        this.selectedItem = item;
+      }
+    },
+    deleteMix() {
+      this.$axios
+        .delete(`herbicides/tank-mixes/${this.selectedItem.id}`)
+        .then(res => {
+          this.getData();
+          this.deletePopUp = false;
+          this.selectedItem = "";
+        })
+        .catch(err => {
+          console.log({ err });
+        });
     }
   },
   beforeMount() {

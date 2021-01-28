@@ -14,8 +14,13 @@ export default new Vuex.Store({
     removedPolygon: true,
     addedField: {},
     farmTutorial: 0,
+    farmTutorialDone: false,
     herbicideTutorial: 0,
-    mixTutorial: 0
+    herbicideTutorialDone: false,
+    traitTutorialDone: false,
+    mixTutorial: 0,
+    mixTutorialDone: false,
+    notifications: ""
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -36,14 +41,29 @@ export default new Vuex.Store({
     setAddedField(state, value) {
       state.addedField = value;
     },
-    setFarmTutorial(state) {
+    setFarmTutorialStep(state) {
       state.farmTutorial = state.farmTutorial + 1;
     },
-    setHerbicideTutorial(state) {
+    setFarmTutorialDone(state) {
+      state.farmTutorialDone = true;
+    },
+    setHerbicideTutorialStep(state) {
       state.herbicideTutorial = state.herbicideTutorial + 1;
     },
-    setMixTutorial(state) {
+    setHerbicideTutorialDone(state) {
+      state.herbicideTutorialDone = true;
+    },
+    setTraitTutorialDone(state) {
+      state.traitTutorialDone = true;
+    },
+    setMixTutorialStep(state) {
       state.mixTutorial = state.mixTutorial + 1;
+    },
+    setMixTutorialDone(state) {
+      state.mixTutorialDone = true;
+    },
+    addNotification(state, value) {
+      state.notification = value;
     }
   },
   actions: {
@@ -65,14 +85,29 @@ export default new Vuex.Store({
     setAddedField(contex, value) {
       contex.commit("setAddedField", value);
     },
-    setFarmTutorial(contex) {
-      contex.commit("setFarmTutorial");
+    setFarmTutorialStep(contex) {
+      contex.commit("setFarmTutorialStep");
     },
-    setHerbicideTutorial(contex) {
-      contex.commit("setHerbicideTutorial");
+    setFarmTutorialDone(contex) {
+      contex.commit("setFarmTutorialDone");
     },
-    setMixTutorial(contex) {
-      contex.commit("setMixTutorial");
+    setHerbicideTutorialStep(contex) {
+      contex.commit("setHerbicideTutorialStep");
+    },
+    setHerbicideTutorialDone(contex) {
+      contex.commit("setHerbicideTutorialDone");
+    },
+    setTraitTutorialDone(contex) {
+      contex.commit("setTraitTutorialDone");
+    },
+    setMixTutorialStep(contex) {
+      contex.commit("setMixTutorialStep");
+    },
+    setMixTutorialDone(contex) {
+      contex.commit("setMixTutorialDone");
+    },
+    addNotification(contex, value) {
+      contex.commit("addNotification", value);
     }
   },
   modules: { auth }
