@@ -115,14 +115,20 @@ export default {
   },
   methods: {
     getFarms() {
-      this.$axios
-        .get(`farms/`)
-        .then(res => {
-          this.farms = res.data.farm;
-        })
-        .catch(err => {
-          console.log({ err });
-        });
+      if (this.$route.name === "Dashboard") {
+        this.$axios
+          .get(`farms/`)
+          .then(res => {
+            this.farms = res.data.farm;
+            this.$store.dispatch("addNotification", {
+              type: "success",
+              message: "Successfully got farms"
+            });
+          })
+          .catch(err => {
+            console.log({ err });
+          });
+      }
     },
     activateFarm(id) {
       if (!this.activeFarm) {

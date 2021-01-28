@@ -20,7 +20,7 @@ export default new Vuex.Store({
     traitTutorialDone: false,
     mixTutorial: 0,
     mixTutorialDone: false,
-    notifications: ""
+    notifications: []
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -63,7 +63,16 @@ export default new Vuex.Store({
       state.mixTutorialDone = true;
     },
     addNotification(state, value) {
-      state.notification = value;
+      state.notifications.push({
+        ...value,
+        id: Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(2, 10)
+      });
+    },
+    removeNotification(state, value) {
+      state.notifications = state.notifications.filter(el => el.id !== value);
     }
   },
   actions: {
@@ -108,6 +117,9 @@ export default new Vuex.Store({
     },
     addNotification(contex, value) {
       contex.commit("addNotification", value);
+    },
+    removeNotification(contex, value) {
+      contex.commit("removeNotification", value);
     }
   },
   modules: { auth }

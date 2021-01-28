@@ -40,7 +40,7 @@ export default {
     deleteAddedItems(items) {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
-      let postItems = baseItems.filter( ( el ) => !items.includes( el ) );
+      let postItems = baseItems.filter(el => !items.includes(el));
       this.$axios
         .post(`herbicides/me/`, { herbicide_ids: postItems })
         .then(res => {
@@ -55,6 +55,10 @@ export default {
         .get(`herbicides/`)
         .then(res => {
           this.data.allItems = res.data.herbicide;
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "Successfully got herbicides"
+          });
           this.$axios
             .get(`herbicides/me/`)
             .then(res => {

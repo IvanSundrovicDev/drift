@@ -1,9 +1,16 @@
 <template>
   <div class="App">
     <router-view />
+    <Notifications />
   </div>
 </template>
 
+<script>
+import Notifications from "./components/common/Notifications";
+export default {
+  components: { Notifications }
+};
+</script>
 <style>
 @font-face {
   font-family: "SFProDisplay";
