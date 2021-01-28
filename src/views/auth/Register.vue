@@ -260,7 +260,7 @@ export default {
         });
     },
     getSecurityQuestions() {
-      this.$axios.get("security/questions").then(res => {
+      this.$axios.get("auth/security/questions").then(res => {
         this.security_questions = res.data.security_question;
       });
     },

@@ -38,8 +38,11 @@ export default {
         });
     },
     deleteAddedItems(items) {
+      let baseItems = [];
+      this.data.selectedItems.forEach(item => baseItems.push(item.id));
+      let postItems = baseItems.filter( ( el ) => !items.includes( el ) );
       this.$axios
-        .delete(`farms/crop-traits/me/`, { herbicide_ids: items })
+        .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
         })

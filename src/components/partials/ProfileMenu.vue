@@ -66,10 +66,11 @@
               </div>
               <div>
                 <input
-                  type="email"
+                  type="text"
                   class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                  placeholder="Enter your e-mail address"
+                  placeholder="Enter your full name"
                   autofocus
+                  v-model="user.full_name"
                 />
               </div>
             </div>
@@ -88,13 +89,14 @@
                   class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
                   placeholder="Enter your e-mail address"
                   autofocus
+                  v-model="user.email"
                 />
               </div>
             </div>
           </div>
         </div>
         <div class="pt-10 flex">
-          <button class="rounded-lg py-1 m-auto w-72 designActionButton">
+          <button class="rounded-lg py-1 m-auto w-72 designActionButton" v-on:click="saveChanges">
             Save Changes
           </button>
         </div>
@@ -173,20 +175,32 @@ export default {
   },
   data() {
     return {
-      active: "menu"
+      active: "menu",
+      user: {
+        full_name: "",
+        email: ""
+      }
     };
   },
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
       this.$router.push("/");
+    },
+    saveChanges() {
+      this.$axios.patch("auth/users/me/", this.user).then(res => {
+
+      });
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .list-item:hover .invert-to-white {
   filter: brightness(0) invert(1);
+}
+.test {
+  background-color: #ff8966;
 }
 </style>
