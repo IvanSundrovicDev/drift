@@ -9,6 +9,7 @@ import "@/assets/css/tailwind.css";
 import user from "./models/user";
 import authHeader from "./helpers/auth-header";
 import "@/assets/css/global.css";
+import {auth} from "./store/auth.module"
 
 Vue.use(Vuex);
 
@@ -48,6 +49,12 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 // ----------------------------------------------------------------------
 
 Vue.config.productionTip = false;
+
+export default new Vuex.Store({
+  modules: {
+    auth
+  }
+})
 
 new Vue({
   router,

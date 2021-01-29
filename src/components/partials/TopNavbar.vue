@@ -210,6 +210,11 @@ export default {
       menuOpen: false,
       profileMenuOpen: false
     };
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('auth/logout');
+    }
   }
 };
 </script>

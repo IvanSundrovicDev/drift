@@ -9,7 +9,17 @@ class AuthService {
       })
       .then(response => {
         if (response.data.access) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+
+          let jwt = response.data
+
+          axios.get("auth/users/me/", {headers: { Authorization: "JWT " + jwt.access} }).then(res => {
+
+            let user = res.data.user
+
+            user.jwt = jwt
+
+            localStorage.setItem("user", JSON.stringify(user))
+          })
         }
 
         return response.data;
