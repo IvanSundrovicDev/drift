@@ -5,7 +5,7 @@ import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
 import PricingPlansList from "../views/pricingPlans/PricingPlansList";
-import PaymentDetails from "../views/pricingPlans/PaymentDetails";
+import PaymentDetails from "../views/pricingPlans/PaymentDetailsView";
 import HerbicideList from "../views/HerbicideList";
 import TraitList from "../views/TraitList";
 import TankMix from "../views/TankMix";
@@ -75,7 +75,8 @@ router.beforeEach((to, from, next) => {
     "/payment_details"
   ];
   const authRequired = !publicPages.includes(to.path);
-  const user = JSON.parse(localStorage.getItem("userData"));
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
 
   if (authRequired && !user) {
     next("/");

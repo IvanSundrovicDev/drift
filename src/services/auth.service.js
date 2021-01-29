@@ -1,5 +1,4 @@
 import axios from "axios";
-import authHeader from "@/helpers/auth-header";
 
 class AuthService {
   login(user) {
@@ -8,30 +7,38 @@ class AuthService {
         email: user.email,
         password: user.password
       })
-      .then(async response => {
-
+      .then(response => {
+        console.log("jwt created");
         if (response.data.access) {
+          let jwt = response.data;
 
-          let userData = {}
+          axios
+            .get("auth/users/me/", {
+              headers: { Authorization: "JWT " + jwt.access }
+            })
+            .then(res => {
+              let user = res.data.user;
 
-          await axios.get("auth/users/me/", {headers: { Authorization: "JWT " + response.data.access} }).then(res => {
-            userData.user = res.data.user
-            localStorage.setItem("user", JSON.stringify(userData))
-          })
+              // get tutorial
+              axios
+                .get("tutorials/me/", {
+                  headers: { Authorization: "JWT " + jwt.access }
+                })
+                .then(res => {
+                  console.log(res.data);
+                });
+              // append to user
+              user.jwt = jwt;
 
-          await axios.get("tutorials/me", { headers: { Authorization: "JWT " + response.data.access}}).then(tres => {
-            userData.tutorial = tres.data.user_tutorial
-          })
-
-          userData.jwt = response.data
-
-          localStorage.setItem("userData", JSON.stringify(userData))
+              localStorage.setItem("user", JSON.stringify(user));
+              console.log("auth");
+            });
         }
       });
   }
 
   logout() {
-    localStorage.removeItem("userData");
+    localStorage.removeItem("user");
   }
 
   register(user) {

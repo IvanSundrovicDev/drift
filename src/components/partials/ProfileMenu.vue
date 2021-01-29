@@ -20,8 +20,15 @@
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           v-on:click="active = 'membership'"
         >
-          <Subscriptions class="h-6 w-6 mt-1 invert-to-white" />
+          <Subscriptions class="h-6 w-6 pt-1 pl-1 invert-to-white" />
           <h3 class="text-lg ml-3">Manage Subscriptions</h3>
+        </div>
+        <div
+          class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          v-on:click="active = 'invite'"
+        >
+          <Invite class="h-5 w-6 mt-1 invert-to-white text-drift-blue" />
+          <h3 class="text-lg ml-3">Invite Neighbour</h3>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
@@ -96,7 +103,10 @@
           </div>
         </div>
         <div class="pt-10 flex">
-          <button class="rounded-lg py-1 m-auto w-72 designActionButton" v-on:click="saveChanges">
+          <button
+            class="rounded-lg py-1 m-auto w-72 designActionButton"
+            v-on:click="saveChanges"
+          >
             Save Changes
           </button>
         </div>
@@ -123,14 +133,14 @@
               >
             </h1>
             <div class="pt-10 flex">
-              <button class="rounded-lg py-1 m-auto w-72 designActionButton">
+              <button
+                v-on:click="paymentDetailsActive = true"
+                class="rounded-lg py-1 m-auto w-72 designActionButton"
+              >
                 Update Payment
               </button>
             </div>
           </div>
-          <h3 class="text-drift-blue cursor-pointer hover:underline mt-8">
-            Cancel Subscription
-          </h3>
         </div>
         <div class="bg-drift-blue p-7 col-span-1">
           <font-awesome-icon
@@ -156,30 +166,85 @@
         </div>
       </div>
     </div>
+    <div v-if="active === 'invite'" class="px-6 pb-6">
+      <div class="flex mb-4">
+        <h1 class="text-2xl text-drift-blue">Invite Neighbour</h1>
+        <font-awesome-icon
+          class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
+          icon="times"
+          v-on:click="active = 'menu'"
+        ></font-awesome-icon>
+      </div>
+      <div class="flex">
+        <div class="w-full">
+          <div class="w-full pt-6">
+            <div>
+              <img
+                class="inline"
+                src="../../assets/images/icons/envelope.png"
+                alt=""
+              />
+              <span class="my-auto ml-2 align-middle"
+                >Neighbour e-mail address</span
+              >
+            </div>
+            <div class="flex">
+              <input
+                type="email"
+                class="w-full mr-1 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                placeholder="Enter neighbour e-mail address"
+                autofocus
+                v-model="neighbourEmail"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pt-10 flex">
+        <button
+          class="rounded-lg py-1 m-auto w-72 designActionButton"
+          v-on:click="saveChanges"
+        >
+          Invite
+        </button>
+      </div>
+    </div>
+    <div v-if="paymentDetailsActive" class="whitescreen-active flex">
+      <PaymentDetails
+        class="w-1/2 m-auto border-2 border-gray-300"
+        v-on:close="paymentDetailsActive = false"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import PaymentDetails from "./PaymentDetails";
 import EditProfile from "../../assets/images/icons/EditProfile.svg";
-import Help from "../../assets/images/icons/Help.svg";
 import Subscriptions from "../../assets/images/icons/Subscriptions.svg";
+import Invite from "../../assets/images/icons/Invite.svg";
+import Help from "../../assets/images/icons/Help.svg";
 import Logout from "../../assets/images/icons/Logout.svg";
 
 export default {
   name: "ProfileMenu",
   components: {
+    PaymentDetails,
     EditProfile,
-    Help,
     Subscriptions,
+    Invite,
+    Help,
     Logout
   },
   data() {
     return {
       active: "menu",
+      paymentDetailsActive: false,
       user: {
-        full_name: this.$userData.user.full_name,
-        email: this.$userData.user.email
-      }
+        full_name: "",
+        email: ""
+      },
+      neighbourEmail: ""
     };
   },
   methods: {
@@ -188,14 +253,10 @@ export default {
       this.$router.push("/");
     },
     saveChanges() {
-      this.$axios.patch("auth/users/me/", this.user).then(res => {
-      });
+      this.$axios.patch("auth/users/me/", this.user).then(res => {});
     }
-  },
-  beforeMount() {
-    console.log(this.$userData.user);
   }
-}
+};
 </script>
 
 <style scoped>
