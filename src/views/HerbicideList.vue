@@ -34,7 +34,6 @@ export default {
           this.getHerbicides();
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     deleteAddedItems(items) {
@@ -47,7 +46,6 @@ export default {
           this.getHerbicides();
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     getHerbicides() {
@@ -73,11 +71,9 @@ export default {
               });
             })
             .catch(err => {
-              console.log({ err });
             });
         })
         .catch(err => {
-          console.log({ err });
         });
     }
   },

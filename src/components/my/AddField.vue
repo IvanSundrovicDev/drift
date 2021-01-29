@@ -200,7 +200,6 @@ export default {
           this.$store.dispatch("setAddedField", res.data.field);
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     close() {

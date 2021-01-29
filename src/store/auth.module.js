@@ -1,6 +1,8 @@
 import AuthService from "../services/auth.service";
+import authHeader from "@/helpers/auth-header";
+import axios from "axios";
 
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("userData"));
 const initialState = user
   ? { status: { loggedIn: true }, user }
   : { status: { loggedIn: false }, user: null };

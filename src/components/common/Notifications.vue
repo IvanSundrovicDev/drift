@@ -30,7 +30,6 @@ export default {
   watch: {
     getNotifications(newNotifications, oldNotifications) {
       this.notifications = newNotifications;
-      console.log(this.notifications);
     }
   }
 };

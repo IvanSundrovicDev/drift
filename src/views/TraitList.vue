@@ -34,7 +34,6 @@ export default {
           this.getTraits();
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     deleteAddedItems(items) {
@@ -47,7 +46,6 @@ export default {
           this.getTraits();
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     getTraits() {
@@ -69,11 +67,9 @@ export default {
               });
             })
             .catch(err => {
-              console.log({ err });
             });
         })
         .catch(err => {
-          console.log({ err });
         });
     }
   },

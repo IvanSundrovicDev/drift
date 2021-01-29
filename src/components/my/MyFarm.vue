@@ -107,7 +107,6 @@ export default {
           this.fields = res.data.field;
         })
         .catch(err => {
-          console.log({ err });
         });
       this.fieldActive = newField.id;
     }
@@ -127,7 +126,6 @@ export default {
         })
         .catch(err => {
           this.fieldsLoading = true;
-          console.log({ err });
         });
     }
   }

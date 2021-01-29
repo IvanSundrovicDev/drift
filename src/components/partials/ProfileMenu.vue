@@ -177,8 +177,8 @@ export default {
     return {
       active: "menu",
       user: {
-        full_name: "",
-        email: ""
+        full_name: this.$userData.user.full_name,
+        email: this.$userData.user.email
       }
     };
   },
@@ -189,9 +189,11 @@ export default {
     },
     saveChanges() {
       this.$axios.patch("auth/users/me/", this.user).then(res => {
-
       });
     }
+  },
+  beforeMount() {
+    console.log(this.$userData.user);
   }
 }
 </script>

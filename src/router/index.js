@@ -75,7 +75,7 @@ router.beforeEach((to, from, next) => {
     "/payment_details"
   ];
   const authRequired = !publicPages.includes(to.path);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("userData"));
 
   if (authRequired && !user) {
     next("/");

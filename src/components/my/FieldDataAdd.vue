@@ -207,7 +207,6 @@ export default {
         this.crops = res.data.crop;
       })
       .catch(err => {
-        console.log({ err });
       });
     this.$axios
       .get(`farms/crops/`)
@@ -215,7 +214,6 @@ export default {
         this.crops = res.data.crop;
       })
       .catch(err => {
-        console.log({ err });
       });
     this.$axios
       .get(`herbicides/me/`)
@@ -223,7 +221,6 @@ export default {
         this.herbicides = res.data.my_herbicide.herbicides;
       })
       .catch(err => {
-        console.log({ err });
       });
     this.$axios
       .get(`herbicides/tank-mixes/`)
@@ -231,7 +228,6 @@ export default {
         this.mixes = res.data.tank_mix;
       })
       .catch(err => {
-        console.log({ err });
       });
     this.$axios
       .get(`farms/crop-traits/me/`)
@@ -239,7 +235,6 @@ export default {
         this.traits = res.data.my_crop_trait.crop_traits;
       })
       .catch(err => {
-        console.log({ err });
       });
   }
 };

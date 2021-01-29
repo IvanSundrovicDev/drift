@@ -17,7 +17,7 @@ axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.headers.common = authHeader();
 Vue.prototype.$axios = axios;
 
-Vue.prototype.$user = JSON.parse(localStorage.getItem("user")) || null;
+Vue.prototype.$userData = JSON.parse(localStorage.getItem("userData")) || null;
 
 // ---------------- Font Awesome ---------------------------------------
 import { library } from "@fortawesome/fontawesome-svg-core";

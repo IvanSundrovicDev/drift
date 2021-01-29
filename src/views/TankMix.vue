@@ -311,7 +311,6 @@ export default {
           this.herbicides = res.data.my_herbicide.herbicides;
         })
         .catch(err => {
-          console.log({ err });
         });
 
       this.$axios
@@ -320,7 +319,6 @@ export default {
           this.mixes = res.data.tank_mix;
         })
         .catch(err => {
-          console.log({ err });
         });
     },
     addHerbicide(item) {
@@ -376,7 +374,6 @@ export default {
             };
           })
           .catch(err => {
-            console.log({ err });
           });
       }
     },
@@ -396,7 +393,6 @@ export default {
           this.selectedItem = "";
         })
         .catch(err => {
-          console.log({ err });
         });
     }
   },
