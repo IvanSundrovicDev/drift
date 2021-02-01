@@ -7,7 +7,9 @@
             class="h-9 w-9 rounded-md"
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
           />
-          <h1 class="text-2xl ml-4 mr-12">{{ this.$store.state.auth.user.full_name }}</h1>
+          <h1 class="text-2xl ml-4 mr-12">
+            {{ user.full_name }}
+          </h1>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
@@ -247,19 +249,26 @@ export default {
       neighbourEmail: ""
     };
   },
+  computed: {
+    getUser() {
+      return this.$store.state.auth.user;
+    }
+  },
+  watch: {
+    getUser(newUser, oldUser) {
+      this.user = newUser;
+    }
+  },
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
     },
     saveChanges() {
-      this.$axios.patch("auth/users/me/", this.user).then(res => {
-
-      });
+      this.$axios.patch("auth/users/me/", this.user).then(res => {});
     }
   },
   beforeMount() {
-    this.user.full_name = this.$store.state.auth.user.full_name
-    this.user.email = this.$store.state.auth.user.email
+    return this.$store.dispatch("auth/setUserAction");
   }
 };
 </script>

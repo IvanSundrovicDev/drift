@@ -50,10 +50,13 @@
     </div>
     <div
       class="whitescreen-active"
-      v-if="!$store.state.farmTutorialDone && $store.state.farmTutorial === 0"
+      v-if="
+        !$store.state.tutorial.farmTutorialDone &&
+          $store.state.tutorial.farmTutorial === 0
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
         :text="
           'This is your farms page. Here you can view, edit and add farms. To view the fields within a farm, just select the farm from your list.'
@@ -64,13 +67,13 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.farmTutorialDone &&
-          $store.state.farmTutorial === 1 &&
+        !$store.state.tutorial.farmTutorialDone &&
+          $store.state.tutorial.farmTutorial === 1 &&
           activeFarm
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
         :text="
           'Great! Under each farm, you’ll have a list of fields. There’s no field under this farm, just yet, so let’s go ahead and add one below'
@@ -125,8 +128,7 @@ export default {
               message: "Successfully got farms"
             });
           })
-          .catch(err => {
-          });
+          .catch(err => {});
       }
     },
     activateFarm(id) {
@@ -151,6 +153,7 @@ export default {
   },
   beforeMount() {
     this.getFarms();
+    this.$store.dispatch("tutorial/setUserTutorial");
   }
 };
 </script>

@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 import { auth } from "./auth.module";
+import { tutorial } from "./tutorial.module";
 
 Vue.use(Vuex);
 
@@ -13,13 +14,6 @@ export default new Vuex.Store({
     fieldPolygon: [],
     removedPolygon: true,
     addedField: {},
-    farmTutorial: 0,
-    farmTutorialDone: false,
-    herbicideTutorial: 0,
-    herbicideTutorialDone: false,
-    traitTutorialDone: false,
-    mixTutorial: 0,
-    mixTutorialDone: false,
     notifications: []
   },
   mutations: {
@@ -40,27 +34,6 @@ export default new Vuex.Store({
     },
     setAddedField(state, value) {
       state.addedField = value;
-    },
-    setFarmTutorialStep(state) {
-      state.farmTutorial = state.farmTutorial + 1;
-    },
-    setFarmTutorialDone(state) {
-      state.farmTutorialDone = true;
-    },
-    setHerbicideTutorialStep(state) {
-      state.herbicideTutorial = state.herbicideTutorial + 1;
-    },
-    setHerbicideTutorialDone(state) {
-      state.herbicideTutorialDone = true;
-    },
-    setTraitTutorialDone(state) {
-      state.traitTutorialDone = true;
-    },
-    setMixTutorialStep(state) {
-      state.mixTutorial = state.mixTutorial + 1;
-    },
-    setMixTutorialDone(state) {
-      state.mixTutorialDone = true;
     },
     addNotification(state, value) {
       state.notifications.push({
@@ -94,27 +67,6 @@ export default new Vuex.Store({
     setAddedField(contex, value) {
       contex.commit("setAddedField", value);
     },
-    setFarmTutorialStep(contex) {
-      contex.commit("setFarmTutorialStep");
-    },
-    setFarmTutorialDone(contex) {
-      contex.commit("setFarmTutorialDone");
-    },
-    setHerbicideTutorialStep(contex) {
-      contex.commit("setHerbicideTutorialStep");
-    },
-    setHerbicideTutorialDone(contex) {
-      contex.commit("setHerbicideTutorialDone");
-    },
-    setTraitTutorialDone(contex) {
-      contex.commit("setTraitTutorialDone");
-    },
-    setMixTutorialStep(contex) {
-      contex.commit("setMixTutorialStep");
-    },
-    setMixTutorialDone(contex) {
-      contex.commit("setMixTutorialDone");
-    },
     addNotification(contex, value) {
       contex.commit("addNotification", value);
     },
@@ -122,5 +74,5 @@ export default new Vuex.Store({
       contex.commit("removeNotification", value);
     }
   },
-  modules: { auth }
+  modules: { auth, tutorial }
 });

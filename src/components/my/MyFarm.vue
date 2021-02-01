@@ -37,13 +37,13 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.farmTutorialDone &&
-          $store.state.farmTutorial === 2 &&
+        !$store.state.tutorial.farmTutorialDone &&
+          $store.state.tutorial.farmTutorial === 2 &&
           fields[0]
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
         :text="
           'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'
@@ -54,13 +54,13 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.farmTutorialDone &&
-          $store.state.farmTutorial === 3 &&
+        !$store.state.tutorial.farmTutorialDone &&
+          $store.state.tutorial.farmTutorial === 3 &&
           fieldActive
       "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setFarmTutorialDone')"
+        v-on:exit="$store.dispatch('tutorial/setFarmTutorialDone')"
         :direction="'right'"
         :text="
           'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'
@@ -106,8 +106,7 @@ export default {
         .then(res => {
           this.fields = res.data.field;
         })
-        .catch(err => {
-        });
+        .catch(err => {});
       this.fieldActive = newField.id;
     }
   },

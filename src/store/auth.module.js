@@ -5,18 +5,18 @@ import authHeader from "@/helpers/auth-header";
 export const auth = {
   namespaced: true,
   state: {
-    user:"",
+    user: "",
     userTutorial: "",
-    status:{
-      loggedIn:false
-      }
-    },
+    status: {
+      loggedIn: false
+    }
+  },
   actions: {
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {
           commit("loginSuccess", user);
-          axios.defaults.headers.common = authHeader()
+          axios.defaults.headers.common = authHeader();
           return Promise.resolve(user);
         },
         error => {
@@ -27,9 +27,9 @@ export const auth = {
     },
     logout({ commit }, user) {
       AuthService.logout();
-      delete axios.defaults.headers.common['Authorization']
+      delete axios.defaults.headers.common["Authorization"];
       commit("logout");
-      return Promise.resolve("/")
+      return Promise.resolve("/");
     },
     register({ commit }, user) {
       return AuthService.register(user).then(
@@ -45,21 +45,14 @@ export const auth = {
     },
     setUserAction(context) {
       axios.get("auth/users/me").then(res => {
-        context.commit("setUser", res.data.user)
-      })
-    },
-    setUserTutorialAction(context) {
-      axios.get("tutorials/me/").then(res => {
-        context.commit('setUserTutorial', res.data.user_tutorial)
-      })
-    },
+        context.commit("setUser", res.data.user);
+      });
+    }
   },
   mutations: {
     setUser(state, value) {
-      state.user = value
-    },
-    setUserTutorial(state, value) {
-      state.userTutorial = value
+      state.user = value;
+      console.log(state.user);
     },
     loginSuccess(state, user) {
       state.status.loggedIn = true;
@@ -67,11 +60,11 @@ export const auth = {
     },
     loginFailure(state) {
       state.status.loggedIn = false;
-      state.user = '';
+      state.user = "";
     },
     logout(state) {
       state.status.loggedIn = false;
-      state.user = '';
+      state.user = "";
     },
     registerSuccess(state) {
       state.status.loggedIn = false;

@@ -91,7 +91,7 @@
         </div>
 
         <!-- Profile menu -->
-        <ProfileMenu v-show="profileMenuOpen" />
+        <ProfileMenu v-if="profileMenuOpen" />
 
         <div v-if="menuOpen" class="block h-screen sm:hidden">
           <div class="pt-4 pb-1 border-t border-gray-200">
@@ -213,7 +213,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch('auth/logout');
+      this.$store.dispatch("auth/logout");
     }
   }
 };

@@ -224,10 +224,13 @@
     </div>
     <div
       class="whitescreen-active"
-      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 0"
+      v-if="
+        !$store.state.tutorial.mixTutorialDone &&
+          $store.state.tutorial.mixTutorial === 0
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
         :text="
           'To create a tank mix, you can search for and select the herbicides you’d like to mix.'
@@ -237,10 +240,13 @@
     </div>
     <div
       class="whitescreen-active"
-      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 1"
+      v-if="
+        !$store.state.tutorial.mixTutorialDone &&
+          $store.state.tutorial.mixTutorial === 1
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
         :text="
           'Once selected, click the arrow to add to your mix. You can also remove herbicides from your mix.'
@@ -250,10 +256,13 @@
     </div>
     <div
       class="whitescreen-active"
-      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 2"
+      v-if="
+        !$store.state.tutorial.mixTutorialDone &&
+          $store.state.tutorial.mixTutorial === 2
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorialStep')"
+        v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
         :text="
           'When you’re ready to create your mix, name it here and click the + icon.'
@@ -263,10 +272,13 @@
     </div>
     <div
       class="whitescreen-active"
-      v-if="!$store.state.mixTutorialDone && $store.state.mixTutorial === 3"
+      v-if="
+        !$store.state.tutorial.mixTutorialDone &&
+          $store.state.tutorial.mixTutorial === 3
+      "
     >
       <Tutorial
-        v-on:exit="$store.dispatch('setMixTutorialDone')"
+        v-on:exit="$store.dispatch('tutorial/setMixTutorialDone')"
         :direction="'right'"
         :text="
           'Under “My Mixes” you can edit or delete all of the mixes you have created. '
@@ -310,16 +322,14 @@ export default {
         .then(res => {
           this.herbicides = res.data.my_herbicide.herbicides;
         })
-        .catch(err => {
-        });
+        .catch(err => {});
 
       this.$axios
         .get(`herbicides/tank-mixes/`)
         .then(res => {
           this.mixes = res.data.tank_mix;
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     },
     addHerbicide(item) {
       if (this.selectedHerbicides.find(element => element === item)) {
@@ -373,8 +383,7 @@ export default {
               mixName: ""
             };
           })
-          .catch(err => {
-          });
+          .catch(err => {});
       }
     },
     openMenu(item) {
@@ -392,8 +401,7 @@ export default {
           this.deletePopUp = false;
           this.selectedItem = "";
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     }
   },
   beforeMount() {
