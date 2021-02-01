@@ -1,5 +1,5 @@
 {
-    "executionRoleArn": "arn:aws:iam::133634153917:role/ecs_task_drift",
+    "executionRoleArn": "arn:aws:iam::133634153917:role/ecs_taskexecrole_dev",
     "containerDefinitions": [
         {
             "logConfiguration": {
