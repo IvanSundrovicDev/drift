@@ -19,7 +19,13 @@
             ],
             "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:master",
             "essential": true,
-            "name": "drift_frontend"
+            "name": "drift_frontend",
+            "environment": [
+                {
+                    "name": "VUE_APP_API_URL",
+                    "value": "http://be.dev.ditchdrift.com:8000/api/v1/"
+                }
+            ]    
         }
     ],
     "requiresCompatibilities": [
