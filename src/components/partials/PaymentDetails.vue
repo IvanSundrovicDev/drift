@@ -101,6 +101,7 @@
     <div class="w-full pt-8">
       <button
         class="rounded-lg py-1 w-full payment-custom-button designActionButton"
+        v-on:click="finish()"
       >
         {{ $route.name === "Payment Details" ? "Pay $29.99" : "Update" }}
       </button>
@@ -118,6 +119,11 @@ export default {
       expiration: "",
       cvc: ""
     };
+  },
+  methods: {
+    finish() {
+      this.$router.push("dashboard")
+    }
   }
 };
 </script>
