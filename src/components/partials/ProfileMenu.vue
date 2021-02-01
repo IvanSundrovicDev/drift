@@ -261,7 +261,9 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout");
+      this.$store.dispatch("auth/logout").then(path =>{
+        this.$router.push(path)
+      });
     },
     saveChanges() {
       this.$axios.patch("auth/users/me/", this.user).then(res => {});

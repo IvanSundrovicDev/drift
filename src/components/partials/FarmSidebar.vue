@@ -123,10 +123,6 @@ export default {
           .get(`farms/`)
           .then(res => {
             this.farms = res.data.farm;
-            this.$store.dispatch("addNotification", {
-              type: "success",
-              message: "Successfully got farms"
-            });
           })
           .catch(err => {});
       }

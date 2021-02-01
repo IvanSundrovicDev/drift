@@ -53,10 +53,6 @@ export default {
         .get(`herbicides/`)
         .then(res => {
           this.data.allItems = res.data.herbicide;
-          this.$store.dispatch("addNotification", {
-            type: "error",
-            message: "Successfully got herbicides"
-          });
           this.$axios
             .get(`herbicides/me/`)
             .then(res => {
