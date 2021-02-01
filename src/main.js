@@ -6,18 +6,27 @@ import store from "./store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import "@/assets/css/tailwind.css";
-import user from "./models/user";
-import authHeader from "./helpers/auth-header";
 import "@/assets/css/global.css";
 import {auth} from "./store/auth.module"
 
 Vue.use(Vuex);
 
-axios.defaults.baseURL = process.env.VUE_APP_API_URL;
-axios.defaults.headers.common = authHeader();
-Vue.prototype.$axios = axios;
+axios.defaults.headers.common = authHeader()
 
-Vue.prototype.$userData = JSON.parse(localStorage.getItem("userData")) || null;
+axios.interceptors.response.use(undefined, function(err) {
+
+    if (err.response.status === 401) {
+      store.dispatch("auth/logout").then(path => {
+        router.push(path)
+      })
+    }
+
+    throw err
+})
+
+axios.defaults.baseURL = process.env.VUE_APP_API_URL
+
+Vue.prototype.$axios = axios;
 
 // ---------------- Font Awesome ---------------------------------------
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -33,6 +42,7 @@ import {
   faArrowAltCircleRight,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
+import authHeader from "@/helpers/auth-header";
 library.add(
   faTimes,
   faSearch,

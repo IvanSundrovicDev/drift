@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "../store/index"
 import Login from "../views/auth/Login";
 import Dashboard from "../views/Dashboard";
 import Register from "../views/auth/Register";
@@ -75,10 +76,14 @@ router.beforeEach((to, from, next) => {
     "/payment_details"
   ];
   const authRequired = !publicPages.includes(to.path);
-  const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user);
+  const jwt = JSON.parse(localStorage.getItem("jwt"));
 
-  if (authRequired && !user) {
+  if (authRequired && jwt && !store.state.auth.user) {
+    store.dispatch("auth/setUserAction")
+    store.dispatch("auth/setUserTutorialAction")
+  }
+
+  if (authRequired && !jwt) {
     next("/");
   } else {
     next();

@@ -252,7 +252,6 @@ export default {
       this.$store
         .dispatch("auth/register", this.user)
         .then(data => {
-          localStorage.setItem("user", JSON.stringify(data));
           this.$router.push({ name: "Pricing Plans" });
         })
         .catch(error => {

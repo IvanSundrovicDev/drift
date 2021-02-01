@@ -1,44 +1,21 @@
 import axios from "axios";
 
 class AuthService {
-  login(user) {
-    return axios
+  async login(user) {
+    return await axios
       .post("auth/jwt/create/", {
         email: user.email,
         password: user.password
       })
       .then(response => {
-        console.log("jwt created");
         if (response.data.access) {
-          let jwt = response.data;
-
-          axios
-            .get("auth/users/me/", {
-              headers: { Authorization: "JWT " + jwt.access }
-            })
-            .then(res => {
-              let user = res.data.user;
-
-              // get tutorial
-              axios
-                .get("tutorials/me/", {
-                  headers: { Authorization: "JWT " + jwt.access }
-                })
-                .then(res => {
-                  console.log(res.data);
-                });
-              // append to user
-              user.jwt = jwt;
-
-              localStorage.setItem("user", JSON.stringify(user));
-              console.log("auth");
-            });
+          localStorage.setItem('jwt', JSON.stringify(response.data))
         }
       });
   }
 
   logout() {
-    localStorage.removeItem("user");
+    localStorage.removeItem("jwt")
   }
 
   register(user) {

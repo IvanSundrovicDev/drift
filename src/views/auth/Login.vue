@@ -109,7 +109,6 @@ export default {
     login() {
       this.$store.dispatch("auth/login", this.user).then(
         data => {
-          console.log(data);
           this.$router.push("/Dashboard");
         },
         error => {
