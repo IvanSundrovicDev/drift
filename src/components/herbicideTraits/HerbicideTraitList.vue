@@ -111,7 +111,8 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.tutorial.herbicideTutorialDone &&
+        $store.state.tutorial.loaded &&
+          !$store.state.tutorial.herbicideTutorialDone &&
           $store.state.tutorial.herbicideTutorial === 0 &&
           active === 'list' &&
           $route.name === 'Herbicides'
@@ -181,7 +182,9 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.tutorial.traitTutorialDone && $route.name === 'Traits'
+      $store.state.tutorial.loaded &&
+        !$store.state.tutorial.traitTutorialDone && 
+        $route.name === 'Traits'
       "
     >
       <Tutorial
@@ -251,6 +254,11 @@ export default {
       this.$emit("postAddedItems", this.addList);
       this.addList = [];
       this.active = "list";
+    }
+  },
+  beforeMount(){
+    if(!this.$store.state.traitTutorialDone){
+      this.$store.dispatch("tutorial/setUserTutorial");
     }
   }
 };

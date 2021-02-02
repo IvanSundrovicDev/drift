@@ -225,7 +225,8 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.tutorial.mixTutorialDone &&
+        $store.state.tutorial.loaded &&
+          !$store.state.tutorial.mixTutorialDone &&
           $store.state.tutorial.mixTutorial === 0
       "
     >
@@ -406,6 +407,9 @@ export default {
   },
   beforeMount() {
     this.getData();
+    if(!this.$store.state.mixTutorialDone){
+      this.$store.dispatch("tutorial/setUserTutorial");
+    }
   }
 };
 </script>

@@ -51,7 +51,8 @@
     <div
       class="whitescreen-active"
       v-if="
-        !$store.state.tutorial.farmTutorialDone &&
+        $store.state.tutorial.loaded &&
+          !$store.state.tutorial.farmTutorialDone &&
           $store.state.tutorial.farmTutorial === 0
       "
     >
@@ -149,7 +150,9 @@ export default {
   },
   beforeMount() {
     this.getFarms();
-    this.$store.dispatch("tutorial/setUserTutorial");
+    if(!this.$store.state.farmTutorialDone){
+      this.$store.dispatch("tutorial/setUserTutorial");
+    }
   }
 };
 </script>
