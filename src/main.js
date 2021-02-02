@@ -24,7 +24,9 @@ axios.interceptors.response.use(undefined, function(err) {
     throw err
 })
 
-axios.defaults.baseURL = process.env.VUE_APP_API_URL
+const apiUrl = process.env.API_URL
+
+axios.defaults.baseURL = apiUrl
 
 Vue.prototype.$axios = axios;
 
