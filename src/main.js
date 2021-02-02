@@ -24,7 +24,7 @@ axios.interceptors.response.use(undefined, function(err) {
     throw err
 })
 
-const apiUrl = process.env.API_URL
+const apiUrl = process.env.VUE_APP_API_URL
 
 axios.defaults.baseURL = apiUrl
 
