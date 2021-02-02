@@ -28,10 +28,17 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
+      let count = items.length
       this.$axios
         .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: (count > 1) ?
+              "Traits successfully added to your list!" :
+              "Trait successfully added to your list!"
+          })
         })
         .catch(err => {
         });
@@ -40,10 +47,17 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.filter( ( el ) => !items.includes( el ) );
+      let count = items.length
       this.$axios
         .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: (count > 1) ?
+              "Traits successfully removed from your list!" :
+              "Trait successfully removed from your list!"
+          })
         })
         .catch(err => {
         });

@@ -205,7 +205,7 @@
       <div class="pt-10 flex">
         <button
           class="rounded-lg py-1 m-auto w-72 designActionButton"
-          v-on:click="saveChanges"
+          v-on:click="inviteNeighbour"
         >
           Invite
         </button>
@@ -266,7 +266,23 @@ export default {
       });
     },
     saveChanges() {
-      this.$axios.patch("auth/users/me/", this.user).then(res => {});
+      this.$axios.patch("auth/users/me/", this.user).then(res => {
+        this.$store.dispatch("addNotification", {
+          type: "success",
+          message: "Profile successfully updated"
+        })
+      }).catch(err => {
+        this.$store.dispatch("addNotification", {
+          type: "error",
+          message: "There was an error updating your profile!"
+        })
+      });
+    },
+    inviteNeighbour() {
+      this.$store.dispatch("addNotification", {
+        type: "success",
+        message: "Neighbour successfully invited!"
+      })
     }
   },
   beforeMount() {

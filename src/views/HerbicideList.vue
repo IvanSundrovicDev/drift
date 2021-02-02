@@ -28,10 +28,17 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
+      let count = items.length
       this.$axios
         .post(`herbicides/me/`, { herbicide_ids: postItems })
         .then(res => {
           this.getHerbicides();
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: (count > 1) ?
+              "Herbicides successfully added to your list!" :
+              "Herbicide successfully added to your list!"
+          })
         })
         .catch(err => {
         });
@@ -40,10 +47,17 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.filter(el => !items.includes(el));
+      let count = items.length
       this.$axios
         .post(`herbicides/me/`, { herbicide_ids: postItems })
         .then(res => {
           this.getHerbicides();
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: (count > 1) ?
+              "Herbicides successfully removed from your list!" :
+              "Herbicide successfully removed from your list!"
+          })
         })
         .catch(err => {
         });

@@ -373,18 +373,29 @@ export default {
         let TankMix = {
           name: this.data.mixName,
           tank: 1,
-          herbicides: this.data.mix.map(el => el.id)
+          herbicides: this.data.mix.map(el => el.id),
+          // TODO: add proper foreign key
+          owner: 1
         };
         this.$axios
           .post(`herbicides/tank-mixes/`, TankMix)
           .then(res => {
             this.getData();
+            this.$store.dispatch("addNotification", {
+              type: "success",
+              message: "Tank Mix successfully created!"
+            })
             this.data = {
               mix: [],
               mixName: ""
             };
           })
-          .catch(err => {});
+          .catch(err => {
+            this.$store.dispatch("addNotification", {
+              type: "error",
+              message: "There was an error creating your Tank Mix!"
+            })
+          });
       }
     },
     openMenu(item) {
@@ -401,6 +412,10 @@ export default {
           this.getData();
           this.deletePopUp = false;
           this.selectedItem = "";
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Tank Mix successfully removed!"
+          })
         })
         .catch(err => {});
     }

@@ -198,8 +198,16 @@ export default {
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
           this.$store.dispatch("setAddedField", res.data.field);
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Field successfully added!"
+          })
         })
         .catch(err => {
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "There was an error adding your filed!"
+          })
         });
     },
     close() {

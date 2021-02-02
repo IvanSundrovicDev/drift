@@ -48,8 +48,16 @@ export default {
         .post(`farms/`, this.farm)
         .then(res => {
           this.$emit("farmAdded");
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Your farm has been successfully created!"
+          })
         })
         .catch(err => {
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "Adding farm was unsuccessful!"
+          })
         });
     }
   }
