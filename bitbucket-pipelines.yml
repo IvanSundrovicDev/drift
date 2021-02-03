@@ -15,6 +15,8 @@ definitions:
         # Login to docker registry on AWS
         - eval $(aws ecr get-login --no-include-email)
         # Build image
+        - ENV=$(cat ./tmp/environment)
+        - cp .env.$ENV .env
         - docker build -t $DOCKER_URI .
         # Push image to private registry
         - docker push $DOCKER_URI
@@ -36,6 +38,13 @@ definitions:
 pipelines:
   branches:
     master:
+      - step: 
+          name: Prepare .env file
+          script:
+            - mkdir ./tmp
+            - echo "development" > ./tmp/environment
+          artifacts:
+            - tmp/environment
       - step: *push-image
       - step: 
           deployment: Development
