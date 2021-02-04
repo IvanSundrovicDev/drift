@@ -1,8 +1,15 @@
 <template>
   <auth-layout>
     <div
-      class="w-full md:w-1/2 p-4 sm:p-8 rounded-2xl md:rounded-l-none md:rounded-r-2xl bg-white"
+      class="auth-width p-4 sm:p-8 rounded-2xl bg-white"
     >
+      <div class="flex">
+        <img
+                  class="m-auto mb-10"
+                  src="../../assets/images/drift-logo-transparent.png"
+                  alt="DRIFT"
+                />
+      </div>
       <div>
         <div class="rounded-md bg-red-50 p-4" v-if="error">
           <div class="flex">
@@ -22,7 +29,7 @@
               </svg>
             </div>
             <h3 class="ml-2 flex-shrink-0">
-              Sorry, we couldn't find an account with that credentials.
+              Sorry, we couldn't find an account <br> with this credentials.
               <br />Can we help you
               <a href="#" class="text-drift-blue" @click="goToForgotPassword"
                 >recover your account</a

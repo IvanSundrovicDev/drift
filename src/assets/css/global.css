@@ -29,6 +29,9 @@
     padding: 8px 12px 8px 12px;
     background-color: #ffffff;
 }
+.auth-width{
+    width: 481px;
+}
 .z-500 {
     z-index: 500;
 }

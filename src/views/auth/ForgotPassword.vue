@@ -1,7 +1,7 @@
 <template>
   <auth-layout>
     <div
-      class="w-full md:w-1/2 p-4 sm:p-8 rounded-2xl md:rounded-l-none md:rounded-r-2xl"
+      class="auth-width p-4 sm:p-8 rounded-2xl"
       style="background-color: white"
     >
       <div class="rounded-md bg-red-50 p-4" v-if="errors">

@@ -34,7 +34,7 @@
       </div>
     </div>
     <div
-      v-if="locations && !activeLocationName"
+      v-if="locations[0] && !activeLocationName"
       class="border-t-2 border-gray-200"
     >
       <div
@@ -50,7 +50,7 @@
         <h3 class="text-xl ml-5">{{ item.text }}</h3>
       </div>
     </div>
-    <div v-else-if="activeLocationName">
+    <div>
       <div v-if="!fieldCoordinates" class="border-t-2 border-gray-200">
         <div
           v-on:click="initPolygonDraw"
