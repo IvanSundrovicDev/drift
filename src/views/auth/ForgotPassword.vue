@@ -4,6 +4,13 @@
       class="auth-width p-4 sm:p-8 rounded-2xl"
       style="background-color: white"
     >
+    <div class="flex">
+        <img
+                  class="m-auto h-16 mb-4"
+                  src="../../assets/images/drift_logo.png"
+                  alt="DRIFT"
+                />
+      </div>
       <div class="rounded-md bg-red-50 p-4" v-if="errors">
         <div class="flex">
           <div class="flex-shrink-0">

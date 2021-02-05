@@ -5,7 +5,7 @@
     >
       <div class="flex">
         <img
-                  class="m-auto mb-10"
+                  class="m-auto h-16 mb-4"
                   src="../../assets/images/drift_logo.png"
                   alt="DRIFT"
                 />

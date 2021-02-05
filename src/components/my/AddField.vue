@@ -108,7 +108,6 @@
       </div>
     </div>
     <div
-      v-if="activeLocationName"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
       <FieldDataAdd v-on:fieldDataUpdate="updateFieldData($event)" />
@@ -133,8 +132,21 @@ export default {
       fieldCoordinates: null,
       fieldName: "",
       locations: [],
-      fieldData: {}
-    };
+      fieldData: {
+        selectedCrop: {
+          id: null
+        },
+        selectedHerbicide: {
+          id: null
+        },
+        selectedMix: {
+          id: null
+        },
+        selectedTrait: {
+          id: null
+        }
+      }
+    }
   },
   computed: {
     coordinatesChange() {
@@ -194,6 +206,7 @@ export default {
         mpoly: this.fieldCoordinates,
         crop: this.fieldData.selectedCrop.id
       };
+      console.log(field);
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {

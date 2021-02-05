@@ -49,7 +49,7 @@ export default {
     },
     drawPolygon(newPolygon, oldPolygon) {
       this.removePolygon();
-      var polygon = L.polygon(newPolygon).addTo(this.map);
+      var polygon = L.polygon(newPolygon).setStyle({color: "#" + (Math.floor(Math.random()*16777215).toString(16))}).addTo(this.map);
     },
     removedPolygon(newState, oldState) {
       this.removePolygon();

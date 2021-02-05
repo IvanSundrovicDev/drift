@@ -4,6 +4,13 @@
       class="auth-width p-4 sm:p-8 rounded-2xl"
       style="background-color: white"
     >
+    <div class="flex">
+        <img
+                  class="m-auto h-16 mb-4"
+                  src="../../assets/images/drift_logo.png"
+                  alt="DRIFT"
+                />
+      </div>
       <div class="rounded-md bg-red-50 p-4" v-if="errors">
         <div class="flex">
           <div class="flex-shrink-0">
@@ -170,26 +177,26 @@
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your password confirmation"
             />
-            <small
+            <p
               v-if="
                 user.password !== user.password_confirmation &&
                   user.password_confirmation !== ''
               "
-              class="text-red-500"
+              class="text-xs text-red-500"
             >
               Passwords must match!
-            </small>
+            </p>
           </div>
 
-          <div class="pt-2">
+          <div class="pt-2 flex">
             <img
-              class="inline w-1/10"
+              class="inline h-5 my-auto mr-1 w-1/10"
               src="../../assets/images/icons/question.png"
               alt=""
             />
             <select
               v-model="user.security_question"
-              class="w-9/10 authInputField py-2 bg-transparent"
+              class="inline w-full authInputField py-2 bg-transparent"
             >
               <option value="null" selected>Select a security question</option>
               <option
