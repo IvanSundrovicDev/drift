@@ -60,13 +60,13 @@
             </div>
           </router-link>
         </li>
-        <li class="navitem">
+        <li class="navitem-disabled">
           <router-link to="#">
             <div class="flex h-20 items-center rounded-2xl">
               <div class="mx-auto">
-                <Analitics class="m-auto icon"></Analitics>
-                <span>
-                  Analitics
+                <Analytics class="m-auto icon color-black"></Analytics>
+                <span style="opacity: 0.5">
+                  Analytics
                 </span>
               </div>
             </div>
@@ -95,7 +95,7 @@ import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/traits.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
-import Analitics from "../../assets/images/navbar-icons/analitics.svg";
+import Analytics from "../../assets/images/navbar-icons/analitics.svg";
 import FarmSidebar from "./FarmSidebar.vue";
 
 export default {
@@ -105,7 +105,7 @@ export default {
     Herbicides,
     Traits,
     TankMix,
-    Analitics,
+    Analytics,
     FarmSidebar
   },
   data: function() {
@@ -120,6 +120,10 @@ export default {
 
 <style scoped>
 .navitem {
+  color: white;
+  margin-top: 15px;
+}
+.navitem-disabled {
   color: white;
   margin-top: 15px;
 }

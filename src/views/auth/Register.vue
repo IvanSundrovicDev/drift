@@ -260,7 +260,6 @@ export default {
         .dispatch("auth/register", this.user)
         .then(data => {
           this.$router.push({ name: "Pricing Plans" });
-          this.$store.dispatch("auth/login", this.user)
         })
         .catch(error => {
           this.errors = error.errors;
