@@ -31,6 +31,7 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center mr-5">
               <!-- Profile dropdown -->
+              <h1 class="whitespace-nowrap text-xl">Welcome, {{$store.state.auth.user.full_name}}</h1>
               <div
                 class="ml-3 relative"
                 v-on:click="profileMenuOpen = !profileMenuOpen"
@@ -91,7 +92,7 @@
         </div>
 
         <!-- Profile menu -->
-        <ProfileMenu v-if="profileMenuOpen" />
+        <ProfileMenu v-show="profileMenuOpen" />
 
         <div v-if="menuOpen" class="block h-screen sm:hidden">
           <div class="pt-4 pb-1 border-t border-gray-200">
@@ -214,6 +215,11 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
+    }
+  },
+  beforeMount() {
+    if(!this.$store.state.auth.user.email){
+      return this.$store.dispatch("auth/setUserAction");
     }
   }
 };

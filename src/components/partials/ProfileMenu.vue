@@ -33,9 +33,9 @@
           <h3 class="text-lg ml-3">Invite Neighbour</h3>
         </div>
         <div
-          class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          class="flex p-2 rounded-md list-item opacity-50"
         >
-          <Help class="h-6 w-6 mt-1 invert-to-white" />
+          <Help class="h-6 w-6 mt-1" />
           <h3 class="text-lg ml-3">Help</h3>
         </div>
         <div
@@ -537,8 +537,8 @@ export default {
       paymentDetailsActive: false,
       subscriptionPlan: false,
       user: {
-        full_name: "",
-        email: ""
+        full_name: this.$store.state.auth.user.full_name,
+        email: this.$store.state.auth.user.email
       },
       cards: [
         {
@@ -565,6 +565,7 @@ export default {
   },
   watch: {
     getUser(newUser, oldUser) {
+      console.log(newUser);
       this.user = newUser;
     }
   },
@@ -582,6 +583,7 @@ export default {
             type: "success",
             message: "Profile successfully updated"
           });
+          this.$store.dispatch("auth/setUserAction");
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {
@@ -599,9 +601,6 @@ export default {
     addUpdateCard() {
       console.log(this.creditCard);
     }
-  },
-  beforeMount() {
-    return this.$store.dispatch("auth/setUserAction");
   }
 };
 </script>

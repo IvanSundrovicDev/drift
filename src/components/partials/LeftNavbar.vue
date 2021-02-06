@@ -18,6 +18,7 @@
             </div>
           </router-link>
         </li>
+        <hr class="mt-3">
         <li class="navitem">
           <router-link to="/herbicides">
             <div

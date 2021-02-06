@@ -32,13 +32,13 @@
           />
         </div>
         <div class="mt-12 ml-12 list">
-          <div class="flex flex-wrap">
+          <div class="flex flex-wrap pb-28">
             <div
               v-for="item in displayedMyItems"
               :key="item.id"
               v-on:click="removeItem(item.id)"
               :class="{ 'bg-drift-blue': removeList.includes(item.id) }"
-              class="w-64 my-12 mr-16 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
+              class="w-56 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
               <div class="flex herbicide-trait-button h-full py-2 px-4">
                 <div class="flex m-auto text-center text-xl">
@@ -52,9 +52,10 @@
               </div>
             </div>
           </div>
-          <div class="float-right mb-20">
+          <div class="fixed w-full bg-white bottom-0 left-24">
             <div
-              class="w-64 py-4 mr-16 text-xl shadow-md rounded-lg text-red-500 cursor-pointer hover:bg-red-500 hover:text-white"
+              :class="{'cursor-pointer hover:bg-red-500 hover:text-white opacity-100': removeList[0], 'cursor-not-allowed': !removeList[0]}"
+              class="w-64 py-4 my-6 mr-36 text-xl float-right shadow-md rounded-lg text-red-500 opacity-50"
               v-on:click="postRemovedItems"
             >
               <h1 class="text-center">Remove selected</h1>
@@ -77,13 +78,13 @@
           />
         </div>
         <div class="mt-12 ml-12 list">
-          <div class="flex flex-wrap">
+          <div class="flex flex-wrap pb-28">
             <div
               v-for="item in displayedAddItems"
               :key="item.id"
               v-on:click="addItem(item.id)"
               :class="{ 'bg-drift-blue': addList.includes(item.id) }"
-              class="w-64 my-12 mr-16 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
+              class="w-56 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
               <div class="flex herbicide-trait-button h-full py-2 px-4">
                 <div class="flex m-auto text-center text-xl">
@@ -97,9 +98,10 @@
               </div>
             </div>
           </div>
-          <div class="float-right mb-20">
+          <div class="fixed w-full bg-white bottom-0 left-24">
             <div
-              class="w-64 py-4 mr-16 text-xl shadow-md rounded-lg text-drift-green cursor-pointer hover:bg-drift-green hover:text-white"
+              :class="{'cursor-pointer hover:bg-drift-green hover:text-white opacity-100': addList[0], 'cursor-not-allowed': !addList[0]}"
+              class="w-64 py-4 my-6 mr-36 text-xl float-right shadow-md rounded-lg text-drift-green opacity-50"
               v-on:click="postAddedItems"
             >
               <h1 class="text-center">Add selected</h1>
@@ -247,13 +249,17 @@ export default {
       }
     },
     postRemovedItems() {
-      this.$emit("deleteAddedItems", this.removeList);
-      this.removeList = [];
+      if(this.removeList[0]){
+        this.$emit("deleteAddedItems", this.removeList);
+        this.removeList = [];
+      }
     },
     postAddedItems() {
-      this.$emit("postAddedItems", this.addList);
-      this.addList = [];
-      this.active = "list";
+      if(this.addList[0]){
+        this.$emit("postAddedItems", this.addList);
+        this.addList = [];
+        this.active = "list";
+      }
     }
   },
   beforeMount(){
@@ -267,8 +273,5 @@ export default {
 .active {
   background-color: #28aae1;
   color: white !important;
-}
-.list {
-  max-width: 60rem;
 }
 </style>
