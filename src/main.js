@@ -16,9 +16,22 @@ axios.defaults.headers.common = authHeader()
 axios.interceptors.response.use(undefined, function(err) {
 
     if (err.response.status === 401) {
-      store.dispatch("auth/logout").then(path => {
-        router.push(path)
+
+      axios.post("auth/jwt/refresh", {refresh: JSON.parse(localStorage.getItem("jwt")).refresh}).then(res => {
+
+        let jwt = JSON.parse(localStorage.getItem("jwt"))
+        jwt.access = res.data.access
+
+        localStorage.setItem("jwt", JSON.stringify(jwt))
+
+      }).catch(err => {
+
+        store.dispatch("auth/logout").then(path => {
+          router.push(path)
+        })
+
       })
+
     }
 
     throw err

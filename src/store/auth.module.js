@@ -52,7 +52,6 @@ export const auth = {
   mutations: {
     setUser(state, value) {
       state.user = value;
-      console.log(state.user);
     },
     loginSuccess(state, user) {
       state.status.loggedIn = true;

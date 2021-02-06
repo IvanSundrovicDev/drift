@@ -207,7 +207,7 @@ export default {
     verifyEmail() {
       this.errors = false;
       this.$axios
-        .get(`security/${this.user.email}/verify/`)
+        .get(`auth/security/${this.user.email}/verify/`)
         .then(res => {
           this.user.security_question = res.data.security_question.id;
           this.security_question = res.data.security_question.question;
@@ -220,7 +220,7 @@ export default {
     verifySecurityQuestion() {
       this.errors = false;
       this.$axios
-        .post("security/answer/verify/", {
+        .post("auth/security/answer/verify/", {
           email: this.user.email,
           security_question: this.user.security_question,
           security_answer: this.user.security_question_answer
@@ -236,7 +236,7 @@ export default {
     resetPassword() {
       this.$axios
         .post(
-          "security/reset_password/",
+          "auth/security/reset_password/",
           { new_password: this.user.password },
           { headers: { Authorization: "JWT " + this.authorization } }
         )

@@ -33,9 +33,9 @@
           <h3 class="text-lg ml-3">Invite Neighbour</h3>
         </div>
         <div
-          class="flex p-2 rounded-md list-item opacity-50"
+          class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
         >
-          <Help class="h-6 w-6 mt-1" />
+          <Help class="h-6 w-6 mt-1 invert-to-white" />
           <h3 class="text-lg ml-3">Help</h3>
         </div>
         <div
@@ -118,7 +118,7 @@
       <div class="flex grid grid-cols-2">
         <div class="p-7 col-span-1">
           <div class="w-full text-center">
-            <img class="m-auto" src="../../assets/images/drift_logo.png" />
+            <img class="m-auto h-10" src="../../assets/images/drift_logo.png" />
             <h1 class="text-2xl pt-5">Your membership</h1>
             <h1
               class="text-2xl text-drift-blue cursor-pointer hover:underline mt-3"
@@ -228,7 +228,7 @@
         </div>
         <div class="mx-8" v-if="paymentInfo === 1">
           <div class="flex px-8 pt-6 pb-12 border-b border-black">
-            <div class="w-72 mr-16" v-for="card in cards" :key="card.cvc">
+            <div class="w-72 mr-16" v-for="card in userCards" :key="card.cvc">
               <div class="rounded-md border border-drift-blue p-4">
                 <div class="flex">
                   <img
@@ -415,7 +415,7 @@
             class="my-auto mr-4 cursor-pointer"
             v-on:click="subscriptionPlan = false"
           />
-          <h1 class="text-3xl text-white">Subscription Plan</h1>
+          <h1 class="text-3xl text-white">Subscription Plans</h1>
           <font-awesome-icon
             class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
             icon="times"
@@ -454,10 +454,17 @@
                 />
                 <h3 class="text-xl">1 Farm</h3>
               </div>
-              <div>
-                <h1 class="text-2xl my-10 text-center text-gray-600">
+              <div class="flex">
+                <h1 v-if="activePlan === 'F'"
+                    class="text-2xl my-10 text-center text-gray-600 mx-auto">
                   Current Plan
                 </h1>
+                <button v-else
+                        class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
+                        v-on:click="changeCurrentPlan('F')"
+                >
+                  Downgrade
+                </button>
               </div>
             </div>
           </div>
@@ -497,11 +504,15 @@
                 <h3 class="text-xl text-drift-blue">Unlimited</h3>
               </div>
               <div class="flex">
-                <button
+                <button v-if="activePlan === 'F'"
                   class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
+                        v-on:click="changeCurrentPlan('B')"
                 >
-                  Upgrade to pro
+                  Upgrade
                 </button>
+                <h1 v-else class="text-2xl my-8 text-center text-gray-600 mx-auto">
+                  Current Plan
+                </h1>
               </div>
             </div>
           </div>
@@ -536,11 +547,12 @@ export default {
       active: "menu",
       paymentDetailsActive: false,
       subscriptionPlan: false,
+      activePlan: "",
       user: {
-        full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email
+        full_name: "",
+        email: ""
       },
-      cards: [
+      userCards: [
         {
           name: "Visa",
           cvc: 1234,
@@ -565,7 +577,6 @@ export default {
   },
   watch: {
     getUser(newUser, oldUser) {
-      console.log(newUser);
       this.user = newUser;
     }
   },
@@ -583,7 +594,6 @@ export default {
             type: "success",
             message: "Profile successfully updated"
           });
-          this.$store.dispatch("auth/setUserAction");
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {
@@ -600,7 +610,26 @@ export default {
     },
     addUpdateCard() {
       console.log(this.creditCard);
+    },
+    getUserPricingPlan() {
+      this.$axios.get("subscription/me/").then(res => {
+        res.data.subscription.plan === "F" ? this.activePlan = "F" : this.activePlan = "B"
+      }).catch(err => {
+        console.log(err.response.status);
+      })
+    },
+    changeCurrentPlan(arg) {
+      // TODO: change account to proper user account
+      this.$axios.patch("subscription/me/", {plan: arg, account: 2 }).then(res => {
+        arg === "B" ? this.activePlan = "B" : this.activePlan = "F"
+      }).catch(err => {
+        console.log(err);
+      })
     }
+  },
+  beforeMount() {
+    this.getUserPricingPlan()
+    return this.$store.dispatch("auth/setUserAction");
   }
 };
 </script>
