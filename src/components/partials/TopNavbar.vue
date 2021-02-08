@@ -31,7 +31,7 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center mr-5">
               <!-- Profile dropdown -->
-              <h1 class="whitespace-nowrap text-xl">Welcome, {{$store.state.auth.user.full_name}}</h1>
+              <h1 class="whitespace-nowrap text-xl">Welcome, {{ $store.state.auth.user.full_name }}</h1>
               <div
                 class="ml-3 relative"
                 v-on:click="profileMenuOpen = !profileMenuOpen"
@@ -193,7 +193,7 @@ import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/traits.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
-import Analitics from "../../assets/images/navbar-icons/analitics.svg";
+import Analytics from "../../assets/images/navbar-icons/analitics.svg";
 
 export default {
   name: "TopNavbar",
@@ -204,7 +204,7 @@ export default {
     Herbicides,
     Traits,
     TankMix,
-    Analitics
+    Analytics
   },
   data: function() {
     return {
@@ -218,7 +218,7 @@ export default {
     }
   },
   beforeMount() {
-    if(!this.$store.state.auth.user.email){
+    if(!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
   }

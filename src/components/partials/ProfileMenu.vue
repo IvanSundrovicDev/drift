@@ -549,8 +549,8 @@ export default {
       subscriptionPlan: false,
       activePlan: "",
       user: {
-        full_name: "",
-        email: ""
+        full_name: this.$store.state.auth.user.full_name,
+        email: this.$store.state.auth.user.email
       },
       userCards: [
         {
@@ -629,7 +629,9 @@ export default {
   },
   beforeMount() {
     this.getUserPricingPlan()
-    return this.$store.dispatch("auth/setUserAction");
+    if(!this.$store.state.auth.user) {
+      return this.$store.dispatch("auth/setUserAction");
+    }
   }
 };
 </script>

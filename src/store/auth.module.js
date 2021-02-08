@@ -12,11 +12,12 @@ export const auth = {
     }
   },
   actions: {
-    login({ commit }, user) {
+    login({ commit, dispatch }, user) {
       return AuthService.login(user).then(
-        user => {
+        async user => {
           commit("loginSuccess", user);
           axios.defaults.headers.common = authHeader();
+          await dispatch("setUserAction")
           return Promise.resolve(user);
         },
         error => {
@@ -43,8 +44,8 @@ export const auth = {
         }
       );
     },
-    setUserAction(context) {
-      axios.get("auth/users/me").then(res => {
+    async setUserAction(context) {
+      await axios.get("auth/users/me").then(res => {
         context.commit("setUser", res.data.user);
       });
     }
