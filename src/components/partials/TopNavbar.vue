@@ -31,7 +31,9 @@
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center mr-5">
               <!-- Profile dropdown -->
-              <h1 class="whitespace-nowrap text-xl">Welcome, {{ $store.state.auth.user.full_name }}</h1>
+              <h1 class="whitespace-nowrap text-xl">
+                Welcome, {{ $store.state.auth.user.full_name }}
+              </h1>
               <div
                 class="ml-3 relative"
                 v-on:click="profileMenuOpen = !profileMenuOpen"
@@ -218,7 +220,7 @@ export default {
     }
   },
   beforeMount() {
-    if(!this.$store.state.auth.user) {
+    if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
   }

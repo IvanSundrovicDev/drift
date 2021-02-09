@@ -455,13 +455,16 @@
                 <h3 class="text-xl">1 Farm</h3>
               </div>
               <div class="flex">
-                <h1 v-if="activePlan === 'F'"
-                    class="text-2xl my-10 text-center text-gray-600 mx-auto">
+                <h1
+                  v-if="activePlan === 'F'"
+                  class="text-2xl my-10 text-center text-gray-600 mx-auto"
+                >
                   Current Plan
                 </h1>
-                <button v-else
-                        class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
-                        v-on:click="changeCurrentPlan('F')"
+                <button
+                  v-else
+                  class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
+                  v-on:click="changeCurrentPlan('F')"
                 >
                   Downgrade
                 </button>
@@ -504,13 +507,17 @@
                 <h3 class="text-xl text-drift-blue">Unlimited</h3>
               </div>
               <div class="flex">
-                <button v-if="activePlan === 'F'"
+                <button
+                  v-if="activePlan === 'F'"
                   class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
-                        v-on:click="changeCurrentPlan('B')"
+                  v-on:click="changeCurrentPlan('B')"
                 >
                   Upgrade
                 </button>
-                <h1 v-else class="text-2xl my-8 text-center text-gray-600 mx-auto">
+                <h1
+                  v-else
+                  class="text-2xl my-8 text-center text-gray-600 mx-auto"
+                >
                   Current Plan
                 </h1>
               </div>
@@ -612,24 +619,28 @@ export default {
       console.log(this.creditCard);
     },
     getUserPricingPlan() {
-      this.$axios.get("subscription/me/").then(res => {
-        res.data.subscription.plan === "F" ? this.activePlan = "F" : this.activePlan = "B"
-      }).catch(err => {
-        console.log(err.response.status);
-      })
+      this.$axios
+        .get("subscription/me/")
+        .then(res => {
+          res.data.subscription.plan === "F"
+            ? (this.activePlan = "F")
+            : (this.activePlan = "B");
+        })
+        .catch(err => {});
     },
     changeCurrentPlan(arg) {
       // TODO: change account to proper user account
-      this.$axios.patch("subscription/me/", {plan: arg, account: 2 }).then(res => {
-        arg === "B" ? this.activePlan = "B" : this.activePlan = "F"
-      }).catch(err => {
-        console.log(err);
-      })
+      this.$axios
+        .patch("subscription/me/", { plan: arg, account: 2 })
+        .then(res => {
+          arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
+        })
+        .catch(err => {});
     }
   },
   beforeMount() {
-    this.getUserPricingPlan()
-    if(!this.$store.state.auth.user) {
+    this.getUserPricingPlan();
+    if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
   }

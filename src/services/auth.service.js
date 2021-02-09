@@ -9,13 +9,13 @@ class AuthService {
       })
       .then(response => {
         if (response.data.access) {
-          localStorage.setItem('jwt', JSON.stringify(response.data))
+          localStorage.setItem("jwt", JSON.stringify(response.data));
         }
       });
   }
 
   logout() {
-    localStorage.removeItem("jwt")
+    localStorage.removeItem("jwt");
   }
 
   register(user) {

@@ -7,42 +7,40 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import "@/assets/css/tailwind.css";
 import "@/assets/css/global.css";
-import {auth} from "./store/auth.module"
+import { auth } from "./store/auth.module";
 
 Vue.use(Vuex);
 
-axios.defaults.headers.common = authHeader()
+axios.defaults.headers.common = authHeader();
 
 axios.interceptors.response.use(undefined, function(err) {
-
-    if (err.response.status === 401) {
-
-      axios.post("auth/jwt/refresh", {refresh: JSON.parse(localStorage.getItem("jwt")).refresh}).then(res => {
-
-        let jwt = JSON.parse(localStorage.getItem("jwt"))
-        jwt.access = res.data.access
-
-        localStorage.setItem("jwt", JSON.stringify(jwt))
-
-      }).catch(err => {
-
-        store.dispatch("auth/logout").then(path => {
-          router.push(path)
-        })
-
+  if (err.response.status === 401) {
+    axios
+      .post("auth/jwt/refresh", {
+        refresh: JSON.parse(localStorage.getItem("jwt")).refresh
       })
+      .then(res => {
+        let jwt = JSON.parse(localStorage.getItem("jwt"));
+        jwt.access = res.data.access;
 
-    }
+        localStorage.setItem("jwt", JSON.stringify(jwt));
+      })
+      .catch(err => {
+        store.dispatch("auth/logout").then(path => {
+          router.push(path);
+        });
+      });
+  }
 
-    throw err
-})
+  throw err;
+});
 
-const apiUrl = process.env.VUE_APP_API_URL
+const apiUrl = process.env.VUE_APP_API_URL;
 
 console.log(apiUrl);
 console.log(process.env.NODE_ENV);
 
-axios.defaults.baseURL = apiUrl
+axios.defaults.baseURL = apiUrl;
 
 Vue.prototype.$axios = axios;
 
@@ -82,7 +80,7 @@ export default new Vuex.Store({
   modules: {
     auth
   }
-})
+});
 
 new Vue({
   router,
