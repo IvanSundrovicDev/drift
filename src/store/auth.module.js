@@ -32,11 +32,12 @@ export const auth = {
       commit("logout");
       return Promise.resolve("/");
     },
-    register({ commit }, user) {
-      return AuthService.register(user).then(
+    async register({ commit, dispatch }, user) {
+      return await AuthService.register(user).then(
         response => {
+          axios.defaults.headers.common = authHeader();
           commit("registerSuccess");
-          return Promise.resolve(response.data);
+          return Promise.resolve(response);
         },
         error => {
           commit("registerFailure");

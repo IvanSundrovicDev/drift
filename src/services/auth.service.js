@@ -18,16 +18,22 @@ class AuthService {
     localStorage.removeItem("jwt");
   }
 
-  register(user) {
-    return axios.post("auth/users/", {
-      full_name: user.full_name,
-      farm_name: user.farm_name,
-      email: user.email,
-      password: user.password,
-      password_confirmation: user.password_confirmation,
-      security_question: user.security_question,
-      security_answer: user.security_question_answer
-    });
+  async register(user) {
+    return await axios
+      .post("auth/users/", {
+        full_name: user.full_name,
+        farm_name: user.farm_name,
+        email: user.email,
+        password: user.password,
+        password_confirmation: user.password_confirmation,
+        security_question: user.security_question,
+        security_answer: user.security_question_answer
+      })
+      .then(response => {
+        if (response.data.access) {
+          localStorage.setItem("jwt", JSON.stringify(response.data));
+        }
+      });
   }
 }
 

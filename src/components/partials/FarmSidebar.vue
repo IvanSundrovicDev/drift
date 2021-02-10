@@ -150,7 +150,7 @@ export default {
   },
   beforeMount() {
     this.getFarms();
-    if(!this.$store.state.farmTutorialDone){
+    if (!this.$store.state.farmTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }
   }

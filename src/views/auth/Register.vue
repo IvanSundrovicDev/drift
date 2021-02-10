@@ -124,6 +124,7 @@
               type="button"
               class="rounded-lg py-1 w-full designActionButton"
               :disabled="stepOneBtnDisabled"
+              @keyup.enter="validate"
               @click="validate"
             >
               Continue
@@ -223,6 +224,7 @@
               type="button"
               class="rounded-lg py-1 w-full designActionButton authInputField"
               @click="register"
+              @keyup.enter="register"
             >
               Continue
             </button>
@@ -236,7 +238,6 @@
 <script>
 import AuthLayout from "../layouts/AuthLayout";
 import User from "../../models/user";
-import PricingPlansList from "../pricingPlans/PricingPlansList";
 
 export default {
   name: "Register",
@@ -258,7 +259,7 @@ export default {
     register() {
       this.$store
         .dispatch("auth/register", this.user)
-        .then(data => {
+        .then(res => {
           this.$router.push({ name: "Pricing Plans" });
         })
         .catch(error => {
@@ -266,7 +267,9 @@ export default {
         });
     },
     getSecurityQuestions() {
-      this.$axios.get("auth/security/questions/").then(res => {
+      let axiosNoAuth = this.$axios.create();
+      delete axiosNoAuth.defaults.headers.common["Authorization"];
+      axiosNoAuth.get("auth/security/questions/").then(res => {
         this.security_questions = res.data;
       });
     },

@@ -52,6 +52,7 @@
             <div class="flex">
               <button
                 class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
+                v-on:click="selectPlan('F')"
               >
                 Select Trail
               </button>
@@ -94,6 +95,7 @@
             <div class="flex">
               <button
                 class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
+                v-on:click="selectPlan('B')"
               >
                 Select Pro
               </button>
@@ -108,6 +110,23 @@
 <script>
 export default {
   name: "PricingPlansList",
+  methods: {
+    selectPlan(plan) {
+      console.log(this.$axios.defaults.headers);
+      let status = plan === "F" ? "A" : "I";
+      // TODO: modify hardcoded account
+      this.$axios
+        .post("subscription/", { plan: plan, status: status, account: 4 })
+        .then(res => {
+          if (status === "A") {
+            this.$router.push({ name: "Dashboard" });
+          } else {
+            this.$router.push({ name: "Payment Details" });
+          }
+        })
+        .catch(err => {});
+    }
+  }
 };
 </script>
 <style scoped>

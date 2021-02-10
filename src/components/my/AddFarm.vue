@@ -38,7 +38,7 @@ export default {
     return {
       farm: {
         name: "",
-        account: 1
+        account: 2
       }
     };
   },
@@ -51,13 +51,13 @@ export default {
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Your farm has been successfully created!"
-          })
+          });
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
             message: "Adding farm was unsuccessful!"
-          })
+          });
         });
     }
   }
