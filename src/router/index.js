@@ -7,6 +7,7 @@ import Register from "../views/auth/Register";
 import ForgotPassword from "../views/auth/ForgotPassword";
 import PricingPlansList from "../views/pricingPlans/PricingPlansList";
 import PaymentDetails from "../views/pricingPlans/PaymentDetailsView";
+import CropList from "../views/CropList";
 import HerbicideList from "../views/HerbicideList";
 import TraitList from "../views/TraitList";
 import TankMix from "../views/TankMix";
@@ -43,6 +44,11 @@ const routes = [
     path: "/payment_details",
     name: "Payment Details",
     component: PaymentDetails
+  },
+  {
+    path: "/crops",
+    name: "Crops",
+    component: CropList
   },
   {
     path: "/herbicides",

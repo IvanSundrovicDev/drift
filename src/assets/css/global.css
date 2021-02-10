@@ -69,10 +69,10 @@
     border-bottom: 10px solid transparent;
     border-left: 10px solid #28aae1;
 }
-.custom-item:hover .salmon-border {
+.salmon-border-selected{
     border-bottom-color: #ff8966;
 }
-.salmon-border-selected{
+.field-item:hover{
     border-bottom-color: #ff8966;
 }
 .herbicide-trait-button{
@@ -87,3 +87,6 @@
     z-index: 600;
     background: rgba(255, 255, 255, 0.2);
 }
+.list-item:hover .invert-to-white {
+    filter: brightness(0) invert(1);
+  }

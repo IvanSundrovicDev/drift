@@ -530,7 +530,7 @@
 </template>
 
 <script>
-import EditProfile from "../../assets/images/icons/EditProfile.svg";
+import EditProfile from "../../assets/images/icons/edit.svg";
 import Subscriptions from "../../assets/images/icons/Subscriptions.svg";
 import Invite from "../../assets/images/icons/Invite.svg";
 import Help from "../../assets/images/icons/Help.svg";
@@ -648,9 +648,6 @@ export default {
 </script>
 
 <style scoped>
-.list-item:hover .invert-to-white {
-  filter: brightness(0) invert(1);
-}
 .test {
   background-color: #ff8966;
 }

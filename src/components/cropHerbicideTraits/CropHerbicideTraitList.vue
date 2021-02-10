@@ -206,7 +206,7 @@ import AppLayout from "../../views/layouts/AppLayout";
 import Tutorial from "../common/Tutorial";
 
 export default {
-  name: "HerbicideTraitList",
+  name: "CropHerbicideTraitList",
   components: {
     AppLayout,
     Tutorial

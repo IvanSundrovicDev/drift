@@ -328,7 +328,7 @@ export default {
       this.$axios
         .get(`herbicides/tank-mixes/`)
         .then(res => {
-          this.mixes = res.data.tank_mix;
+          this.mixes = res.data;
         })
         .catch(err => {});
     },

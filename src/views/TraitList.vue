@@ -1,5 +1,5 @@
 <template>
-  <HerbicideTraitList
+  <CropHerbicideTraitList
     :name="name"
     :data="data"
     v-on:postAddedItems="postAddedItems"
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import HerbicideTraitList from "./../components/herbicideTraits/HerbicideTraitList";
+import CropHerbicideTraitList from "./../components/cropHerbicideTraits/CropHerbicideTraitList";
 
 export default {
   name: "TraitList",
-  components: { HerbicideTraitList },
+  components: { CropHerbicideTraitList },
   data() {
     return {
       name: "Traits",
@@ -66,7 +66,8 @@ export default {
       this.$axios
         .get(`farms/crop-traits/`)
         .then(res => {
-          this.data.allItems = res.data.crop_trait;
+          this.data.allItems = res.data;
+          console.log(res.data);
           this.$axios
             .get(`farms/crop-traits/me/`)
             .then(res => {

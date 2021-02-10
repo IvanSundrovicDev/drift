@@ -123,7 +123,7 @@ export default {
         this.$axios
           .get(`farms/`)
           .then(res => {
-            this.farms = res.data.farm;
+            this.farms = res.data;
           })
           .catch(err => {});
       }

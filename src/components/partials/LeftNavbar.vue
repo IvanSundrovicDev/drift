@@ -20,15 +20,15 @@
         </li>
         <hr class="mt-3">
         <li class="navitem">
-          <router-link to="/herbicides">
+          <router-link to="/crops">
             <div
               class="flex h-20 justify-center items-center rounded-2xl"
-              :class="{ active: this.$route.name === 'Herbicides' }"
+              :class="{ active: this.$route.name === 'Crops' }"
             >
               <div class="mx-auto">
-                <Herbicides class="m-auto icon"></Herbicides>
+                <Crops class="m-auto icon"></Crops>
                 <span>
-                  Herbicides
+                  Crops
                 </span>
               </div>
             </div>
@@ -44,6 +44,21 @@
                 <Traits class="m-auto icon"></Traits>
                 <span>
                   Traits
+                </span>
+              </div>
+            </div>
+          </router-link>
+        </li>
+        <li class="navitem">
+          <router-link to="/herbicides">
+            <div
+              class="flex h-20 justify-center items-center rounded-2xl"
+              :class="{ active: this.$route.name === 'Herbicides' }"
+            >
+              <div class="mx-auto">
+                <Herbicides class="m-auto icon"></Herbicides>
+                <span>
+                  Herbicides
                 </span>
               </div>
             </div>
@@ -95,6 +110,7 @@
 import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/traits.svg";
+import Crops from "../../assets/images/navbar-icons/crops.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
 import Analytics from "../../assets/images/navbar-icons/analitics.svg";
 import FarmSidebar from "./FarmSidebar.vue";
@@ -105,6 +121,7 @@ export default {
     Farms,
     Herbicides,
     Traits,
+    Crops,
     TankMix,
     Analytics,
     FarmSidebar

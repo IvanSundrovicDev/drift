@@ -35,21 +35,11 @@
                 Welcome, {{ $store.state.auth.user.full_name }}
               </h1>
               <div
-                class="ml-3 relative"
+                class="h-8 w-8 pt-3 mt-0.5 relative cursor-pointer"
                 v-on:click="profileMenuOpen = !profileMenuOpen"
               >
-                <div>
-                  <button
-                    class="h-8 w-8 bg-white flex items-center text-sm rounded-full focus:outline-none"
-                    id="user-menu"
-                    aria-haspopup="true"
-                  >
-                    <img
-                      class="h-8 w-8 rounded-md "
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    />
-                  </button>
-                </div>
+                <div v-if="!profileMenuOpen" class="arrow-down m-auto ml-3"></div>
+               <div v-else class="arrow-up m-auto ml-3"></div>
               </div>
             </div>
             <div class="mr-2 flex items-center sm:hidden">

@@ -13,11 +13,11 @@
 import CropHerbicideTraitList from "./../components/cropHerbicideTraits/CropHerbicideTraitList";
 
 export default {
-  name: "HerbicideList",
+  name: "CropList",
   components: { CropHerbicideTraitList },
   data() {
     return {
-      name: "Herbicides",
+      name: "Crops",
       data: {
         allItems: [],
         selectedItems: [],
@@ -30,17 +30,18 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach((item) => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
+      console.log(postItems);
       let count = items.length;
       this.$axios
-        .post(`herbicides/me/`, { herbicide_ids: postItems })
+        .post(`farms/crops/me/`, { crop_ids: postItems })
         .then((res) => {
           this.getHerbicides();
           this.$store.dispatch("addNotification", {
             type: "success",
             message:
               count > 1
-                ? "Herbicides successfully added to your list!"
-                : "Herbicide successfully added to your list!",
+                ? "Crops successfully added to your list!"
+                : "Crop successfully added to your list!",
           });
         })
         .catch((err) => {});
@@ -51,28 +52,28 @@ export default {
       let postItems = baseItems.filter((el) => !items.includes(el));
       let count = items.length;
       this.$axios
-        .post(`herbicides/me/`, { herbicide_ids: postItems })
+        .post(`farms/crops/me/`, { crop_ids: postItems })
         .then((res) => {
           this.getHerbicides();
           this.$store.dispatch("addNotification", {
             type: "success",
             message:
               count > 1
-                ? "Herbicides successfully removed from your list!"
-                : "Herbicide successfully removed from your list!",
+                ? "Crops successfully removed from your list!"
+                : "Crop successfully removed from your list!",
           });
         })
         .catch((err) => {});
     },
     getHerbicides() {
       this.$axios
-        .get(`herbicides/`)
+        .get(`farms/crops/`)
         .then((res) => {
           this.data.allItems = res.data;
           this.$axios
-            .get(`herbicides/me/`)
+            .get(`farms/crops/me/`)
             .then((res) => {
-              this.data.selectedItems = res.data.my_herbicide.herbicides;
+              this.data.selectedItems = res.data.my_crop.crops;
               let selectedItems = this.data.selectedItems;
               this.data.allItems = this.data.allItems.filter(function (
                 objFromA
