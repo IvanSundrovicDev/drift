@@ -194,7 +194,7 @@ export default {
         });
     },
     initPolygonDraw() {
-      this.$store.dispatch("setPolygonDraw", !this.$store.polygonDraw);
+      this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
     saveField() {
       this.fieldCoordinates.push(this.fieldCoordinates[0]);

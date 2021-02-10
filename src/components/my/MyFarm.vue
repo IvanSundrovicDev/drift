@@ -103,7 +103,7 @@ export default {
       this.$axios
         .get(`farms/${newField.farm}/fields/`)
         .then((res) => {
-          this.fields = res.data.field;
+          this.fields = res.data;
         })
         .catch((err) => {});
       this.fieldActive = newField.id;

@@ -45,7 +45,7 @@ export default {
   methods: {
     saveFarm() {
       this.$axios
-        .post(`farms/`, this.farm)
+        .post(`farms/me/`, this.farm)
         .then(res => {
           this.$emit("farmAdded");
           this.$store.dispatch("addNotification", {

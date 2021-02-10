@@ -121,7 +121,7 @@ export default {
     getFarms() {
       if (this.$route.name === "Dashboard") {
         this.$axios
-          .get(`farms/`)
+          .get(`farms/me/`)
           .then(res => {
             this.farms = res.data;
           })

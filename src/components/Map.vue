@@ -156,6 +156,9 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
+      this.map.on("draw:canceled", function(e) {
+        store.dispatch("setPolygonDraw", false);
+      });
     },
     removePolygon() {
       for (let i in this.map._layers) {
