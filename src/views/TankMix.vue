@@ -326,7 +326,7 @@ export default {
         .catch(err => {});
 
       this.$axios
-        .get(`herbicides/tank-mixes/`)
+        .get(`herbicides/tank-mixes/me/`)
         .then(res => {
           this.mixes = res.data;
         })
@@ -378,7 +378,7 @@ export default {
           owner: 1
         };
         this.$axios
-          .post(`herbicides/tank-mixes/`, TankMix)
+          .post(`herbicides/tank-mixes/me/`, TankMix)
           .then(res => {
             this.getData();
             this.$store.dispatch("addNotification", {

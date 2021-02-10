@@ -21,7 +21,7 @@
         <div class="menu-arrow bg-t-white mt-4"></div>
         <div class="bg-white rounded-lg">
           <div v-if="!open" class="mx-3">
-            <div class="flex list-item my-4 p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer" v-on:click="open = 'rename'">
+            <div class="flex list-item my-4 p-2 rounded-md hover:git bg-drift-blue hover:text-white cursor-pointer" v-on:click="open = 'rename'">
               <Edit class="my-auto invert-to-white mr-4" />
               <h1 class="text-xl">Rename field</h1>
             </div>
