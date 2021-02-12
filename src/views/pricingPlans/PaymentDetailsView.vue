@@ -18,7 +18,7 @@
           <div>
             <input
               type="text"
-              v-model="name"
+              v-model="cardName"
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
               placeholder="Enter your full name"
               autofocus
@@ -37,30 +37,63 @@
           <div>
             <input
               type="text"
-              v-model="cardNumber"
+              id="cardNumber"
               class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+              v-mask="generateCardNumberMask"
+              v-model="cardNumber"
+              data-ref="cardNumber"
+              autocomplete="off"
               placeholder="Enter your card number"
-              autofocus
             />
           </div>
         </div>
         <div class="flex pt-8">
-          <div class="w-96 mr-12">
-            <div class="pt-2">
-              <h3 class="my-auto align-middle">Expiration</h3>
-            </div>
-
+          <div class="w-22 mr-12">
             <div>
-              <input
-                type="text"
-                v-model="expiration"
-                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                placeholder="Enter your card number"
-                autofocus
-              />
+              <div class="pt-2">
+                <h3 class="my-auto align-middle">Month</h3>
+              </div>
+              <select
+                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                id="cardMonth"
+                v-model="cardMonth"
+                data-ref="cardDate"
+              >
+                <option value="" disabled selected>Month</option>
+                <option
+                  v-bind:value="n < 10 ? '0' + n : n"
+                  v-for="n in 12"
+                  v-bind:disabled="n < minCardMonth"
+                  v-bind:key="n"
+                >
+                  {{ n < 10 ? "0" + n : n }}
+                </option>
+              </select>
             </div>
           </div>
-          <div class="w-96">
+          <div class="w-22 mr-12">
+            <div>
+              <div class="pt-2">
+                <h3 class="my-auto align-middle">Year</h3>
+              </div>
+              <select
+                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                id="cardYear"
+                v-model="cardYear"
+                data-ref="cardDate"
+              >
+                <option value="" disabled selected>Year</option>
+                <option
+                  v-bind:value="$index + minCardYear"
+                  v-for="(n, $index) in 12"
+                  v-bind:key="n"
+                >
+                  {{ $index + minCardYear }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="w-22">
             <div class="pt-2">
               <h3 class="my-auto align-middle">CVC</h3>
             </div>
@@ -68,10 +101,13 @@
             <div>
               <input
                 type="text"
-                v-model="cvc"
                 class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                placeholder="Enter your CVC"
-                autofocus
+                id="cardCvv"
+                v-mask="'####'"
+                maxlength="4"
+                v-model="cardCvv"
+                autocomplete="off"
+                placeholder="CVV"
               />
             </div>
           </div>
@@ -85,10 +121,8 @@
             <div>
               <input
                 type="text"
-                v-model="expiration"
                 class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
                 placeholder="Enter your card number"
-                autofocus
               />
             </div>
           </div>
@@ -118,15 +152,85 @@ export default {
   name: "PaymentDetailsView",
   data() {
     return {
-      name: "",
+      cardName: "",
       cardNumber: "",
-      expiration: "",
-      cvc: ""
+      cardMonth: "",
+      cardYear: "",
+      cardCvv: "",
+      minCardYear: new Date().getFullYear(),
+      amexCardMask: "#### ###### #####",
+      otherCardMask: "#### #### #### ####",
+      cardNumberTemp: ""
     };
   },
   methods: {
     finish() {
-      this.$router.push("dashboard");
+      this.$axios
+        .post("subscription/verify-card/", {
+          number: this.cardNumber,
+          cvc: this.cardCvv,
+          exp_month: this.cardMonth,
+          exp_year: this.cardYear
+        })
+        .then(res => {
+          this.$axios
+            .patch("subscription/me/", {
+              payment_method_id: res.data.payment_method_id,
+              plan: "B"
+            })
+            .then(response => {
+              this.$router.push("Dashboard");
+            })
+            .catch(error => {
+              console.log(error.data);
+            });
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err.data);
+        });
+      // TODO post to verify for paid subscription
+    }
+  },
+  mounted() {
+    this.cardNumberTemp = this.otherCardMask;
+    document.getElementById("cardNumber").focus();
+  },
+  computed: {
+    getCardType() {
+      let number = this.cardNumber;
+      let re = new RegExp("^4");
+      if (number.match(re) != null) return "visa";
+
+      re = new RegExp("^(34|37)");
+      if (number.match(re) != null) return "amex";
+
+      re = new RegExp("^5[1-5]");
+      if (number.match(re) != null) return "mastercard";
+
+      re = new RegExp("^6011");
+      if (number.match(re) != null) return "discover";
+
+      re = new RegExp("^9792");
+      if (number.match(re) != null) return "troy";
+
+      return "visa"; // default type
+    },
+    generateCardNumberMask() {
+      return this.getCardType === "amex"
+        ? this.amexCardMask
+        : this.otherCardMask;
+    },
+    minCardMonth() {
+      if (this.cardYear === this.minCardYear) return new Date().getMonth() + 1;
+      return 1;
+    }
+  },
+  watch: {
+    cardYear() {
+      if (this.cardMonth < this.minCardMonth) {
+        this.cardMonth = "";
+      }
     }
   }
 };

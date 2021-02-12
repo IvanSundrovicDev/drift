@@ -11,6 +11,10 @@ import { auth } from "./store/auth.module";
 
 Vue.use(Vuex);
 
+// Or as a directive
+import { VueMaskDirective } from "v-mask";
+Vue.directive("mask", VueMaskDirective);
+
 axios.defaults.headers.common = authHeader();
 
 axios.interceptors.response.use(undefined, function(err) {

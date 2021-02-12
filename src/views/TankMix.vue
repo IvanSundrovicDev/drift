@@ -46,14 +46,14 @@
                   class="flex mb-8"
                   :key="item.id"
                   :class="{
-                    'border-drift-salmon': selectedHerbicides.includes(item),
+                    'border-drift-salmon': selectedHerbicides.includes(item)
                   }"
                   v-on:click="addHerbicide(item)"
                 >
                   <div
                     class="w-full m-auto rounded-lg bg-white hover:border-drift-salmon border-white border-2 cursor-pointer"
                     :class="{
-                      'border-drift-salmon': selectedHerbicides.includes(item),
+                      'border-drift-salmon': selectedHerbicides.includes(item)
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
@@ -72,7 +72,7 @@
             <div
               class="m-auto text-drift-blue text-2xl shadow-sm w-56 text-center py-4"
               :class="{
-                'mix-active': data.mix[0],
+                'mix-active': data.mix[0]
               }"
             >
               Mix
@@ -94,7 +94,7 @@
                   class="custom-icon-size mt-0.5 right-0 ml-2 text-drift-lighter-blue"
                   :class="{
                     'hover:text-drift-blue cursor-pointer':
-                      data.mixName && data.mix[0],
+                      data.mixName && data.mix[0]
                   }"
                   icon="plus-circle"
                 ></font-awesome-icon>
@@ -105,14 +105,14 @@
                   class="flex mb-8"
                   :key="item.id"
                   :class="{
-                    'border-drift-salmon': selectedMix.includes(item),
+                    'border-drift-salmon': selectedMix.includes(item)
                   }"
                   v-on:click="addMixHerbicide(item)"
                 >
                   <div
                     class="w-full m-auto rounded-lg bg-white hover:border-drift-salmon border-white border-2 cursor-pointer"
                     :class="{
-                      'border-drift-salmon': selectedMix.includes(item),
+                      'border-drift-salmon': selectedMix.includes(item)
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
@@ -227,14 +227,16 @@
       class="whitescreen-active"
       v-if="
         $store.state.tutorial.loaded &&
-        !$store.state.tutorial.mixTutorialDone &&
-        $store.state.tutorial.mixTutorial === 0
+          !$store.state.tutorial.mixTutorialDone &&
+          $store.state.tutorial.mixTutorial === 0
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
-        :text="'To create a tank mix, you can search for and select the herbicides you’d like to mix.'"
+        :text="
+          'To create a tank mix, you can search for and select the herbicides you’d like to mix.'
+        "
         class="top-0 left-1/3 fixed -ml-4 mt-52"
       />
     </div>
@@ -242,13 +244,15 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.mixTutorialDone &&
-        $store.state.tutorial.mixTutorial === 1
+          $store.state.tutorial.mixTutorial === 1
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
-        :text="'Once selected, click the arrow to add to your mix. You can also remove herbicides from your mix.'"
+        :text="
+          'Once selected, click the arrow to add to your mix. You can also remove herbicides from your mix.'
+        "
         class="top-32 left-1/3 fixed ml-28 mt-72"
       />
     </div>
@@ -256,13 +260,15 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.mixTutorialDone &&
-        $store.state.tutorial.mixTutorial === 2
+          $store.state.tutorial.mixTutorial === 2
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setMixTutorialStep')"
         :direction="'left'"
-        :text="'When you’re ready to create your mix, name it here and click the + icon.'"
+        :text="
+          'When you’re ready to create your mix, name it here and click the + icon.'
+        "
         class="top-0 left-2/3 fixed -ml-4 mt-52"
       />
     </div>
@@ -270,13 +276,15 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.mixTutorialDone &&
-        $store.state.tutorial.mixTutorial === 3
+          $store.state.tutorial.mixTutorial === 3
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setMixTutorialDone')"
         :direction="'right'"
-        :text="'Under “My Mixes” you can edit or delete all of the mixes you have created. '"
+        :text="
+          'Under “My Mixes” you can edit or delete all of the mixes you have created. '
+        "
         class="top-0 right-1/3 -mr-24 fixed mt-64"
       />
     </div>
@@ -291,13 +299,13 @@ export default {
   name: "TankMix",
   components: {
     AppLayout,
-    Tutorial,
+    Tutorial
   },
   data() {
     return {
       data: {
         mix: [],
-        mixName: "",
+        mixName: ""
       },
       selectedItem: "",
       deletePopUp: false,
@@ -306,29 +314,29 @@ export default {
       herbicides: [],
       selectedHerbicides: [],
       selectedMix: [],
-      mixes: [],
+      mixes: []
     };
   },
   methods: {
     getData() {
       this.$axios
         .get(`herbicides/me/`)
-        .then((res) => {
+        .then(res => {
           this.herbicides = res.data.my_herbicide.herbicides;
         })
-        .catch((err) => {});
+        .catch(err => {});
 
       this.$axios
         .get(`herbicides/tank-mixes/me/`)
-        .then((res) => {
+        .then(res => {
           this.mixes = res.data;
         })
-        .catch((err) => {});
+        .catch(err => {});
     },
     addHerbicide(item) {
-      if (this.selectedHerbicides.find((element) => element === item)) {
+      if (this.selectedHerbicides.find(element => element === item)) {
         this.selectedHerbicides = this.selectedHerbicides.filter(
-          (filterItem) => filterItem !== item
+          filterItem => filterItem !== item
         );
       } else {
         this.selectedHerbicides.push(item);
@@ -338,15 +346,15 @@ export default {
       if (this.selectedHerbicides[0]) {
         this.data.mix = this.data.mix.concat(this.selectedHerbicides);
         this.herbicides = this.herbicides.filter(
-          (el) => !this.selectedHerbicides.includes(el)
+          el => !this.selectedHerbicides.includes(el)
         );
         this.selectedHerbicides = [];
       }
     },
     addMixHerbicide(item) {
-      if (this.selectedMix.find((element) => element === item)) {
+      if (this.selectedMix.find(element => element === item)) {
         this.selectedMix = this.selectedMix.filter(
-          (filterItem) => filterItem !== item
+          filterItem => filterItem !== item
         );
       } else {
         this.selectedMix.push(item);
@@ -356,7 +364,7 @@ export default {
       if (this.selectedMix[0]) {
         this.herbicides = this.herbicides.concat(this.selectedMix);
         this.data.mix = this.data.mix.filter(
-          (el) => !this.selectedMix.includes(el)
+          el => !this.selectedMix.includes(el)
         );
         this.selectedMix = [];
       }
@@ -366,28 +374,28 @@ export default {
         let TankMix = {
           name: this.data.mixName,
           tank: 1,
-          herbicides: this.data.mix.map((el) => el.id),
+          herbicides: this.data.mix.map(el => el.id),
           // TODO: add proper foreign key
-          owner: 1,
+          owner: 1
         };
         this.$axios
           .post(`herbicides/tank-mixes/me/`, TankMix)
-          .then((res) => {
+          .then(res => {
             this.getData();
             this.$store.dispatch("addNotification", {
               type: "success",
-              message: "Tank Mix successfully created!",
+              message: "Tank Mix successfully created!"
             });
             this.data = {
               mix: [],
-              mixName: "",
+              mixName: ""
             };
             this.selectedMix = [];
           })
-          .catch((err) => {
+          .catch(err => {
             this.$store.dispatch("addNotification", {
               type: "error",
-              message: "There was an error creating your Tank Mix!",
+              message: "There was an error creating your Tank Mix!"
             });
           });
       }
@@ -401,25 +409,25 @@ export default {
     },
     deleteMix() {
       this.$axios
-        .delete(`herbicides/tank-mixes/${this.selectedItem.id}`)
-        .then((res) => {
+        .delete(`herbicides/tank-mixes/${this.selectedItem.id}/`)
+        .then(res => {
           this.getData();
           this.deletePopUp = false;
           this.selectedItem = "";
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Tank Mix successfully removed!",
+            message: "Tank Mix successfully removed!"
           });
         })
-        .catch((err) => {});
-    },
+        .catch(err => {});
+    }
   },
   beforeMount() {
     this.getData();
     if (!this.$store.state.mixTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }
-  },
+  }
 };
 </script>
 <style>

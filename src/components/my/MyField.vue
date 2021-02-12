@@ -77,14 +77,14 @@ export default {
     Edit,
     Delete,
     Neighbor,
-    LeftArrow,
+    LeftArrow
   },
   name: "MyField",
   props: ["activeField", "activePopup", "field"],
   data() {
     return {
       menuOpen: false,
-      open: "",
+      open: ""
     };
   },
   methods: {
@@ -95,8 +95,8 @@ export default {
     },
     activatePopup() {
       this.$emit("activatePopup", this.field.id);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

@@ -629,13 +629,19 @@ export default {
         .catch(err => {});
     },
     changeCurrentPlan(arg) {
-      // TODO: change account to proper user account
-      this.$axios
-        .patch("subscription/me/", { plan: arg, account: 2 })
-        .then(res => {
-          arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
-        })
-        .catch(err => {});
+      if (arg === "F") {
+        this.$axios
+          .patch("subscription/me/", {
+            plan: arg,
+            account: this.$store.state.auth.user.account
+          })
+          .then(res => {
+            arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
+          })
+          .catch(err => {});
+      } else {
+        // TODO send to verify route for paid plan
+      }
     }
   },
   beforeMount() {

@@ -40,14 +40,16 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
-        $store.state.tutorial.farmTutorial === 2 &&
-        fields[0]
+          $store.state.tutorial.farmTutorial === 2 &&
+          fields[0]
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
-        :text="'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'"
+        :text="
+          'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'
+        "
         class="top-0 left-12 fixed ml-80 mt-48"
       />
     </div>
@@ -55,14 +57,16 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
-        $store.state.tutorial.farmTutorial === 3 &&
-        fieldActive
+          $store.state.tutorial.farmTutorial === 3 &&
+          fieldActive
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialDone')"
         :direction="'right'"
-        :text="'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'"
+        :text="
+          'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'
+        "
         class="top-0 left-32 fixed ml-80 mt-80"
       />
     </div>
@@ -81,7 +85,7 @@ export default {
     MyField,
     FieldDataEdit,
     AddField,
-    Tutorial,
+    Tutorial
   },
   props: ["farm"],
   data() {
@@ -90,24 +94,24 @@ export default {
       fields: [],
       fieldActive: "",
       popupActive: "",
-      fieldsLoading: true,
+      fieldsLoading: true
     };
   },
   computed: {
     newActiveField() {
       return this.$store.state.addedField;
-    },
+    }
   },
   watch: {
     newActiveField(newField, oldField) {
       this.$axios
         .get(`farms/${newField.farm}/fields/`)
-        .then((res) => {
+        .then(res => {
           this.fields = res.data;
         })
-        .catch((err) => {});
+        .catch(err => {});
       this.fieldActive = newField.id;
-    },
+    }
   },
   methods: {
     toggle(id) {
@@ -118,22 +122,21 @@ export default {
       this.fieldsLoading = false;
       this.$axios
         .get(`farms/${id}/fields/`)
-        .then((res) => {
+        .then(res => {
           this.fields = res.data;
           this.fieldsLoading = true;
         })
-        .catch((err) => {
+        .catch(err => {
           this.fieldsLoading = true;
         });
     },
     activatePopup(id) {
-      if(this.popupActive === id){
-        this.popupActive = ""
+      if (this.popupActive === id) {
+        this.popupActive = "";
+      } else {
+        this.popupActive = id;
       }
-      else{
-        this.popupActive = id
-      }
-    },
-  },
+    }
+  }
 };
 </script>

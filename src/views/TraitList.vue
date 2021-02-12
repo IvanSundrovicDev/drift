@@ -28,46 +28,45 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
-      let count = items.length
+      let count = items.length;
       this.$axios
         .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: (count > 1) ?
-              "Traits successfully added to your list!" :
-              "Trait successfully added to your list!"
-          })
+            message:
+              count > 1
+                ? "Traits successfully added to your list!"
+                : "Trait successfully added to your list!"
+          });
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     },
     deleteAddedItems(items) {
       let baseItems = [];
       this.data.selectedItems.forEach(item => baseItems.push(item.id));
-      let postItems = baseItems.filter( ( el ) => !items.includes( el ) );
-      let count = items.length
+      let postItems = baseItems.filter(el => !items.includes(el));
+      let count = items.length;
       this.$axios
         .post(`farms/crop-traits/me/`, { crop_trait_ids: postItems })
         .then(res => {
           this.getTraits();
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: (count > 1) ?
-              "Traits successfully removed from your list!" :
-              "Trait successfully removed from your list!"
-          })
+            message:
+              count > 1
+                ? "Traits successfully removed from your list!"
+                : "Trait successfully removed from your list!"
+          });
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     },
     getTraits() {
       this.$axios
         .get(`farms/crop-traits/`)
         .then(res => {
           this.data.allItems = res.data;
-          console.log(res.data);
           this.$axios
             .get(`farms/crop-traits/me/`)
             .then(res => {
@@ -81,11 +80,9 @@ export default {
                 });
               });
             })
-            .catch(err => {
-            });
+            .catch(err => {});
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     }
   },
   beforeMount() {

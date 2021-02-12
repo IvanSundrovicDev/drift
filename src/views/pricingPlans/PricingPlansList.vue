@@ -54,7 +54,7 @@
                 class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
                 v-on:click="selectPlan('F')"
               >
-                Select Trail
+                Select Trial
               </button>
             </div>
           </div>
@@ -112,20 +112,18 @@ export default {
   name: "PricingPlansList",
   methods: {
     selectPlan(plan) {
-      console.log(this.$axios.defaults.headers);
-      let status = plan === "F" ? "A" : "I";
-      // TODO: modify hardcoded account
-      this.$axios
-        .post("subscription/", { plan: plan, status: status, account: 4 })
-        .then(res => {
-          if (status === "A") {
-            this.$router.push({ name: "Dashboard" });
-          } else {
-            this.$router.push({ name: "Payment Details" });
-          }
-        })
-        .catch(err => {});
+      if (plan === "F") {
+        this.$axios.post("subscription/", {
+          plan: plan,
+          account: this.$store.state.auth.user.account
+        });
+      } else {
+        this.$router.push({ name: "Payment Details" });
+      }
     }
+  },
+  beforeMount() {
+    this.$store.dispatch("auth/setUserAction");
   }
 };
 </script>

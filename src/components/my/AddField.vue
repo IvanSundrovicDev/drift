@@ -107,9 +107,7 @@
         </h1>
       </div>
     </div>
-    <div
-      class="fixed border-t border-gray-200 top-16 right-0 bg-white"
-    >
+    <div class="fixed border-t border-gray-200 top-16 right-0 bg-white">
       <FieldDataAdd v-on:fieldDataUpdate="updateFieldData($event)" />
     </div>
   </div>
@@ -146,7 +144,7 @@ export default {
           id: null
         }
       }
-    }
+    };
   },
   computed: {
     coordinatesChange() {
@@ -213,13 +211,13 @@ export default {
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully added!"
-          })
+          });
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
             message: "There was an error adding your filed!"
-          })
+          });
         });
     },
     close() {

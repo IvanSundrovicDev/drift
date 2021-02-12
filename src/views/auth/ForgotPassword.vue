@@ -188,6 +188,7 @@
 <script>
 import AuthLayout from "../layouts/AuthLayout";
 import User from "../../models/user";
+import axios from "axios";
 
 export default {
   name: "ForgotPassword",
@@ -206,6 +207,7 @@ export default {
   methods: {
     verifyEmail() {
       this.errors = false;
+      delete axios.defaults.headers.common["Authorization"];
       this.$axios
         .get(`auth/security/${this.user.email}/verify/`)
         .then(res => {
@@ -219,6 +221,7 @@ export default {
     },
     verifySecurityQuestion() {
       this.errors = false;
+      delete axios.defaults.headers.common["Authorization"];
       this.$axios
         .post("auth/security/answer/verify/", {
           email: this.user.email,
@@ -234,6 +237,7 @@ export default {
         });
     },
     resetPassword() {
+      delete axios.defaults.headers.common["Authorization"];
       this.$axios
         .post(
           "auth/security/reset_password/",

@@ -38,8 +38,11 @@
                 class="h-8 w-8 pt-3 mt-0.5 relative cursor-pointer"
                 v-on:click="profileMenuOpen = !profileMenuOpen"
               >
-                <div v-if="!profileMenuOpen" class="arrow-down m-auto ml-3"></div>
-               <div v-else class="arrow-up m-auto ml-3"></div>
+                <div
+                  v-if="!profileMenuOpen"
+                  class="arrow-down m-auto ml-3"
+                ></div>
+                <div v-else class="arrow-up m-auto ml-3"></div>
               </div>
             </div>
             <div class="mr-2 flex items-center sm:hidden">
@@ -185,7 +188,6 @@ import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/traits.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
-import Analytics from "../../assets/images/navbar-icons/analitics.svg";
 
 export default {
   name: "TopNavbar",
@@ -195,8 +197,7 @@ export default {
     Farms,
     Herbicides,
     Traits,
-    TankMix,
-    Analytics
+    TankMix
   },
   data: function() {
     return {

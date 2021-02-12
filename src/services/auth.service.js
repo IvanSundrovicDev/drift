@@ -9,6 +9,7 @@ class AuthService {
       })
       .then(response => {
         if (response.data.access) {
+          localStorage.removeItem("jwt");
           localStorage.setItem("jwt", JSON.stringify(response.data));
         }
       });
@@ -19,6 +20,7 @@ class AuthService {
   }
 
   async register(user) {
+    delete axios.defaults.headers.common["Authorization"];
     return await axios
       .post("auth/users/", {
         full_name: user.full_name,
@@ -31,6 +33,7 @@ class AuthService {
       })
       .then(response => {
         if (response.data.access) {
+          localStorage.removeItem("jwt");
           localStorage.setItem("jwt", JSON.stringify(response.data));
         }
       });

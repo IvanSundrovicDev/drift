@@ -261,6 +261,7 @@ export default {
         .dispatch("auth/register", this.user)
         .then(res => {
           this.$router.push({ name: "Pricing Plans" });
+          this.$store.dispatch("auth/setUserAction");
         })
         .catch(error => {
           this.errors = error.errors;
