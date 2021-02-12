@@ -1,0 +1,38 @@
+{
+    "executionRoleArn": "arn:aws:iam::133634153917:role/ecs_taskexecrole_prod",
+    "containerDefinitions": [
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs-drift-prod/",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "fe"
+                }
+            },
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "containerPort": 80
+                }
+            ],
+            "image": "133634153917.dkr.ecr.us-east-1.amazonaws.com/drift_frontend:prod",
+            "essential": true,
+            "name": "drift_frontend",
+            "environment": [
+                {
+                    "name": "VUE_APP_API_URL",
+                    "value": "http://lb-be-drift-prod-1836951018.us-east-1.elb.amazonaws.com:8000/api/v1/"
+                }
+            ]    
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256", 
+    "memory": "512",
+    "networkMode": "awsvpc", 
+    "family": "frontend-app-task"
+}
