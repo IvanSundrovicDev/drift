@@ -28,28 +28,28 @@ export default {
   name: "InfoTooltip",
   props: {
     icon: {
-      type: String,
+      type: String
     },
     text: {
-      type: String,
-    },
+      type: String
+    }
   },
   data() {
     return {
-      showTooltip: true,
+      showTooltip: true
     };
   },
   methods: {
     hideTooltip() {
       this.showTooltip = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .fade-tooltip-leave-active {
-  transition: opacity .7s;
+  transition: opacity 0.7s;
 }
 .fade-tooltip-leave-to {
   opacity: 0;

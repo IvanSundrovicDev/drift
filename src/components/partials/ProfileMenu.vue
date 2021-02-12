@@ -210,205 +210,9 @@
         </button>
       </div>
     </div>
-    <div v-if="paymentInfo" class="whitescreen-active flex">
-      <div class="m-auto rounded-md bg-white payment-width">
-        <div class="flex p-4">
-          <LeftArrow
-            class="my-auto mr-4 cursor-pointer"
-            v-on:click="paymentInfo = paymentInfo - 1"
-          />
-          <h1 class="text-3xl">Payment information</h1>
-          <font-awesome-icon
-            class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
-            icon="times"
-            v-on:click="(active = 'menu'), (paymentInfo = 0)"
-          ></font-awesome-icon>
-        </div>
-        <div class="mx-8" v-if="paymentInfo === 1">
-          <div class="flex px-8 pt-6 pb-12 border-b border-black">
-            <div class="w-72 mr-16" v-for="card in userCards" :key="card.cvc">
-              <div class="rounded-md border border-drift-blue p-4">
-                <div class="flex">
-                  <img
-                    class="inline my-auto mr-4"
-                    src="../../assets/images/icons/credit-card.png"
-                  />
-                  <h3 class="text-2xl">{{ card.name }}</h3>
-                  <h3 class="text-2xl ml-auto">{{ card.cvc }}</h3>
-                </div>
-                <h3 class="pt-6">Expires {{ card.expiration }}</h3>
-              </div>
-              <div class="flex pt-1">
-                <h3 class="text-drift-blue hover:underline cursor-pointer">
-                  Edit
-                </h3>
-                <h3
-                  class="text-drift-blue ml-auto hover:underline cursor-pointer"
-                >
-                  Delete
-                </h3>
-              </div>
-            </div>
-            <div class="flex w-72 h-28 px-5 py-10 shadow-md rounded-md">
-              <img
-                class="inline my-auto mr-4"
-                src="../../assets/images/icons/credit-card.png"
-              />
-              <h1 class="text-2xl">Add new card</h1>
-              <font-awesome-icon
-                v-on:click="paymentInfo = 2"
-                class="custom-icon-size my-auto ml-auto text-drift-lighter-blue hover:text-drift-blue cursor-pointer"
-                icon="plus-circle"
-              ></font-awesome-icon>
-            </div>
-          </div>
-          <div class="my-12 mx-8">
-            <div v-if="!giftCard">
-              <div class="flex">
-                <GiftCard />
-                <h1 class="ml-4 text-2xl">Gift Card</h1>
-              </div>
-              <div class="w-full">
-                <div class="pt-8">
-                  <h3 class="my-auto align-middle">Have a gift card?</h3>
-                </div>
-
-                <div class="flex">
-                  <input
-                    type="text"
-                    v-model="creditCard.expiration"
-                    class="w-96 border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
-                    placeholder="Enter your gift card code"
-                    autofocus
-                  />
-                  <div class="ml-24 mt-3 w-40">
-                    <button
-                      class="rounded-lg py-2 w-full payment-custom-button designActionButton"
-                      v-on:click="giftCard = true"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div v-else class="w-72 border p-4 border-drift-blue rounded-md">
-              <div class="flex">
-                <GiftCard />
-                <h1 class="ml-4 text-2xl">Gift Card</h1>
-              </div>
-              <h3 class="pt-6">Expires 3/2021</h3>
-            </div>
-          </div>
-        </div>
-        <div
-          v-if="paymentInfo === 2"
-          class="mb-12 mt-4 mx-24 shadow-md rounded-md p-6"
-        >
-          <div class="w-full">
-            <div class="pt-2">
-              <h3 class="my-auto align-middle">Name</h3>
-            </div>
-
-            <div>
-              <input
-                type="text"
-                v-model="creditCard.name"
-                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                placeholder="Enter your full name"
-                autofocus
-              />
-            </div>
-          </div>
-          <div class="w-full pt-8">
-            <div class="pt-2 flex">
-              <img
-                class="inline"
-                src="../../assets/images/icons/credit-card.png"
-              />
-              <h3 class="my-auto ml-2 align-middle">Card Number</h3>
-            </div>
-
-            <div>
-              <input
-                type="text"
-                v-model="creditCard.cardNumber"
-                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                placeholder="Enter your card number"
-                autofocus
-              />
-            </div>
-          </div>
-          <div class="flex pt-8">
-            <div class="w-96 mr-12">
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Expiration</h3>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  v-model="creditCard.expiration"
-                  class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                  placeholder="Enter your card number"
-                  autofocus
-                />
-              </div>
-            </div>
-            <div class="w-96">
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">CVC</h3>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  v-model="creditCard.cvc"
-                  class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                  placeholder="Enter your CVC"
-                  autofocus
-                />
-              </div>
-            </div>
-          </div>
-          <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
-            <div class="w-full">
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Have a voucher?</h3>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  v-model="creditCard.expiration"
-                  class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
-                  placeholder="Enter your card number"
-                  autofocus
-                />
-              </div>
-            </div>
-            <div class="w-96 pt-11 pl-10">
-              <button
-                class="rounded-lg py-2 w-full payment-custom-button designActionButton"
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-          <div class="flex pt-8">
-            <button
-              class="rounded-lg py-1 mx-auto w-48 payment-custom-button designActionButton"
-              v-on:click="addUpdateCard()"
-            >
-              Save card details
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div v-if="subscriptionPlan" class="whitescreen-active flex">
       <div
-        :class="[subscriptionPlan !== 2 ? 'bg-drift-blue ': 'bg-white']"
+        :class="[subscriptionPlan !== 2 ? 'bg-drift-blue ' : 'bg-white']"
         class="m-auto rounded-md payment-width"
       >
         <div class="flex p-4">
@@ -416,7 +220,12 @@
             class="my-auto mr-4 cursor-pointer"
             v-on:click="subscriptionPlan = subscriptionPlan - 1"
           />
-          <h1 :class="[subscriptionPlan !== 2 ? 'text-white ': 'text-black']" class="text-3xl">Subscription Plans</h1>
+          <h1
+            :class="[subscriptionPlan !== 2 ? 'text-white ' : 'text-black']"
+            class="text-3xl"
+          >
+            Subscription Plans
+          </h1>
           <font-awesome-icon
             class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
             icon="times"
@@ -526,108 +335,7 @@
           </div>
         </div>
         <div v-if="subscriptionPlan === 2">
-          <div class="m-auto rounded-md bg-white payment-width">
-            <div class="mb-12 mt-4 mx-24 shadow-md rounded-md p-6">
-              <div class="w-full">
-                <div class="pt-2">
-                  <h3 class="my-auto align-middle">Name</h3>
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    v-model="creditCard.name"
-                    class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                    placeholder="Enter your full name"
-                    autofocus
-                  />
-                </div>
-              </div>
-              <div class="w-full pt-8">
-                <div class="pt-2 flex">
-                  <img
-                    class="inline"
-                    src="../../assets/images/icons/credit-card.png"
-                  />
-                  <h3 class="my-auto ml-2 align-middle">Card Number</h3>
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    v-model="creditCard.cardNumber"
-                    class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                    placeholder="Enter your card number"
-                    autofocus
-                  />
-                </div>
-              </div>
-              <div class="flex pt-8">
-                <div class="w-96 mr-12">
-                  <div class="pt-2">
-                    <h3 class="my-auto align-middle">Expiration</h3>
-                  </div>
-
-                  <div>
-                    <input
-                      type="text"
-                      v-model="creditCard.expiration"
-                      class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                      placeholder="Enter your card number"
-                      autofocus
-                    />
-                  </div>
-                </div>
-                <div class="w-96">
-                  <div class="pt-2">
-                    <h3 class="my-auto align-middle">CVC</h3>
-                  </div>
-
-                  <div>
-                    <input
-                      type="text"
-                      v-model="creditCard.cvc"
-                      class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                      placeholder="Enter your CVC"
-                      autofocus
-                    />
-                  </div>
-                </div>
-              </div>
-              <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
-                <div class="w-full">
-                  <div class="pt-2">
-                    <h3 class="my-auto align-middle">Have a voucher?</h3>
-                  </div>
-
-                  <div>
-                    <input
-                      type="text"
-                      v-model="creditCard.expiration"
-                      class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
-                      placeholder="Enter your card number"
-                      autofocus
-                    />
-                  </div>
-                </div>
-                <div class="w-96 pt-11 pl-10">
-                  <button
-                    class="rounded-lg py-2 w-full payment-custom-button designActionButton"
-                  >
-                    Apply
-                  </button>
-                </div>
-              </div>
-              <div class="flex pt-8">
-                <button
-                  class="rounded-lg py-1 mx-auto w-48 payment-custom-button designActionButton"
-                  v-on:click="addUpdateCard()"
-                >
-                  Save card details
-                </button>
-              </div>
-            </div>
-          </div>
+          <PaymentDetailsView :registration="false"></PaymentDetailsView>
         </div>
       </div>
     </div>
@@ -642,6 +350,7 @@ import Help from "../../assets/images/icons/Help.svg";
 import Logout from "../../assets/images/icons/Logout.svg";
 import LeftArrow from "../../assets/images/icons/LeftArrow.svg";
 import GiftCard from "../../assets/images/icons/GiftCard.svg";
+import PaymentDetailsView from "@/views/pricingPlans/PaymentDetailsView";
 
 export default {
   name: "ProfileMenu",
@@ -653,6 +362,7 @@ export default {
     Logout,
     LeftArrow,
     GiftCard,
+    PaymentDetailsView
   },
   data() {
     return {
@@ -662,62 +372,49 @@ export default {
       activePlan: "",
       user: {
         full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email,
+        email: this.$store.state.auth.user.email
       },
-      userCards: [
-        {
-          name: "Visa",
-          cvc: 1234,
-          expiration: "12/2023",
-        },
-      ],
       giftCard: false,
       neighbourEmail: "",
-      paymentInfo: 0,
-      creditCard: {
-        name: "",
-        cardNumber: "",
-        expiration: "",
-        cvc: "",
-      },
+      paymentInfo: 0
     };
   },
   computed: {
     getUser() {
       return this.$store.state.auth.user;
-    },
+    }
   },
   watch: {
     getUser(newUser, oldUser) {
       this.user = newUser;
-    },
+    }
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then((path) => {
+      this.$store.dispatch("auth/logout").then(path => {
         this.$router.push(path);
       });
     },
     saveChanges() {
       this.$axios
         .patch("auth/users/me/", this.user)
-        .then((res) => {
+        .then(res => {
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Profile successfully updated",
+            message: "Profile successfully updated"
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating your profile!",
+            message: "There was an error updating your profile!"
           });
         });
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
         type: "success",
-        message: "Neighbour successfully invited!",
+        message: "Neighbour successfully invited!"
       });
     },
     addUpdateCard() {
@@ -726,36 +423,36 @@ export default {
     getUserPricingPlan() {
       this.$axios
         .get("subscription/me/")
-        .then((res) => {
+        .then(res => {
           res.data.subscription.plan === "F"
             ? (this.activePlan = "F")
             : (this.activePlan = "B");
         })
-        .catch((err) => {});
+        .catch(err => {});
     },
     changeCurrentPlan(arg) {
       if (arg === "F") {
         this.$axios
           .patch("subscription/me/", {
             plan: arg,
-            account: this.$store.state.auth.user.account,
+            account: this.$store.state.auth.user.account
           })
-          .then((res) => {
+          .then(res => {
             arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
           })
-          .catch((err) => {});
+          .catch(err => {});
       } else {
         this.subscriptionPlan = this.subscriptionPlan + 1;
         // TODO send to verify route for paid plan
       }
-    },
+    }
   },
   beforeMount() {
     this.getUserPricingPlan();
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  },
+  }
 };
 </script>
 

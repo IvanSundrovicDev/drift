@@ -2,27 +2,27 @@
   <div class="bg-drift-blue ">
     <router-link
       class="absolute top-8 right-10 rounded-lg designInverseButton"
-      :to="{ name: 'Register' }"
-      >Sign Up</router-link
+      :to="{ name: 'Login' }"
+      v-if="registration"
+      >Sign In Instead</router-link
     >
-    <div class="flex h-screen">
+    <div :class="{ 'flex h-screen': registration }">
       <div class="m-auto py-12 px-16 rounded-md bg-white">
         <div class="w-full text-center">
           <h1 class="text-3xl">Enter your payment details</h1>
         </div>
 
         <div class="rounded-md bg-red-200 p-4 mt-7" v-if="errors">
-          <div class="flex">
-            <div class="flex-shrink-0 my-auto">
-              <font-awesome-icon
-                class="fa-lg text-red-500"
-                icon="exclamation-circle"
-              ></font-awesome-icon>
-            </div>
-            <h3 class="ml-2 flex-shrink-0" v-for="error in errors">
-              {{ error }}
-            </h3>
+          <div class="my-auto w-full flex justify-center mb-5">
+            <font-awesome-icon
+              class="fa-lg text-red-500"
+              icon="exclamation-circle"
+            ></font-awesome-icon>
+            <h3 class="ml-3 text-bold">Please correct the following issues</h3>
           </div>
+          <ol class="ml-2" v-for="(error, key) in errors" :key="key">
+            <li>{{ error }}</li>
+          </ol>
         </div>
 
         <div class="w-full pt-8">
@@ -154,7 +154,7 @@
             class="rounded-lg py-1 w-full payment-custom-button designActionButton"
             v-on:click="finish()"
           >
-            Pay $29.99
+            Pay
           </button>
         </div>
       </div>
@@ -165,6 +165,13 @@
 <script>
 export default {
   name: "PaymentDetailsView",
+  props: {
+    registration: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
   data() {
     return {
       cardName: "",
@@ -195,16 +202,22 @@ export default {
               plan: "B"
             })
             .then(response => {
-              this.$router.push("Dashboard");
+              if (this.registration) {
+                this.$router.push("Dashboard");
+              } else {
+                this.$store.dispatch("addNotification", {
+                  type: "success",
+                  message: "You have successfully upgraded your plan!"
+                });
+              }
             })
             .catch(error => {
-              console.log(error.data);
+              console.log(error.response);
             });
         })
         .catch(err => {
           this.errors = err.response.data.errors;
         });
-      // TODO post to verify for paid subscription
     }
   },
   mounted() {

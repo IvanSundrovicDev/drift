@@ -11,7 +11,9 @@
         <p
           class="mt-3 max-w-4xl mx-auto text-xl sm:mt-5 sm:text-2xl text-white"
         >
-          Choose what's best for you and change when you want
+          Awesome! <br />
+          Now that you have created your account, it's time to choose the right
+          plan for yourself. Don't worry, you can change it anytime later.
         </p>
       </div>
     </div>
