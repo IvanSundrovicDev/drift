@@ -134,14 +134,14 @@
                 >spray better</span
               >
             </h1>
-            <div class="pt-10 flex">
+            <!-- <div class="pt-10 flex">
               <button
                 v-on:click="paymentInfo = 1"
                 class="rounded-lg py-1 m-auto w-72 designActionButton"
               >
                 Update Payment
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="bg-drift-blue p-7 col-span-1">
@@ -409,119 +409,119 @@
       </div>
     </div>
     <div v-if="subscriptionPlan" class="whitescreen-active flex">
-      <div class="m-auto rounded-md bg-drift-blue payment-width">
+      <div class="m-auto rounded-md bg-white payment-width">
         <div class="flex p-4">
           <LeftArrow
             class="my-auto mr-4 cursor-pointer"
-            v-on:click="subscriptionPlan = false"
+            v-on:click="subscriptionPlan = !subscriptionPlan"
           />
-          <h1 class="text-3xl text-white">Subscription Plans</h1>
+          <h1 class="text-3xl">Payment information</h1>
           <font-awesome-icon
             class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
             icon="times"
-            v-on:click="(active = 'menu'), (subscriptionPlan = false)"
+            v-on:click="
+              (active = 'menu'), (subscriptionPlan = !subscriptionPlan)
+            "
           ></font-awesome-icon>
         </div>
-        <div class="flex my-8 mx-32">
-          <div class="w-1/2 mx-4 bg-white rounded-xl">
-            <div class="mx-4 border-b-2 border-drift-blue">
-              <h1 class="text-center pt-4 pb-2 text-3xl text-drift-blue">
-                Trial
-              </h1>
+        <div class="mb-12 mt-4 mx-24 shadow-md rounded-md p-6">
+          <div class="w-full">
+            <div class="pt-2">
+              <h3 class="my-auto align-middle">Name</h3>
             </div>
+
             <div>
-              <h1 class="text-2xl text-center my-8 text-gray-600">Free</h1>
+              <input
+                type="text"
+                v-model="creditCard.name"
+                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                placeholder="Enter your full name"
+                autofocus
+              />
             </div>
-            <div class="mx-6">
-              <div class="flex">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
-                />
-                <h3 class="text-xl">1 User</h3>
+          </div>
+          <div class="w-full pt-8">
+            <div class="pt-2 flex">
+              <img
+                class="inline"
+                src="../../assets/images/icons/credit-card.png"
+              />
+              <h3 class="my-auto ml-2 align-middle">Card Number</h3>
+            </div>
+
+            <div>
+              <input
+                type="text"
+                v-model="creditCard.cardNumber"
+                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                placeholder="Enter your card number"
+                autofocus
+              />
+            </div>
+          </div>
+          <div class="flex pt-8">
+            <div class="w-96 mr-12">
+              <div class="pt-2">
+                <h3 class="my-auto align-middle">Expiration</h3>
               </div>
-              <div class="flex mt-10">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
+
+              <div>
+                <input
+                  type="text"
+                  v-model="creditCard.expiration"
+                  class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                  placeholder="Enter your card number"
+                  autofocus
                 />
-                <h3 class="text-xl">1 Fields</h3>
               </div>
-              <div class="flex mt-10">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
+            </div>
+            <div class="w-96">
+              <div class="pt-2">
+                <h3 class="my-auto align-middle">CVC</h3>
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  v-model="creditCard.cvc"
+                  class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                  placeholder="Enter your CVC"
+                  autofocus
                 />
-                <h3 class="text-xl">1 Farm</h3>
-              </div>
-              <div class="flex">
-                <h1
-                  v-if="activePlan === 'F'"
-                  class="text-2xl my-10 text-center text-gray-600 mx-auto"
-                >
-                  Current Plan
-                </h1>
-                <button
-                  v-else
-                  class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
-                  v-on:click="changeCurrentPlan('F')"
-                >
-                  Downgrade
-                </button>
               </div>
             </div>
           </div>
-          <div class="w-1/2 mx-4 bg-white rounded-xl">
-            <div class="mx-4 border-b-2 border-drift-blue">
-              <h1 class="text-center pt-4 pb-2 text-3xl text-drift-blue">
-                Pro
-              </h1>
-            </div>
-            <div>
-              <h1 class="text-3xl text-center my-8">
-                <span class="text-2xl text-gray-600">$</span>
-                79.99
-                <span class="text-2xl text-gray-600">/yr</span>
-              </h1>
-            </div>
-            <div class="mx-6">
-              <div class="flex -mt-0.5">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
-                />
-                <h3 class="text-xl">1 User</h3>
+          <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
+            <div class="w-full">
+              <div class="pt-2">
+                <h3 class="my-auto align-middle">Have a voucher?</h3>
               </div>
-              <div class="flex mt-10">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
+
+              <div>
+                <input
+                  type="text"
+                  v-model="creditCard.expiration"
+                  class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
+                  placeholder="Enter your card number"
+                  autofocus
                 />
-                <h3 class="text-xl text-drift-blue">Unlimited</h3>
-              </div>
-              <div class="flex mt-10">
-                <img
-                  class="my-auto h-4 w-4 mr-2"
-                  src="../../assets/images/icons/dot-list.png"
-                />
-                <h3 class="text-xl text-drift-blue">Unlimited</h3>
-              </div>
-              <div class="flex">
-                <button
-                  v-if="activePlan === 'F'"
-                  class="rounded-lg py-2 my-8 mx-auto w-48 payment-custom-button designActionButton"
-                  v-on:click="changeCurrentPlan('B')"
-                >
-                  Upgrade
-                </button>
-                <h1
-                  v-else
-                  class="text-2xl my-8 text-center text-gray-600 mx-auto"
-                >
-                  Current Plan
-                </h1>
               </div>
             </div>
+            <div class="w-96 pt-11 pl-10">
+              <button
+                class="rounded-lg py-2 w-full payment-custom-button designActionButton"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+          <div class="flex pt-8">
+            <button
+              class="rounded-lg py-1 mx-auto w-48 payment-custom-button designActionButton"
+              v-on:click="addUpdateCard()"
+            >
+              Save card details
+            </button>
           </div>
         </div>
       </div>

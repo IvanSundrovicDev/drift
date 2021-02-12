@@ -195,7 +195,7 @@ export default {
       this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
     saveField() {
-      this.fieldCoordinates.push(this.fieldCoordinates[0]);
+      this.fieldCoordinates.push(this.fieldCoordinates[0])
       let field = {
         herbicide: this.fieldData.selectedHerbicide.id || undefined,
         tank_mix: this.fieldData.selectedMix.id || undefined,
