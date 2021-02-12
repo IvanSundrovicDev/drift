@@ -1,6 +1,13 @@
 <template>
   <app-layout>
     <div class="my-16 mx-8">
+      <InfoTooltip
+        icon="info-circle"
+        :text="
+          `Choose ${name} that you use on your farm. These selections will
+        personalize your app experience`
+        "
+      ></InfoTooltip>
       <div class="flex">
         <div
           :class="{ active: active === 'list' }"
@@ -54,7 +61,11 @@
           </div>
           <div class="fixed w-full bg-white bottom-0 left-24">
             <div
-              :class="{'cursor-pointer hover:bg-red-500 hover:text-white opacity-100': removeList[0], 'cursor-not-allowed': !removeList[0]}"
+              :class="{
+                'cursor-pointer hover:bg-red-500 hover:text-white opacity-100':
+                  removeList[0],
+                'cursor-not-allowed': !removeList[0]
+              }"
               class="w-64 py-4 my-6 mr-36 text-xl float-right shadow-md rounded-lg text-red-500 opacity-50"
               v-on:click="postRemovedItems"
             >
@@ -100,7 +111,11 @@
           </div>
           <div class="fixed w-full bg-white bottom-0 left-24">
             <div
-              :class="{'cursor-pointer hover:bg-drift-green hover:text-white opacity-100': addList[0], 'cursor-not-allowed': !addList[0]}"
+              :class="{
+                'cursor-pointer hover:bg-drift-green hover:text-white opacity-100':
+                  addList[0],
+                'cursor-not-allowed': !addList[0]
+              }"
               class="w-64 py-4 my-6 mr-36 text-xl float-right shadow-md rounded-lg text-drift-green opacity-50"
               v-on:click="postAddedItems"
             >
@@ -184,9 +199,9 @@
     <div
       class="whitescreen-active"
       v-if="
-      $store.state.tutorial.loaded &&
-        !$store.state.tutorial.traitTutorialDone && 
-        $route.name === 'Traits'
+        $store.state.tutorial.loaded &&
+          !$store.state.tutorial.traitTutorialDone &&
+          $route.name === 'Traits'
       "
     >
       <Tutorial
@@ -204,12 +219,14 @@
 <script>
 import AppLayout from "../../views/layouts/AppLayout";
 import Tutorial from "../common/Tutorial";
+import InfoTooltip from "@/components/common/InfoTooltip";
 
 export default {
   name: "CropHerbicideTraitList",
   components: {
     AppLayout,
-    Tutorial
+    Tutorial,
+    InfoTooltip
   },
   props: ["name", "data"],
   data() {
@@ -249,21 +266,21 @@ export default {
       }
     },
     postRemovedItems() {
-      if(this.removeList[0]){
+      if (this.removeList[0]) {
         this.$emit("deleteAddedItems", this.removeList);
         this.removeList = [];
       }
     },
     postAddedItems() {
-      if(this.addList[0]){
+      if (this.addList[0]) {
         this.$emit("postAddedItems", this.addList);
         this.addList = [];
         this.active = "list";
       }
     }
   },
-  beforeMount(){
-    if(!this.$store.state.traitTutorialDone){
+  beforeMount() {
+    if (!this.$store.state.traitTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }
   }

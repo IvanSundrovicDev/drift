@@ -4,6 +4,10 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faMap } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
 import "@/assets/css/tailwind.css";
 import "@/assets/css/global.css";
@@ -49,32 +53,11 @@ axios.defaults.baseURL = apiUrl;
 Vue.prototype.$axios = axios;
 
 // ---------------- Font Awesome ---------------------------------------
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faMap } from "@fortawesome/free-regular-svg-icons";
-import {
-  faTimes,
-  faSearch,
-  faMapMarkerAlt,
-  faPen,
-  faEllipsisH,
-  faPlusCircle,
-  faArrowAltCircleLeft,
-  faArrowAltCircleRight,
-  faUser
-} from "@fortawesome/free-solid-svg-icons";
+
 import authHeader from "@/helpers/auth-header";
-library.add(
-  faTimes,
-  faSearch,
-  faMapMarkerAlt,
-  faMap,
-  faPen,
-  faEllipsisH,
-  faPlusCircle,
-  faArrowAltCircleLeft,
-  faArrowAltCircleRight,
-  faUser
-);
+
+library.add(fas);
+library.add(far);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 // ----------------------------------------------------------------------
 

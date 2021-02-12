@@ -10,6 +10,21 @@
         <div class="w-full text-center">
           <h1 class="text-3xl">Enter your payment details</h1>
         </div>
+
+        <div class="rounded-md bg-red-200 p-4 mt-7" v-if="errors">
+          <div class="flex">
+            <div class="flex-shrink-0 my-auto">
+              <font-awesome-icon
+                class="fa-lg text-red-500"
+                icon="exclamation-circle"
+              ></font-awesome-icon>
+            </div>
+            <h3 class="ml-2 flex-shrink-0" v-for="error in errors">
+              {{ error }}
+            </h3>
+          </div>
+        </div>
+
         <div class="w-full pt-8">
           <div class="pt-2">
             <h3 class="my-auto align-middle">Name</h3>
@@ -160,7 +175,8 @@ export default {
       minCardYear: new Date().getFullYear(),
       amexCardMask: "#### ###### #####",
       otherCardMask: "#### #### #### ####",
-      cardNumberTemp: ""
+      cardNumberTemp: "",
+      errors: ""
     };
   },
   methods: {
@@ -184,10 +200,9 @@ export default {
             .catch(error => {
               console.log(error.data);
             });
-          console.log(res.data);
         })
         .catch(err => {
-          console.log(err.data);
+          this.errors = err.response.data.errors;
         });
       // TODO post to verify for paid subscription
     }
