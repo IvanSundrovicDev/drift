@@ -48,37 +48,43 @@ axios.defaults.headers.common = authHeader();
 //   throw err;
 // });
 
-  const interceptor = axios.interceptors.response.use(
-    response => response,
-    error => {
-      // Reject promise if usual error
-      if (error.response.status !== 401) {
-        return Promise.reject(error);
-      }
+const interceptor = axios.interceptors.response.use(
+  response => response,
+  error => {
+    // Reject promise if usual error
+    if (error.response.status !== 401) {
+      return Promise.reject(error);
+    }
 
-      /* 
-       * When response code is 401, try to refresh the token.
-       * Eject the interceptor so it doesn't loop in case
-       * token refresh causes the 401 response
-       */
-      //axios.interceptors.response.eject(interceptor);
-      return axios.post("auth/jwt/refresh", {
+    /*
+     * When response code is 401, try to refresh the token.
+     * Eject the interceptor so it doesn't loop in case
+     * token refresh causes the 401 response
+     */
+    //axios.interceptors.response.eject(interceptor);
+    return axios
+      .post("auth/jwt/refresh", {
         refresh: JSON.parse(localStorage.getItem("jwt")).refresh
-      }).then(response => {
+      })
+      .then(response => {
         let jwt = JSON.parse(localStorage.getItem("jwt"));
         jwt.access = response.data.access;
         localStorage.setItem("jwt", JSON.stringify(jwt));
-        error.response.config.headers['Authorization'] = 'JWT ' + response.data.access;
-        axios.defaults.headers.common = {Authorization: 'JWT ' + response.data.access}
+        error.response.config.headers["Authorization"] =
+          "JWT " + response.data.access;
+        axios.defaults.headers.common = {
+          Authorization: "JWT " + response.data.access
+        };
         return axios(error.response.config);
-      }).catch(error => {
+      })
+      .catch(error => {
         store.dispatch("auth/logout").then(path => {
           router.push(path);
         });
         return Promise.reject(error);
-      })
-    }
-  )
+      });
+  }
+);
 
 const apiUrl = process.env.VUE_APP_API_URL;
 

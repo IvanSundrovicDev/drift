@@ -115,10 +115,14 @@ export default {
   methods: {
     selectPlan(plan) {
       if (plan === "F") {
-        this.$axios.post("subscription/", {
-          plan: plan,
-          account: this.$store.state.auth.user.account
-        });
+        this.$axios
+          .post("subscription/", {
+            plan: plan,
+            account: this.$store.state.auth.user.account
+          })
+          .then(res => {
+            this.$router.push("Dashboard");
+          });
       } else {
         this.$router.push({ name: "Payment Details" });
       }
