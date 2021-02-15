@@ -21,27 +21,64 @@ Vue.directive("mask", VueMaskDirective);
 
 axios.defaults.headers.common = authHeader();
 
-axios.interceptors.response.use(undefined, function(err) {
-  if (err.response.status === 401) {
-    axios
-      .post("auth/jwt/refresh", {
-        refresh: JSON.parse(localStorage.getItem("jwt")).refresh
-      })
-      .then(res => {
-        let jwt = JSON.parse(localStorage.getItem("jwt"));
-        jwt.access = res.data.access;
+// axios.interceptors.response.use(undefined, function (err) {
+//   if (err.response.status === 401) {
+//     console.log('intercepted');
+//     axios
+//       .post("auth/jwt/refresh", {
+//         refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+//       })
+//       .then(res => {
+//         let jwt = JSON.parse(localStorage.getItem("jwt"));
+//         jwt.access = res.data.access;
 
+//         localStorage.setItem("jwt", JSON.stringify(jwt));
+//         axios.defaults.headers.common = {Authorization: 'JWT ' + res.data.access}
+//         err.config.headers['Authorization'] = 'JWT ' + res.data.access;
+//         return axios.request(err.config)
+//       })
+//       .catch(err => {
+//         console.log('loging out');
+//         store.dispatch("auth/logout").then(path => {
+//           router.push(path);
+//         });
+//       });
+//   }
+
+//   throw err;
+// });
+
+  const interceptor = axios.interceptors.response.use(
+    response => response,
+    error => {
+      // Reject promise if usual error
+      if (error.response.status !== 401) {
+        return Promise.reject(error);
+      }
+
+      /* 
+       * When response code is 401, try to refresh the token.
+       * Eject the interceptor so it doesn't loop in case
+       * token refresh causes the 401 response
+       */
+      //axios.interceptors.response.eject(interceptor);
+      return axios.post("auth/jwt/refresh", {
+        refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+      }).then(response => {
+        let jwt = JSON.parse(localStorage.getItem("jwt"));
+        jwt.access = response.data.access;
         localStorage.setItem("jwt", JSON.stringify(jwt));
-      })
-      .catch(err => {
+        error.response.config.headers['Authorization'] = 'JWT ' + response.data.access;
+        axios.defaults.headers.common = {Authorization: 'JWT ' + response.data.access}
+        return axios(error.response.config);
+      }).catch(error => {
         store.dispatch("auth/logout").then(path => {
           router.push(path);
         });
-      });
-  }
-
-  throw err;
-});
+        return Promise.reject(error);
+      })
+    }
+  )
 
 const apiUrl = process.env.VUE_APP_API_URL;
 
