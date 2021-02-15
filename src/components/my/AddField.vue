@@ -44,7 +44,7 @@
         v-on:click="getLocations(item)"
       >
         <font-awesome-icon
-          class="fa-lg pt-1 text-drift-salmon "
+          class="fa-lg pt-1 text-drift-salmon"
           icon="map-marker-alt"
         ></font-awesome-icon>
         <h3 class="text-xl ml-5">{{ item.text }}</h3>
@@ -77,9 +77,7 @@
               icon="times"
               v-on:click="removeField"
             ></font-awesome-icon>
-            <h1 class="w-full text-xl ml-4">
-              Field selected
-            </h1>
+            <h1 class="w-full text-xl ml-4">Field selected</h1>
           </div>
         </div>
       </div>
@@ -102,9 +100,7 @@
         class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
         v-on:click="saveField"
       >
-        <h1 class="text-2xl m-auto text-drift-blue">
-          Save
-        </h1>
+        <h1 class="text-2xl m-auto text-drift-blue">Save</h1>
       </div>
     </div>
     <div class="fixed border-t border-gray-200 top-16 right-0 bg-white">
@@ -119,7 +115,7 @@ import FieldDataAdd from "./FieldDataAdd";
 export default {
   name: "AddField",
   components: {
-    FieldDataAdd
+    FieldDataAdd,
   },
   props: ["farmId"],
   data() {
@@ -132,29 +128,29 @@ export default {
       locations: [],
       fieldData: {
         selectedCrop: {
-          id: null
+          id: null,
         },
         selectedHerbicide: {
-          id: null
+          id: null,
         },
         selectedMix: {
-          id: null
+          id: null,
         },
         selectedTrait: {
-          id: null
-        }
-      }
+          id: null,
+        },
+      },
     };
   },
   computed: {
     coordinatesChange() {
       return this.$store.state.polygonCoordinates;
-    }
+    },
   },
   watch: {
     coordinatesChange(newCoordinates, oldCordinates) {
       this.fieldCoordinates = newCoordinates;
-    }
+    },
   },
   methods: {
     search() {
@@ -164,10 +160,9 @@ export default {
 
         axiosNoAuth
           .get(
-            `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`,
-            {}
+            `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`
           )
-          .then(res => {
+          .then((res) => {
             this.locations = res.data.suggestions;
           });
       }
@@ -179,13 +174,12 @@ export default {
 
       axiosNoAuth
         .get(
-          `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`,
-          {}
+          `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`
         )
-        .then(res => {
+        .then((res) => {
           let activeLocation = [
             res.data.candidates[0].location.y,
-            res.data.candidates[0].location.x
+            res.data.candidates[0].location.x,
           ];
           this.activeLocationCoordinates = activeLocation;
           this.$store.dispatch("setActiveLocation", activeLocation);
@@ -195,28 +189,28 @@ export default {
       this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
     saveField() {
-      this.fieldCoordinates.push(this.fieldCoordinates[0])
+      this.fieldCoordinates.push(this.fieldCoordinates[0]);
       let field = {
         herbicide: this.fieldData.selectedHerbicide.id || undefined,
         tank_mix: this.fieldData.selectedMix.id || undefined,
         crop_trait: this.fieldData.selectedTrait.id || undefined,
         name: this.fieldName,
         mpoly: this.fieldCoordinates,
-        crop: this.fieldData.selectedCrop.id
+        crop: this.fieldData.selectedCrop.id,
       };
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
-        .then(res => {
+        .then((res) => {
           this.$store.dispatch("setAddedField", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully added!"
+            message: "Field successfully added!",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error adding your filed!"
+            message: "There was an error adding your filed!",
           });
         });
     },
@@ -235,8 +229,8 @@ export default {
     },
     updateFieldData(data) {
       this.fieldData = data;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -38,7 +38,7 @@ export default {
     return {
       farm: {
         name: "",
-        account: 2
+        account: this.$store.state.auth.user.account
       }
     };
   },

@@ -48,39 +48,92 @@ axios.defaults.headers.common = authHeader();
 //   throw err;
 // });
 
-const interceptor = axios.interceptors.response.use(
-  response => response,
-  error => {
-    // Reject promise if usual error
-    if (error.response.status !== 401) {
-      return Promise.reject(error);
-    }
+// const interceptor = axios.interceptors.response.use(
+//   response => response,
+//   error => {
+//     // Reject promise if usual error
+//     if (error.response.status !== 401) {
+//       return Promise.reject(error);
+//     }
 
-    /* 
-     * When response code is 401, try to refresh the token.
-     * Eject the interceptor so it doesn't loop in case
-     * token refresh causes the 401 response
-     */
-    //axios.interceptors.response.eject(interceptor);
-    return axios.post("auth/jwt/refresh", {
-      refresh: JSON.parse(localStorage.getItem("jwt")).refresh
-    }).then(response => {
-      console.log('refreshed');
-      let jwt = JSON.parse(localStorage.getItem("jwt"));
-      jwt.access = response.data.access;
-      localStorage.setItem("jwt", JSON.stringify(jwt));
-      error.response.config.headers['Authorization'] = 'JWT ' + response.data.access;
-      axios.defaults.headers.common = { Authorization: 'JWT ' + response.data.access }
-      return axios(error.response.config);
-    }).catch(error => {
-      console.log('logged out');
-      store.dispatch("auth/logout").then(path => {
-        router.push(path);
-      });
-      return Promise.reject(error);
-    })
+//     /* 
+//      * When response code is 401, try to refresh the token.
+//      * Eject the interceptor so it doesn't loop in case
+//      * token refresh causes the 401 response
+//      */
+//     //axios.interceptors.response.eject(interceptor);
+//     return axios.post("auth/jwt/refresh", {
+//       refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+//     }).then(response => {
+//       console.log('refreshed');
+//       let jwt = JSON.parse(localStorage.getItem("jwt"));
+//       jwt.access = response.data.access;
+//       localStorage.setItem("jwt", JSON.stringify(jwt));
+//       error.response.config.headers['Authorization'] = 'JWT ' + response.data.access;
+//       axios.defaults.headers.common = { Authorization: 'JWT ' + response.data.access }
+//       return axios(error.response.config);
+//     }).catch(error => {
+//       console.log('logged out');
+//       store.dispatch("auth/logout").then(path => {
+//         router.push(path);
+//       });
+//       return Promise.reject(error);
+//     })
+//   }
+// )
+
+
+axios.interceptors.response.use((response) => {
+  // Return a successful response back to the calling service
+  return response;
+}, (error) => {
+  // Return any error which is not due to authentication back to the calling service
+  if (error.response.status !== 401) {
+    return new Promise((resolve, reject) => {
+      reject(error);
+    });
   }
-)
+
+  // Logout user if token refresh didn't work or user is disabled
+  if (error.response.config.url == 'auth/jwt/refresh') {
+
+    store.dispatch("auth/logout").then(path => {
+      router.push(path);
+    });
+
+    return new Promise((resolve, reject) => {
+      reject(error);
+    });
+  }
+
+  // Try request again with new token
+  return axios.post("auth/jwt/refresh", {
+    refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+  })
+    .then((token) => {
+
+      let jwt = JSON.parse(localStorage.getItem("jwt"));
+      jwt.access = token.data.access;
+      localStorage.setItem("jwt", JSON.stringify(jwt));
+
+      // New request with new token
+      const config = error.response.config;
+      config.headers['Authorization'] = 'JWT ' + token.data.access;
+      axios.defaults.headers.common = { Authorization: 'JWT ' + token.data.access }
+
+      return new Promise((resolve, reject) => {
+        axios.request(config).then(response => {
+          resolve(response);
+        }).catch((error) => {
+          reject(error);
+        })
+      });
+
+    })
+    .catch((error) => {
+      Promise.reject(error);
+    });
+});
 
 const apiUrl = process.env.VUE_APP_API_URL;
 
