@@ -62,11 +62,12 @@ const interceptor = axios.interceptors.response.use(
      * token refresh causes the 401 response
      */
     //axios.interceptors.response.eject(interceptor);
-    return axios
+    axios
       .post("auth/jwt/refresh", {
         refresh: JSON.parse(localStorage.getItem("jwt")).refresh
       })
       .then(response => {
+        console.log("hehee");
         let jwt = JSON.parse(localStorage.getItem("jwt"));
         jwt.access = response.data.access;
         localStorage.setItem("jwt", JSON.stringify(jwt));
@@ -78,6 +79,7 @@ const interceptor = axios.interceptors.response.use(
         return axios(error.response.config);
       })
       .catch(error => {
+        console.log("haha");
         store.dispatch("auth/logout").then(path => {
           router.push(path);
         });
