@@ -154,16 +154,18 @@ export default {
   },
   methods: {
     search() {
+      console.log(process.env.VUE_APP_GOOGLE_API_KEY);
       if (this.searchField.length >= 1) {
         let axiosNoAuth = this.$axios.create();
         delete axiosNoAuth.defaults.headers.common["Authorization"];
 
         axiosNoAuth
           .get(
-            `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${this.searchField}&key=${process.env.VUE_APP_GOOGLE_API_KEY}`
           )
           .then((res) => {
-            this.locations = res.data.suggestions;
+            console.log(res.data);
+            //this.locations = res.data.suggestions;
           });
       }
     },

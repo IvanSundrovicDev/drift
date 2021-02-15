@@ -123,7 +123,7 @@
             <h1
               class="text-2xl text-drift-blue cursor-pointer hover:underline mt-3"
             >
-              Starter plan
+            {{activePlan === "B" ? "Pro plan" : "Trail plan"}}
             </h1>
             <h1 class="text-2xl mt-3">Subscription end data is 01-01-2021</h1>
             <h1 class="text-2xl mt-3">
@@ -151,7 +151,12 @@
           <h1 class="text-white mt-11 text-2xl">
             Your current plan allows you to have:
           </h1>
-          <ol class="text-white text-2xl list-disc">
+          <ol v-if="activePlan === 'B'" class="text-white text-2xl list-disc">
+            <li class="mt-5 ml-7">1 User</li>
+            <li class="mt-5 ml-7">Unlimited</li>
+            <li class="mt-5 ml-7">Unlimited</li>
+          </ol>
+          <ol v-else class="text-white text-2xl list-disc">
             <li class="mt-5 ml-7">1 User</li>
             <li class="mt-5 ml-7">10 Fields</li>
             <li class="mt-5 ml-7">1 Farm</li>
@@ -362,7 +367,7 @@ export default {
     Logout,
     LeftArrow,
     GiftCard,
-    PaymentDetailsView
+    PaymentDetailsView,
   },
   data() {
     return {
@@ -372,49 +377,50 @@ export default {
       activePlan: "",
       user: {
         full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email
+        email: this.$store.state.auth.user.email,
       },
       giftCard: false,
       neighbourEmail: "",
-      paymentInfo: 0
+      paymentInfo: 0,
     };
   },
   computed: {
     getUser() {
       return this.$store.state.auth.user;
-    }
+    },
   },
   watch: {
     getUser(newUser, oldUser) {
       this.user = newUser;
-    }
+    },
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then(path => {
+      this.$store.dispatch("auth/logout").then((path) => {
         this.$router.push(path);
       });
     },
     saveChanges() {
       this.$axios
         .patch("auth/users/me/", this.user)
-        .then(res => {
+        .then((res) => {
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Profile successfully updated"
+            message: "Profile successfully updated",
           });
+          this.active = "menu";
         })
-        .catch(err => {
+        .catch((err) => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating your profile!"
+            message: "There was an error updating your profile!",
           });
         });
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
         type: "success",
-        message: "Neighbour successfully invited!"
+        message: "Neighbour successfully invited!",
       });
     },
     addUpdateCard() {
@@ -423,37 +429,39 @@ export default {
     getUserPricingPlan() {
       this.$axios
         .get("subscription/me/")
-        .then(res => {
+        .then((res) => {
           res.data.subscription.plan === "F"
             ? (this.activePlan = "F")
             : (this.activePlan = "B");
+          console.log(this.activePlan);
         })
-        .catch(err => {});
+        .catch((err) => {});
     },
     changeCurrentPlan(arg) {
       if (arg === "F") {
         this.$axios
           .patch("subscription/me/", {
             plan: arg,
-            account: this.$store.state.auth.user.account
+            account: this.$store.state.auth.user.account,
           })
-          .then(res => {
+          .then((res) => {
             arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
-            this.subscriptionPlan = false
+            this.subscriptionPlan = false;
+            this.paymentInfo = 0
           })
-          .catch(err => {});
+          .catch((err) => {});
       } else {
         this.subscriptionPlan = this.subscriptionPlan + 1;
         // TODO send to verify route for paid plan
       }
-    }
+    },
   },
   beforeMount() {
     this.getUserPricingPlan();
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  }
+  },
 };
 </script>
 
