@@ -56,37 +56,31 @@ const interceptor = axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    /*
+    /* 
      * When response code is 401, try to refresh the token.
      * Eject the interceptor so it doesn't loop in case
      * token refresh causes the 401 response
      */
     //axios.interceptors.response.eject(interceptor);
-    axios
-      .post("auth/jwt/refresh", {
-        refresh: JSON.parse(localStorage.getItem("jwt")).refresh
-      })
-      .then(response => {
-        console.log("hehee");
-        let jwt = JSON.parse(localStorage.getItem("jwt"));
-        jwt.access = response.data.access;
-        localStorage.setItem("jwt", JSON.stringify(jwt));
-        error.response.config.headers["Authorization"] =
-          "JWT " + response.data.access;
-        axios.defaults.headers.common = {
-          Authorization: "JWT " + response.data.access
-        };
-        return axios(error.response.config);
-      })
-      .catch(error => {
-        console.log("haha");
-        store.dispatch("auth/logout").then(path => {
-          router.push(path);
-        });
-        return Promise.reject(error);
+    return axios.post("auth/jwt/refresh", {
+      refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+    }).then(response => {
+      console.log('refreshed');
+      let jwt = JSON.parse(localStorage.getItem("jwt"));
+      jwt.access = response.data.access;
+      localStorage.setItem("jwt", JSON.stringify(jwt));
+      error.response.config.headers['Authorization'] = 'JWT ' + response.data.access;
+      axios.defaults.headers.common = { Authorization: 'JWT ' + response.data.access }
+      return axios(error.response.config);
+    }).catch(error => {
+      console.log('logged out');
+      store.dispatch("auth/logout").then(path => {
+        router.push(path);
       });
+      return Promise.reject(error);
+    })
   }
-);
+)
 
 const apiUrl = process.env.VUE_APP_API_URL;
 

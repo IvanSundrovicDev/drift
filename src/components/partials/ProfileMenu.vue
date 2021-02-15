@@ -439,6 +439,7 @@ export default {
           })
           .then(res => {
             arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
+            this.subscriptionPlan = false
           })
           .catch(err => {});
       } else {

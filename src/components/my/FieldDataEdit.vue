@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       v-on:click="activate('herbicide')"
       v-show="active === 'herbicide' || !active"
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
@@ -80,7 +80,7 @@
           <h1 class="text-lg">Herbicide {{ item }}</h1>
         </div>
       </div>
-    </div>
+    </div> -->
     <div
       v-on:click="activate('trait')"
       v-show="active === 'trait' || !active"

@@ -30,7 +30,6 @@ export default {
       let baseItems = [];
       this.data.selectedItems.forEach((item) => baseItems.push(item.id));
       let postItems = baseItems.concat(items);
-      console.log(postItems);
       let count = items.length;
       this.$axios
         .post(`farms/crops/me/`, { crop_ids: postItems })
