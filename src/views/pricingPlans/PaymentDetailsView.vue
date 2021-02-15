@@ -205,6 +205,7 @@ export default {
               if (this.registration) {
                 this.$router.push("Dashboard");
               } else {
+                this.$emit("pricing-plan-charged");
                 this.$store.dispatch("addNotification", {
                   type: "success",
                   message: "You have successfully upgraded your plan!"

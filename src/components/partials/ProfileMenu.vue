@@ -123,9 +123,9 @@
             <h1
               class="text-2xl text-drift-blue cursor-pointer hover:underline mt-3"
             >
-            {{activePlan === "B" ? "Pro plan" : "Trail plan"}}
+              {{ activePlan === "B" ? "Pro plan" : "Trial plan" }}
             </h1>
-            <h1 class="text-2xl mt-3">Subscription end data is 01-01-2021</h1>
+            <h1 class="text-2xl mt-3">Subscription end data is NaN</h1>
             <h1 class="text-2xl mt-3">
               Thank you for helping us
               <span class="text-drift-blue cursor-pointer hover:underline"
@@ -339,8 +339,11 @@
             </div>
           </div>
         </div>
-        <div v-if="subscriptionPlan === 2">
-          <PaymentDetailsView :registration="false"></PaymentDetailsView>
+        <div v-show="subscriptionPlan === 2">
+          <PaymentDetailsView
+            :registration="false"
+            v-on:pricing-plan-charged="setSubscriptionPlanPro"
+          ></PaymentDetailsView>
         </div>
       </div>
     </div>
@@ -367,7 +370,7 @@ export default {
     Logout,
     LeftArrow,
     GiftCard,
-    PaymentDetailsView,
+    PaymentDetailsView
   },
   data() {
     return {
@@ -377,50 +380,50 @@ export default {
       activePlan: "",
       user: {
         full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email,
+        email: this.$store.state.auth.user.email
       },
       giftCard: false,
       neighbourEmail: "",
-      paymentInfo: 0,
+      paymentInfo: 0
     };
   },
   computed: {
     getUser() {
       return this.$store.state.auth.user;
-    },
+    }
   },
   watch: {
     getUser(newUser, oldUser) {
       this.user = newUser;
-    },
+    }
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then((path) => {
+      this.$store.dispatch("auth/logout").then(path => {
         this.$router.push(path);
       });
     },
     saveChanges() {
       this.$axios
         .patch("auth/users/me/", this.user)
-        .then((res) => {
+        .then(res => {
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Profile successfully updated",
+            message: "Profile successfully updated"
           });
           this.active = "menu";
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating your profile!",
+            message: "There was an error updating your profile!"
           });
         });
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
         type: "success",
-        message: "Neighbour successfully invited!",
+        message: "Neighbour successfully invited!"
       });
     },
     addUpdateCard() {
@@ -429,39 +432,40 @@ export default {
     getUserPricingPlan() {
       this.$axios
         .get("subscription/me/")
-        .then((res) => {
+        .then(res => {
           res.data.subscription.plan === "F"
             ? (this.activePlan = "F")
             : (this.activePlan = "B");
-          console.log(this.activePlan);
         })
-        .catch((err) => {});
+        .catch(err => {});
     },
     changeCurrentPlan(arg) {
       if (arg === "F") {
         this.$axios
           .patch("subscription/me/", {
             plan: arg,
-            account: this.$store.state.auth.user.account,
+            account: this.$store.state.auth.user.account
           })
-          .then((res) => {
-            arg === "B" ? (this.activePlan = "B") : (this.activePlan = "F");
-            this.subscriptionPlan = false;
-            this.paymentInfo = 0
+          .then(res => {
+            this.activePlan = "F";
+            this.subscriptionPlan = 0;
           })
-          .catch((err) => {});
+          .catch(err => {});
       } else {
         this.subscriptionPlan = this.subscriptionPlan + 1;
-        // TODO send to verify route for paid plan
       }
     },
+    setSubscriptionPlanPro() {
+      this.subscriptionPlan = 0;
+      this.activePlan = "B";
+    }
   },
   beforeMount() {
     this.getUserPricingPlan();
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  },
+  }
 };
 </script>
 
