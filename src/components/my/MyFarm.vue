@@ -20,7 +20,7 @@
           v-on:activateField="fieldActive = item.id"
           v-on:activatePopup="activatePopup"
           :key="item.id"
-        />
+        /> 
         <div v-if="!fields[0] && fieldsLoading" class="mt-12 mx-8">
           <AddField class="m-auto" />
           <p>
@@ -104,6 +104,7 @@ export default {
   },
   watch: {
     newActiveField(newField, oldField) {
+      this.$store.dispatch("drawNeighbor", newField.neighbour_coords);
       this.$axios
         .get(`farms/${newField.farm}/fields/`)
         .then(res => {

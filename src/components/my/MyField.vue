@@ -58,7 +58,7 @@
     <div
       :class="{ 'salmon-border-selected': activeField === field.id }"
       class="w-full field-item pb-2 text-center mx-8 border-b-2 border-gray-200 cursor-pointer"
-      v-on:click="activateField(field.mpoly)"
+      v-on:click="activateField(field)"
     >
       <h1 class="text-2xl">{{ field.name }}</h1>
       <p>Field Info</p>
@@ -88,9 +88,10 @@ export default {
     };
   },
   methods: {
-    activateField(coords) {
-      this.$store.dispatch("setActiveLocation", coords[0]);
-      this.$store.dispatch("setFieldPolygon", coords);
+    activateField(field) {
+      this.$store.dispatch("setActiveLocation", field.mpoly[0]);
+      this.$store.dispatch("setFieldPolygon", field.mpoly);
+      this.$store.dispatch("drawNeighbor", field.neighbour_coords);
       this.$emit("activateField");
     },
     activatePopup() {

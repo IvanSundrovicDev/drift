@@ -14,7 +14,8 @@ export default new Vuex.Store({
     fieldPolygon: [],
     removedPolygon: true,
     addedField: {},
-    notifications: []
+    notifications: [],
+    neighborFields: []
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -46,6 +47,9 @@ export default new Vuex.Store({
     },
     removeNotification(state, value) {
       state.notifications = state.notifications.filter(el => el.id !== value);
+    },
+    drawNeighbor(state, value){
+      state.neighborFields = value
     }
   },
   actions: {
@@ -72,6 +76,9 @@ export default new Vuex.Store({
     },
     removeNotification(contex, value) {
       contex.commit("removeNotification", value);
+    },
+    drawNeighbor(contex, value) {
+      contex.commit("drawNeighbor", value);
     }
   },
   modules: { auth, tutorial }
