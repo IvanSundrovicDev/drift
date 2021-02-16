@@ -193,13 +193,14 @@ export default {
     saveField() {
       this.fieldCoordinates.push(this.fieldCoordinates[0]);
       let field = {
-        herbicide: this.fieldData.selectedHerbicide.id || undefined,
-        tank_mix: this.fieldData.selectedMix.id || undefined,
-        crop_trait: this.fieldData.selectedTrait.id || undefined,
+        herbicide: null,
+        tank_mix: null,
+        crop: this.fieldData.selectedCrop.id || null,
+        crop_trait: this.fieldData.selectedTrait.id || null,
         name: this.fieldName,
         mpoly: this.fieldCoordinates,
-        crop: this.fieldData.selectedCrop.id,
       };
+      console.log(field);
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then((res) => {

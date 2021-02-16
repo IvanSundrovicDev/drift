@@ -20,6 +20,8 @@ export default {
       center: [45.72727000000003, 18.10650000000004],
       active: false,
       fieldPolygon: [],
+      drawing: false,
+      activePolygon: false
     };
   },
   computed: {
@@ -46,13 +48,16 @@ export default {
     initDrawPolygon(newState, oldState) {
       if (newState) {
         this.polygonDrawer.enable();
+        this.drawing = true
       } else {
         this.polygonDrawer.disable();
+        this.drawing = false
       }
     },
     drawPolygon(newPolygon, oldPolygon) {
       this.removePolygon();
-      var polygon = L.polygon(newPolygon).addTo(this.map);
+      this.activePolygon = true
+      var polygon = L.polygon(newPolygon).setStyle({ color: "orange" }).addTo(this.map);
     },
     removedPolygon(newState, oldState) {
       this.removePolygon();
@@ -60,9 +65,7 @@ export default {
     },
     drawNeighbor(newNeighbors, oldNeighbors) {
       for (const neighbor in newNeighbors) {
-        var polygon = L.polygon(newNeighbors[neighbor].mpoly)
-          .setStyle({ color: "orange" })
-          .addTo(this.map);
+        var polygon = L.polygon(newNeighbors[neighbor].mpoly).addTo(this.map);
       }
     },
   },
@@ -135,8 +138,8 @@ export default {
 
       //on zoom get neighbour fields
       this.map.on("zoomend", function () {
-        if (map.getZoom() > 14) {
-          console.log(map.getCenter());
+        if (map.getZoom() > 14 && !scopeThis.fieldPolygon[0] && !scopeThis.drawing && !scopeThis.activePolygon) {
+          //console.log(map.getCenter());
           store.dispatch("addNotification", {
             type: "success",
             message: "Calculating neighboring fields...",
@@ -184,6 +187,8 @@ export default {
       });
     },
     removePolygon() {
+      this.fieldPolygon = []
+      this.activePolygon = false
       for (let i in this.map._layers) {
         if (this.map._layers[i]._path !== undefined) {
           try {

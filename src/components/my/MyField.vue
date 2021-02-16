@@ -95,6 +95,7 @@ export default {
       this.$emit("activateField");
     },
     activatePopup() {
+      this.activateField(this.field)
       this.$emit("activatePopup", this.field.id);
     }
   }

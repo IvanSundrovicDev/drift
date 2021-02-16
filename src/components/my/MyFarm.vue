@@ -15,9 +15,9 @@
         <MyField
           v-for="item in fields"
           :field="item"
-          :active-field="fieldActive"
+          :active-field="fieldActive.id"
           :active-popup="popupActive"
-          v-on:activateField="fieldActive = item.id"
+          v-on:activateField="activateField(item)"
           v-on:activatePopup="activatePopup"
           :key="item.id"
         /> 
@@ -34,7 +34,7 @@
       v-if="farmOpen && fieldActive"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
-      <FieldDataEdit />
+      <FieldDataEdit :fieldData="fieldActive" />
     </div>
     <div
       class="whitescreen-active"
@@ -58,7 +58,7 @@
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
           $store.state.tutorial.farmTutorial === 3 &&
-          fieldActive
+          fieldActive.id
       "
     >
       <Tutorial
@@ -111,7 +111,7 @@ export default {
           this.fields = res.data;
         })
         .catch(err => {});
-      this.fieldActive = newField.id;
+      this.fieldActive = newField;
     }
   },
   methods: {
@@ -137,6 +137,9 @@ export default {
       } else {
         this.popupActive = id;
       }
+    },
+    activateField(field){
+      this.fieldActive = field
     }
   }
 };

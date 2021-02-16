@@ -11,7 +11,7 @@
         {{ data.selectedCrop.id ? data.selectedCrop.name : "Crop" }}
       </h1>
     </div>
-    <div class="w-full overflow-auto h-96" v-show="active === 'crop'">
+    <div class="w-full overflow-auto max-h-96" v-show="active === 'crop'">
       <div
         v-for="item in crops"
         v-on:click="select('crop', item)"
@@ -85,7 +85,7 @@
         {{ data.selectedTrait.id ? data.selectedTrait.name : "Trait" }}
       </h1>
     </div>
-    <div class="w-full overflow-auto h-96" v-show="active === 'trait'">
+    <div class="w-full overflow-auto max-h-96" v-show="active === 'trait'">
       <div
         v-for="item in traits"
         v-on:click="select('trait', item)"
@@ -160,30 +160,30 @@ export default {
             this.data.selectedCrop = "";
           }
           break;
-        case "herbicide":
-          if (
-            !this.data.selectedHerbicide ||
-            this.data.selectedHerbicide.name !== item.name
-          ) {
-            this.data.selectedHerbicide = item;
-            this.data.selectedMix = "";
-            this.active = "";
-          } else {
-            this.data.selectedHerbicide = "";
-          }
-          break;
-        case "mix":
-          if (
-            !this.data.selectedMix ||
-            this.data.selectedMix.name !== item.name
-          ) {
-            this.data.selectedMix = item;
-            this.data.selectedHerbicide = "";
-            this.active = "";
-          } else {
-            this.data.selectedMix = "";
-          }
-          break;
+        // case "herbicide":
+        //   if (
+        //     !this.data.selectedHerbicide ||
+        //     this.data.selectedHerbicide.name !== item.name
+        //   ) {
+        //     this.data.selectedHerbicide = item;
+        //     this.data.selectedMix = "";
+        //     this.active = "";
+        //   } else {
+        //     this.data.selectedHerbicide = "";
+        //   }
+        //   break;
+        // case "mix":
+        //   if (
+        //     !this.data.selectedMix ||
+        //     this.data.selectedMix.name !== item.name
+        //   ) {
+        //     this.data.selectedMix = item;
+        //     this.data.selectedHerbicide = "";
+        //     this.active = "";
+        //   } else {
+        //     this.data.selectedMix = "";
+        //   }
+        //   break;
         case "trait":
           if (
             !this.data.selectedTrait ||
@@ -202,33 +202,27 @@ export default {
   beforeMount() {
     this.date = new Date();
     this.$axios
-      .get(`farms/crops/`)
+      .get(`farms/crops/me/`)
       .then(res => {
-        this.crops = res.data.crop;
+        this.crops = res.data.my_crop.crops;
+        console.log(res.data);
       })
       .catch(err => {
       });
-    this.$axios
-      .get(`farms/crops/`)
-      .then(res => {
-        this.crops = res.data.crop;
-      })
-      .catch(err => {
-      });
-    this.$axios
-      .get(`herbicides/me/`)
-      .then(res => {
-        this.herbicides = res.data.my_herbicide.herbicides;
-      })
-      .catch(err => {
-      });
-    this.$axios
-      .get(`herbicides/tank-mixes/`)
-      .then(res => {
-        this.mixes = res.data.tank_mix;
-      })
-      .catch(err => {
-      });
+    // this.$axios
+    //   .get(`herbicides/me/`)
+    //   .then(res => {
+    //     this.herbicides = res.data.my_herbicide.herbicides;
+    //   })
+    //   .catch(err => {
+    //   });
+    // this.$axios
+    //   .get(`herbicides/tank-mixes/`)
+    //   .then(res => {
+    //     this.mixes = res.data.tank_mix;
+    //   })
+    //   .catch(err => {
+    //   });
     this.$axios
       .get(`farms/crop-traits/me/`)
       .then(res => {
