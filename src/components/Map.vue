@@ -11,17 +11,18 @@ import Draw from "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
 import Editable from "leaflet-editable";
 import Search from "leaflet-search";
+import Vue from "vue";
 
 export default {
   name: "Map",
-  data: function() {
+  data: function () {
     return {
       map: null,
       center: [45.72727000000003, 18.10650000000004],
       active: false,
       fieldPolygon: [],
       drawing: false,
-      activePolygon: false
+      activePolygon: false,
     };
   },
   computed: {
@@ -42,7 +43,7 @@ export default {
     },
     drawNeighbor() {
       return this.$store.state.neighborFields;
-    }
+    },
   },
   watch: {
     locationChange(newLocation, oldLocation) {
@@ -74,6 +75,7 @@ export default {
     },
     drawNeighbor(newNeighbors, oldNeighbors) {
       let map = this.map;
+      let store = this.$store
       for (const neighbor in newNeighbors.dispute_coords) {
         var polygon = L.polygon(newNeighbors.dispute_coords[neighbor].mpoly)
           .setStyle({ color: "red" })
@@ -86,27 +88,149 @@ export default {
           ).addTo(this.map);
         } else {
           var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
+            .bindPopup(`<div style="width:344px" id="popup"></div>`)
             .setStyle({ color: "cyan", id: neighbor })
             .addTo(this.map);
-          polygon.on("click", function() {
-            console.log(newNeighbors.neighbour_coords[neighbor]);
+          polygon.on("click", function () {
+            let img = "@/assets/images/icons/envelope.png";
+            new Vue({
+              el: "#popup",
+
+              data: function () {
+                return {
+                  neighborEmail: "",
+                  fieldName: "",
+                  img: require("@/assets/images/icons/envelope.png"),
+                  img2: require("@/assets/images/icons/farm.png"),
+                  active: "main",
+                };
+              },
+              methods: {
+                inviteNeighbor() {
+                  this.$axios
+                    .post(`/farms/fields/${neighbor}/invite/`, {email: this.neighborEmail})
+                    .then((res) => {
+                      console.log(res.data);
+                      store.dispatch("addNotification", {
+                        type: "success",
+                        message: "Neighbor successfully invited!",
+                      });
+                    })
+                    .catch((err) => {
+                      this.$store.dispatch("addNotification", {
+                        type: "error",
+                        message: "There was an error inviting neighbor!",
+                      });
+                    });
+                },
+                claimField(){
+                  console.log('claim');
+                }
+              },
+              template: `<div>
+                <div class="w-full">
+                  <div v-if="active === 'main'" class="flex">
+                    <div class="py-5 flex">
+                      <button
+                        class="rounded-lg py-1 text-lg m-auto w-36 mr-4 designActionButton"
+                        v-on:click="active = 'invite'"
+                      >
+                        Invite neighbor
+                      </button>
+                    </div>
+                    <div class="py-5 flex">
+                      <button
+                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                        v-on:click="active = 'claim'"
+                      >
+                        Claim field
+                      </button>
+                    </div>
+                  </div>
+                  <div v-if="active === 'invite'">
+                    <div class="w-full">
+                      <div class="w-full pt-6">
+                        <div>
+                          <img
+                            class="inline"
+                            :src="img"
+                          />
+                          <span class="my-auto text-lg ml-2 align-middle"
+                            >Neighbour e-mail address</span
+                          >
+                        </div>
+                        <div class="flex">
+                          <input
+                            type="email"
+                            class="w-72 mr-1 border-b-2 text-lg border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                            placeholder="Enter neighbour e-mail address"
+                            autofocus
+                            v-model="neighborEmail"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pt-10 flex">
+                      <button
+                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                        v-on:click="inviteNeighbor"
+                      >
+                        Invite
+                      </button>
+                    </div>
+                  </div>
+                  <div v-if="active === 'claim'">
+                    <div class="w-full">
+                      <div class="w-full pt-6">
+                        <div>
+                          <img
+                            class="inline"
+                            :src="img2"
+                          />
+                          <span class="my-auto text-lg ml-2 align-middle"
+                            >Field name</span
+                          >
+                        </div>
+                        <div class="flex">
+                          <input
+                            type="text"
+                            class="w-72 mr-1 border-b-2 text-lg border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                            placeholder="Enter field name"
+                            autofocus
+                            v-model="fieldName"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pt-10 flex">
+                      <button
+                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                        v-on:click="claimField"
+                      >
+                        Claim
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>`,
+            });
           });
         }
       }
-    }
+    },
   },
   methods: {
-    setupLeafletMap: function() {
+    setupLeafletMap: function () {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true
+        editable: true,
       }).setView(this.center, 13);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright"
+          position: "bottomright",
         })
         .addTo(this.map);
 
@@ -115,7 +239,7 @@ export default {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
         attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -130,24 +254,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10
-            }
+              weight: 10,
+            },
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false
+          marker: false,
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true
-        }
+          remove: true,
+        },
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -163,7 +287,7 @@ export default {
       let map = this.map;
 
       //on zoom get neighbour fields
-      this.map.on("zoomend", function() {
+      this.map.on("zoomend", function () {
         if (
           map.getZoom() > 14 &&
           !scopeThis.fieldPolygon[0] &&
@@ -173,20 +297,20 @@ export default {
           //console.log(map.getCenter());
           store.dispatch("addNotification", {
             type: "success",
-            message: "Calculating neighboring fields..."
+            message: "Calculating neighboring fields...",
           });
         }
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function(e) {
+      this.map.on("draw:created", function (e) {
         let layer = e.layer;
 
         let newCoords = [];
         layer.options.color = "orange";
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function(value, key) {
+        layer.editing.latlngs[0][0].map(function (value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -200,13 +324,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function(e) {
+      this.map.on("draw:edited", function (e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function(layer) {
-          layer.editing.latlngs[0][0].map(function(value, key) {
+        layers.eachLayer(function (layer) {
+          layer.editing.latlngs[0][0].map(function (value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -216,7 +340,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function(e) {
+      this.map.on("draw:canceled", function (e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -246,11 +370,14 @@ export default {
           }
         }
       }
-    }
+    },
+    inviteNeighbor() {
+      console.log("fds");
+    },
   },
   mounted() {
     this.setupLeafletMap();
-  }
+  },
 };
 </script>
 

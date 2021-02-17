@@ -101,3 +101,6 @@ input[type=number] {
 .list-item:hover .invert-to-white {
     filter: brightness(0) invert(1);
   }
+/* .leaflet-popup-content{
+    width: 100% !important;
+} */
