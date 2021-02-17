@@ -49,6 +49,19 @@ export const auth = {
       await axios.get("auth/users/me").then(res => {
         context.commit("setUser", res.data.user);
       });
+    },
+
+    async setUserSubscription() {
+      let jwt = JSON.parse(localStorage.getItem("jwt"));
+      await axios
+        .get("subscription/me/", {
+          headers: { Authorization: "JWT " + jwt.access }
+        })
+        .then(res => {
+          localStorage.removeItem("subscription");
+          localStorage.setItem("subscription", "F");
+        })
+        .catch(err => {});
     }
   },
   mutations: {

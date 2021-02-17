@@ -79,13 +79,19 @@ router.beforeEach((to, from, next) => {
     "/register",
     "/password_reset",
     "/pricing_plans",
-    "/payment_details"
+    "/payment_details",
+    "/pricing_plans"
   ];
   const authRequired = !publicPages.includes(to.path);
   const jwt = JSON.parse(localStorage.getItem("jwt"));
+  let subscription = localStorage.getItem("subscription");
 
   if (authRequired && !jwt) {
     next("/");
+  } else if (authRequired && jwt && !subscription) {
+    next("/pricing_plans");
+  } else if ((to.path === "/" && jwt) || (to.path === "/register" && jwt)) {
+    next("/dashboard");
   } else {
     next();
   }

@@ -7,16 +7,19 @@ class AuthService {
         email: user.email,
         password: user.password
       })
-      .then(response => {
+      .then(async response => {
         if (response.data.access) {
           localStorage.removeItem("jwt");
           localStorage.setItem("jwt", JSON.stringify(response.data));
+          await this.setUserSubscription(
+            JSON.parse(localStorage.getItem("jwt"))
+          );
         }
       });
   }
 
   logout() {
-    localStorage.removeItem("jwt");
+    localStorage.clear();
   }
 
   async register(user) {
@@ -31,9 +34,9 @@ class AuthService {
         security_question: user.security_question,
         security_answer: user.security_question_answer
       })
-      .then(response => {
-        if (response.data.access) {
-          localStorage.removeItem("jwt");
+      .then(async response => {
+        if (await response.data.access) {
+          localStorage.clear();
           localStorage.setItem("jwt", JSON.stringify(response.data));
         }
       });

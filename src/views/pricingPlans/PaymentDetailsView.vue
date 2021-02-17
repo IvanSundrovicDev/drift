@@ -187,8 +187,8 @@ export default {
     };
   },
   methods: {
-    finish() {
-      this.$axios
+    async finish() {
+      await this.$axios
         .post("subscription/verify-card/", {
           number: this.cardNumber,
           cvc: this.cardCvv,
@@ -201,12 +201,16 @@ export default {
               payment_method_id: res.data.payment_method_id,
               plan: "B"
             })
-            .then(response => {
+            .then(async response => {
               if (this.registration) {
-                this.$router.push("Dashboard");
+                await this.$store
+                  .dispatch("auth/setUserSubscription")
+                  .then(res => {
+                    this.$router.push("Dashboard");
+                  });
               } else {
                 this.$emit("pricing-plan-charged");
-                this.$store.dispatch("addNotification", {
+                await this.$store.dispatch("addNotification", {
                   type: "success",
                   message: "You have successfully upgraded your plan!"
                 });

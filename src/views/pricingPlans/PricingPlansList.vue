@@ -113,18 +113,24 @@
 export default {
   name: "PricingPlansList",
   methods: {
-    selectPlan(plan) {
+    async selectPlan(plan) {
       if (plan === "F") {
-        this.$axios
-          .post("subscription/", {
+        await this.$axios
+          .patch("subscription/me/", {
             plan: plan,
             account: this.$store.state.auth.user.account
           })
-          .then(res => {
-            this.$router.push("Dashboard");
+          .then(async res => {
+            if (res.data.subscription.plan === plan) {
+              await this.$store
+                .dispatch("auth/setUserSubscription")
+                .then(res => {
+                  this.$router.push("Dashboard");
+                });
+            }
           });
       } else {
-        this.$router.push({ name: "Payment Details" });
+        await this.$router.push({ name: "Payment Details" });
       }
     }
   },
