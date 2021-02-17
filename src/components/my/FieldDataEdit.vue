@@ -34,7 +34,7 @@
     <div
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
-      <h1 class="text-xl m-auto">{{fieldData.crop ? fieldData.crop.name : "None"}}</h1>
+      <h1 class="text-xl m-auto text-center">{{fieldData.crop_name ? fieldData.crop_name : "None"}}</h1>
     </div>
     <!-- <div
       v-on:click="activate('herbicide')"
@@ -65,7 +65,7 @@
     <div
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
-      <h1 class="text-xl m-auto">{{fieldData.cropTrait ? fieldData.cropTrait.name : "None"}}</h1>
+      <h1 class="text-xl m-auto text-center">{{fieldData.crop_trait_name ? fieldData.crop_trait_name : "None"}}</h1>
     </div>
   </div>
 </template>

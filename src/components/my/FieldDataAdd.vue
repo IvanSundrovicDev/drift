@@ -11,7 +11,7 @@
         {{ data.selectedCrop.id ? data.selectedCrop.name : "Crop" }}
       </h1>
     </div>
-    <div class="w-full overflow-auto max-h-96" v-show="active === 'crop'">
+    <div class="w-full overflow-auto h-96" v-show="active === 'crop'">
       <div
         v-for="item in crops"
         v-on:click="select('crop', item)"
@@ -85,7 +85,7 @@
         {{ data.selectedTrait.id ? data.selectedTrait.name : "Trait" }}
       </h1>
     </div>
-    <div class="w-full overflow-auto max-h-96" v-show="active === 'trait'">
+    <div class="w-full overflow-auto h-96" v-show="active === 'trait'">
       <div
         v-for="item in traits"
         v-on:click="select('trait', item)"

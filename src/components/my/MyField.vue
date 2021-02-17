@@ -24,6 +24,7 @@
               <h1 class="text-xl">Delete field</h1>
             </div>
             <div
+              v-on:click="addNeighbor"
               class="flex list-item my-4 p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer"
             >
               <Neighbor class="my-auto invert-to-white mr-2" />
@@ -91,12 +92,16 @@ export default {
     activateField(field) {
       this.$store.dispatch("setActiveLocation", field.mpoly[0]);
       this.$store.dispatch("setFieldPolygon", field.mpoly);
-      this.$store.dispatch("drawNeighbor", field.neighbour_coords);
+      this.$store.dispatch("drawNeighbor", field);
       this.$emit("activateField");
     },
     activatePopup() {
       this.activateField(this.field)
       this.$emit("activatePopup", this.field.id);
+    },
+    addNeighbor(){
+      this.$emit("activatePopup", this.field.id);
+      this.$store.dispatch("setAddNeighbor", true);
     }
   }
 };

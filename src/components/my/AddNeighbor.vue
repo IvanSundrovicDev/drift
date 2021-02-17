@@ -8,50 +8,12 @@
       ></font-awesome-icon>
       <div class="px-32">
         <div class="flex m-auto">
-          <h1 class="text-2xl m-auto text-drift-blue">Add Field</h1>
+          <h1 class="text-2xl m-auto text-drift-blue">Add Neighbor Field</h1>
         </div>
       </div>
     </div>
-    <div class="flex py-5 pl-8 pr-4">
-      <font-awesome-icon class="fa-lg pt-1" icon="search"></font-awesome-icon>
-      <input
-        class="w-full text-xl ml-4 focus:outline-none"
-        type="text"
-        v-model="searchField"
-        v-on:input="search"
-        v-if="!activeLocationName"
-        placeholder="Search address"
-      />
-      <div v-else class="w-full">
-        <font-awesome-icon
-          class="float-right fa-lg hover:text-red-600 cursor-pointer"
-          icon="times"
-          v-on:click="removeLocation"
-        ></font-awesome-icon>
-        <h1 class="w-full text-xl ml-4">
-          {{ activeLocationName }}
-        </h1>
-      </div>
-    </div>
-    <div
-      v-if="locations[0] && !activeLocationName"
-      class="border-t-2 border-gray-200"
-    >
-      <div
-        v-for="item in locations"
-        :key="item.id"
-        class="flex py-3 hover:bg-gray-200 cursor-pointer px-8"
-        v-on:click="getLocations(item)"
-      >
-        <font-awesome-icon
-          class="fa-lg pt-1 text-drift-salmon"
-          icon="map-marker-alt"
-        ></font-awesome-icon>
-        <h3 class="text-xl ml-5">{{ item.text }}</h3>
-      </div>
-    </div>
     <div>
-      <div v-if="!fieldCoordinates" class="border-t-2 border-gray-200">
+      <div v-if="!fieldCoordinates">
         <div
           v-on:click="initPolygonDraw"
           class="flex py-3 px-8 cursor-pointer"
@@ -65,7 +27,7 @@
           <h3 class="text-xl ml-5">Select field location</h3>
         </div>
       </div>
-      <div v-if="fieldCoordinates" class="border-t-2 border-gray-200">
+      <div v-if="fieldCoordinates">
         <div class="flex py-3 px-8 pr-4">
           <font-awesome-icon
             class="fa-lg mt-1"
@@ -81,7 +43,7 @@
           </div>
         </div>
       </div>
-      <div v-if="fieldCoordinates">
+      <div>
         <div class="flex border-t-2 border-gray-200 py-3 px-8">
           <font-awesome-icon
             class="fa-lg pt-1 text-drift-blue"
@@ -96,7 +58,7 @@
         </div>
       </div>
       <div
-        v-if="fieldName && fieldCoordinates"
+        v-if="fieldCoordinates"
         class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
         v-on:click="saveField"
       >
@@ -117,15 +79,10 @@ export default {
   components: {
     FieldDataAdd,
   },
-  props: ["farmId"],
   data() {
     return {
-      searchField: "",
-      activeLocationName: null,
-      activeLocationCoordinates: null,
       fieldCoordinates: null,
       fieldName: "",
-      locations: [],
       fieldData: {
         selectedCrop: {
           id: null,
@@ -153,38 +110,6 @@ export default {
     },
   },
   methods: {
-    search() {
-      if (this.searchField.length >= 1) {
-        let axiosNoAuth = this.$axios.create();
-        delete axiosNoAuth.defaults.headers.common["Authorization"];
-
-        axiosNoAuth
-          .get(
-            `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`
-          )
-          .then((res) => {
-            this.locations = res.data.suggestions;
-          });
-      }
-    },
-    getLocations(item) {
-      this.activeLocationName = item.text;
-      let axiosNoAuth = this.$axios.create();
-      delete axiosNoAuth.defaults.headers.common["Authorization"];
-
-      axiosNoAuth
-        .get(
-          `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`
-        )
-        .then((res) => {
-          let activeLocation = [
-            res.data.candidates[0].location.y,
-            res.data.candidates[0].location.x,
-          ];
-          this.activeLocationCoordinates = activeLocation;
-          this.$store.dispatch("setActiveLocation", activeLocation);
-        });
-    },
     initPolygonDraw() {
       this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
@@ -199,28 +124,26 @@ export default {
         mpoly: this.fieldCoordinates,
       };
       this.$axios
-        .post(`farms/${this.farmId}/fields/`, field)
+        .post(`farms/fields/`, field)
         .then((res) => {
           this.$store.dispatch("setAddedField", res.data.field);
+          this.$store.dispatch("setAddNeighbor", false);
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully added!",
+            message: "Neighbor field successfully added!",
           });
         })
         .catch((err) => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error adding your filed!",
+            message: "There was an error adding neighbor filed!",
           });
         });
     },
     close() {
       this.$emit("toggle-farm-sidebar");
+      this.$store.dispatch("setAddNeighbor", false);
       this.$store.dispatch("setRemovedPolygon", false);
-      this.$store.dispatch("setPolygonDraw", false);
-    },
-    removeLocation() {
-      this.activeLocationName = null;
     },
     removeField() {
       this.fieldCoordinates = null;

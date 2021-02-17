@@ -48,6 +48,11 @@
         v-on:farmAdded="closeAndRefreshFarms"
       />
     </div>
+    <div v-if="active === 'addNeighbor'">
+      <AddNeighbor
+        v-on:toggle-farm-sidebar="active = 'farmSidebar'"
+      />
+    </div>
     <div
       class="whitescreen-active"
       v-if="
@@ -88,6 +93,7 @@
 <script>
 import MyFarm from "../my/MyFarm";
 import AddField from "../my/AddField";
+import AddNeighbor from "../my/AddNeighbor";
 import AddFarm from "../my/AddFarm";
 import Tutorial from "../common/Tutorial";
 
@@ -96,6 +102,7 @@ export default {
   components: {
     MyFarm,
     AddField,
+    AddNeighbor,
     AddFarm,
     Tutorial
   },
@@ -109,12 +116,18 @@ export default {
   computed: {
     newActiveField() {
       return this.$store.state.addedField;
+    },
+    addNeighbor() {
+      return this.$store.state.addNeighbor
     }
   },
   watch: {
     newActiveField(newField, oldField) {
       this.active = "farmSidebar";
-      this.activeFarm = newField.farm;
+      //this.activeFarm = newField.farm;
+    },
+    addNeighbor(newState, oldState) {
+      newState ? this.active = 'addNeighbor' : this.active = 'farmSidebar'
     }
   },
   methods: {
@@ -137,11 +150,11 @@ export default {
     },
     activateAddField() {
       this.active = "addField";
-      this.$store.dispatch("setRemovedPolygon", false);
+      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     activateAddFarm() {
       this.active = "addFarm";
-      this.$store.dispatch("setRemovedPolygon", false);
+      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     closeAndRefreshFarms() {
       this.active = "farmSidebar";

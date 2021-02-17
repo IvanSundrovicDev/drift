@@ -13,9 +13,11 @@ export default new Vuex.Store({
     polygonCoordinates: [],
     fieldPolygon: [],
     removedPolygon: true,
+    removeAllPolygons: false,
     addedField: {},
     notifications: [],
-    neighborFields: []
+    neighborFields: [],
+    addNeighbor: false
   },
   mutations: {
     setActiveLocation(state, value) {
@@ -32,6 +34,9 @@ export default new Vuex.Store({
     },
     setRemovedPolygon(state, value) {
       state.removedPolygon = value;
+    },
+    setRemoveAllPolygons(state, value) {
+      state.removeAllPolygons = value;
     },
     setAddedField(state, value) {
       state.addedField = value;
@@ -50,6 +55,9 @@ export default new Vuex.Store({
     },
     drawNeighbor(state, value){
       state.neighborFields = value
+    },
+    setAddNeighbor(state, value){
+      state.addNeighbor = value
     }
   },
   actions: {
@@ -68,6 +76,9 @@ export default new Vuex.Store({
     setRemovedPolygon(context, value) {
       context.commit("setRemovedPolygon", value);
     },
+    setRemoveAllPolygons(context, value) {
+      context.commit("setRemoveAllPolygons", value);
+    },
     setAddedField(contex, value) {
       contex.commit("setAddedField", value);
     },
@@ -79,7 +90,10 @@ export default new Vuex.Store({
     },
     drawNeighbor(contex, value) {
       contex.commit("drawNeighbor", value);
-    }
+    },
+    setAddNeighbor(contex, value) {
+      contex.commit("setAddNeighbor", value);
+    },
   },
   modules: { auth, tutorial }
 });

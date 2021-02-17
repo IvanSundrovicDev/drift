@@ -21,7 +21,7 @@ export default {
       active: false,
       fieldPolygon: [],
       drawing: false,
-      activePolygon: false
+      activePolygon: false,
     };
   },
   computed: {
@@ -37,6 +37,9 @@ export default {
     removedPolygon() {
       return this.$store.state.removedPolygon;
     },
+    removeAllPolygons() {
+      return this.$store.state.removeAllPolygons;
+    },
     drawNeighbor() {
       return this.$store.state.neighborFields;
     },
@@ -48,28 +51,47 @@ export default {
     initDrawPolygon(newState, oldState) {
       if (newState) {
         this.polygonDrawer.enable();
-        this.drawing = true
+        this.drawing = true;
       } else {
         this.polygonDrawer.disable();
-        this.drawing = false
+        this.drawing = false;
       }
     },
     drawPolygon(newPolygon, oldPolygon) {
       this.removePolygon();
-      this.activePolygon = true
-      var polygon = L.polygon(newPolygon).setStyle({ color: "orange" }).addTo(this.map);
+      this.activePolygon = true;
+      var polygon = L.polygon(newPolygon)
+        .setStyle({ color: "orange" })
+        .addTo(this.map);
     },
     removedPolygon(newState, oldState) {
-      this.removePolygon();
+      this.removeDrawnPolygon();
       this.$store.dispatch("setRemovedPolygon", true);
     },
+    removeAllPolygons(newState, oldState) {
+      this.removePolygon();
+      this.$store.dispatch("setRemoveAllPolygons", false);
+    },
     drawNeighbor(newNeighbors, oldNeighbors) {
-      for (const neighbor in newNeighbors) {
-        var polygon = L.polygon(newNeighbors[neighbor].mpoly).addTo(this.map);
-        polygon.on('click', function () {
-        console.log(newNeighbors[neighbor]);
-    });
-
+      let map = this.map
+      for (const neighbor in newNeighbors.dispute_coords) {
+        var polygon = L.polygon(newNeighbors.dispute_coords[neighbor].mpoly)
+          .setStyle({ color: "red" })
+          .addTo(this.map);
+      }
+      for (const neighbor in newNeighbors.neighbour_coords) {
+        if (newNeighbors.neighbour_coords[neighbor].is_confirmed) {
+          var polygon = L.polygon(
+            newNeighbors.neighbour_coords[neighbor].mpoly
+          ).addTo(this.map);
+        } else {
+          var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
+            .setStyle({ color: "cyan", id: neighbor})
+            .addTo(this.map);
+          polygon.on("click", function () {
+            console.log(newNeighbors.neighbour_coords[neighbor]);
+          });
+        }
       }
     },
   },
@@ -138,11 +160,16 @@ export default {
 
       this.polygonDrawer = new L.Draw.Polygon(this.map);
 
-      let map = this.map
+      let map = this.map;
 
       //on zoom get neighbour fields
       this.map.on("zoomend", function () {
-        if (map.getZoom() > 14 && !scopeThis.fieldPolygon[0] && !scopeThis.drawing && !scopeThis.activePolygon) {
+        if (
+          map.getZoom() > 14 &&
+          !scopeThis.fieldPolygon[0] &&
+          !scopeThis.drawing &&
+          !scopeThis.activePolygon
+        ) {
           //console.log(map.getCenter());
           store.dispatch("addNotification", {
             type: "success",
@@ -156,6 +183,8 @@ export default {
         let layer = e.layer;
 
         let newCoords = [];
+        layer.options.color = "orange";
+        layer.options.name = "last";
 
         layer.editing.latlngs[0][0].map(function (value, key) {
           newCoords.push([value.lat, value.lng]);
@@ -178,6 +207,7 @@ export default {
 
         layers.eachLayer(function (layer) {
           layer.editing.latlngs[0][0].map(function (value, key) {
+            layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
 
@@ -191,10 +221,24 @@ export default {
       });
     },
     removePolygon() {
-      this.fieldPolygon = []
-      this.activePolygon = false
+      this.fieldPolygon = [];
+      this.activePolygon = false;
       for (let i in this.map._layers) {
         if (this.map._layers[i]._path !== undefined) {
+          try {
+            this.map.removeLayer(this.map._layers[i]);
+          } catch (e) {
+            console.log("problem with " + e + this.map._layers[i]);
+          }
+        }
+      }
+    },
+    removeDrawnPolygon() {
+      for (let i in this.map._layers) {
+        if (
+          this.map._layers[i]._path !== undefined &&
+          this.map._layers[i].options.name
+        ) {
           try {
             this.map.removeLayer(this.map._layers[i]);
           } catch (e) {
