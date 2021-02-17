@@ -14,14 +14,14 @@ import Search from "leaflet-search";
 
 export default {
   name: "Map",
-  data: function () {
+  data: function() {
     return {
       map: null,
       center: [45.72727000000003, 18.10650000000004],
       active: false,
       fieldPolygon: [],
       drawing: false,
-      activePolygon: false,
+      activePolygon: false
     };
   },
   computed: {
@@ -42,7 +42,7 @@ export default {
     },
     drawNeighbor() {
       return this.$store.state.neighborFields;
-    },
+    }
   },
   watch: {
     locationChange(newLocation, oldLocation) {
@@ -73,7 +73,7 @@ export default {
       this.$store.dispatch("setRemoveAllPolygons", false);
     },
     drawNeighbor(newNeighbors, oldNeighbors) {
-      let map = this.map
+      let map = this.map;
       for (const neighbor in newNeighbors.dispute_coords) {
         var polygon = L.polygon(newNeighbors.dispute_coords[neighbor].mpoly)
           .setStyle({ color: "red" })
@@ -86,27 +86,27 @@ export default {
           ).addTo(this.map);
         } else {
           var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
-            .setStyle({ color: "cyan", id: neighbor})
+            .setStyle({ color: "cyan", id: neighbor })
             .addTo(this.map);
-          polygon.on("click", function () {
+          polygon.on("click", function() {
             console.log(newNeighbors.neighbour_coords[neighbor]);
           });
         }
       }
-    },
+    }
   },
   methods: {
-    setupLeafletMap: function () {
+    setupLeafletMap: function() {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true,
+        editable: true
       }).setView(this.center, 13);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright",
+          position: "bottomright"
         })
         .addTo(this.map);
 
@@ -115,7 +115,7 @@ export default {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
         attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -130,24 +130,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10,
-            },
+              weight: 10
+            }
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false,
+          marker: false
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true,
-        },
+          remove: true
+        }
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -163,7 +163,7 @@ export default {
       let map = this.map;
 
       //on zoom get neighbour fields
-      this.map.on("zoomend", function () {
+      this.map.on("zoomend", function() {
         if (
           map.getZoom() > 14 &&
           !scopeThis.fieldPolygon[0] &&
@@ -173,20 +173,20 @@ export default {
           //console.log(map.getCenter());
           store.dispatch("addNotification", {
             type: "success",
-            message: "Calculating neighboring fields...",
+            message: "Calculating neighboring fields..."
           });
         }
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function (e) {
+      this.map.on("draw:created", function(e) {
         let layer = e.layer;
 
         let newCoords = [];
         layer.options.color = "orange";
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function (value, key) {
+        layer.editing.latlngs[0][0].map(function(value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -200,13 +200,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function (e) {
+      this.map.on("draw:edited", function(e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function (layer) {
-          layer.editing.latlngs[0][0].map(function (value, key) {
+        layers.eachLayer(function(layer) {
+          layer.editing.latlngs[0][0].map(function(value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -216,7 +216,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function (e) {
+      this.map.on("draw:canceled", function(e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -246,11 +246,11 @@ export default {
           }
         }
       }
-    },
+    }
   },
   mounted() {
     this.setupLeafletMap();
-  },
+  }
 };
 </script>
 

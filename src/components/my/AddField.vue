@@ -115,7 +115,7 @@ import FieldDataAdd from "./FieldDataAdd";
 export default {
   name: "AddField",
   components: {
-    FieldDataAdd,
+    FieldDataAdd
   },
   props: ["farmId"],
   data() {
@@ -128,29 +128,29 @@ export default {
       locations: [],
       fieldData: {
         selectedCrop: {
-          id: null,
+          id: null
         },
         selectedHerbicide: {
-          id: null,
+          id: null
         },
         selectedMix: {
-          id: null,
+          id: null
         },
         selectedTrait: {
-          id: null,
-        },
-      },
+          id: null
+        }
+      }
     };
   },
   computed: {
     coordinatesChange() {
       return this.$store.state.polygonCoordinates;
-    },
+    }
   },
   watch: {
     coordinatesChange(newCoordinates, oldCordinates) {
       this.fieldCoordinates = newCoordinates;
-    },
+    }
   },
   methods: {
     search() {
@@ -162,7 +162,7 @@ export default {
           .get(
             `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=${this.searchField}&maxSuggestions=5&f=json`
           )
-          .then((res) => {
+          .then(res => {
             this.locations = res.data.suggestions;
           });
       }
@@ -176,10 +176,10 @@ export default {
         .get(
           `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`
         )
-        .then((res) => {
+        .then(res => {
           let activeLocation = [
             res.data.candidates[0].location.y,
-            res.data.candidates[0].location.x,
+            res.data.candidates[0].location.x
           ];
           this.activeLocationCoordinates = activeLocation;
           this.$store.dispatch("setActiveLocation", activeLocation);
@@ -196,21 +196,21 @@ export default {
         crop: this.fieldData.selectedCrop.id || null,
         crop_trait: this.fieldData.selectedTrait.id || null,
         name: this.fieldName,
-        mpoly: this.fieldCoordinates,
+        mpoly: this.fieldCoordinates
       };
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
-        .then((res) => {
+        .then(res => {
           this.$store.dispatch("setAddedField", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully added!",
+            message: "Field successfully added!"
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error adding your filed!",
+            message: "There was an error adding your filed!"
           });
         });
     },
@@ -228,8 +228,8 @@ export default {
     },
     updateFieldData(data) {
       this.fieldData = data;
-    },
-  },
+    }
+  }
 };
 </script>
 
