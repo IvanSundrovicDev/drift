@@ -426,9 +426,6 @@ export default {
         message: "Neighbour successfully invited!"
       });
     },
-    addUpdateCard() {
-      console.log(this.creditCard);
-    },
     getUserPricingPlan() {
       this.$axios
         .get("subscription/me/")
@@ -447,6 +444,7 @@ export default {
             account: this.$store.state.auth.user.account
           })
           .then(res => {
+            this.$store.dispatch("auth/setUserSubscription");
             this.activePlan = "F";
             this.subscriptionPlan = 0;
           })

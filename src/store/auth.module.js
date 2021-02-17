@@ -59,7 +59,7 @@ export const auth = {
         })
         .then(res => {
           localStorage.removeItem("subscription");
-          localStorage.setItem("subscription", "F");
+          localStorage.setItem("subscription", res.data.subscription.plan);
         })
         .catch(err => {});
     }

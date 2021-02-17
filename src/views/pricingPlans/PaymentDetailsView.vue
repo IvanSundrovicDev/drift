@@ -210,6 +210,7 @@ export default {
                   });
               } else {
                 this.$emit("pricing-plan-charged");
+                this.$store.dispatch("auth/setUserSubscription");
                 await this.$store.dispatch("addNotification", {
                   type: "success",
                   message: "You have successfully upgraded your plan!"
@@ -264,6 +265,14 @@ export default {
       if (this.cardMonth < this.minCardMonth) {
         this.cardMonth = "";
       }
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.registration && to.path !== "/Dashboard") {
+      localStorage.clear();
+      next();
+    } else {
+      next();
     }
   }
 };
