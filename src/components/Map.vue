@@ -66,6 +66,10 @@ export default {
     drawNeighbor(newNeighbors, oldNeighbors) {
       for (const neighbor in newNeighbors) {
         var polygon = L.polygon(newNeighbors[neighbor].mpoly).addTo(this.map);
+        polygon.on('click', function () {
+        console.log(newNeighbors[neighbor]);
+    });
+
       }
     },
   },

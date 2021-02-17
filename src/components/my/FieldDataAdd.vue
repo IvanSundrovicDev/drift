@@ -205,7 +205,6 @@ export default {
       .get(`farms/crops/me/`)
       .then(res => {
         this.crops = res.data.my_crop.crops;
-        console.log(res.data);
       })
       .catch(err => {
       });

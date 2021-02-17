@@ -126,7 +126,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.fieldData);
     this.date = new Date();
   }
 };
