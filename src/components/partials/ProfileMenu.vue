@@ -34,9 +34,10 @@
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          v-on:click="active = 'invite'"
         >
           <Help class="h-6 w-6 mt-1 invert-to-white" />
-          <h3 class="text-lg ml-3">Help</h3>
+          <h3 class="text-lg ml-3">Legal</h3>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
@@ -422,19 +423,12 @@ export default {
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
-        type: "success",
-        message: "Neighbour successfully invited!"
+        type: "error",
+        message: "Not implemented yet sry :]"
       });
     },
     getUserPricingPlan() {
-      this.$axios
-        .get("subscription/me/")
-        .then(res => {
-          res.data.subscription.plan === "F"
-            ? (this.activePlan = "F")
-            : (this.activePlan = "B");
-        })
-        .catch(err => {});
+      this.activePlan = localStorage.getItem("subscription");
     },
     changeCurrentPlan(arg) {
       if (arg === "F") {
