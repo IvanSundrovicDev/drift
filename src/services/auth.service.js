@@ -11,9 +11,6 @@ class AuthService {
         if (response.data.access) {
           localStorage.removeItem("jwt");
           localStorage.setItem("jwt", JSON.stringify(response.data));
-          await this.setUserSubscription(
-            JSON.parse(localStorage.getItem("jwt"))
-          );
         }
       });
   }

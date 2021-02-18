@@ -18,6 +18,7 @@ export const auth = {
           commit("loginSuccess", user);
           axios.defaults.headers.common = authHeader();
           await dispatch("setUserAction");
+          await dispatch("setUserSubscription");
           return Promise.resolve(user);
         },
         error => {
