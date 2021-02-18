@@ -11,7 +11,7 @@
           <div v-else class="arrow-up m-auto ml-2"></div>
         </div>
       </div>
-      <div v-if="farmOpen" class="overflow-y-auto">
+      <div v-if="farmOpen">
         <MyField
           v-for="item in fields"
           :field="item"

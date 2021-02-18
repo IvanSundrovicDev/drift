@@ -1,6 +1,6 @@
 <template>
   <div class="w-48">
-    <div class="w-full dots">
+    <div class="dots">
       <font-awesome-icon
         class="fa-2x mt-2 hover:text-drift-blue cursor-pointer"
         icon="ellipsis-h"

@@ -10,7 +10,7 @@
       <h1 class="text-xl m-auto">
         {{
           `${date.toLocaleString("default", {
-            month: "long"
+            month: "long",
           })} ${date.getDate()}`
         }}
       </h1>
@@ -32,10 +32,38 @@
       </div>
     </div>
     <div
+      v-on:click="activate('crop')"
+      v-show="active === 'crop' || !active"
+      class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
+    >
+      <div v-if="!active" class="arrow-down my-auto mr-3"></div>
+      <div v-else class="arrow-up my-auto mr-2"></div>
+      <h1 class="text-xl m-auto">
+        {{ data.selectedCrop.id ? data.selectedCrop.name : "Crop" }}
+      </h1>
+    </div>
+    <div class="w-full overflow-auto h-96" v-show="active === 'crop'">
+      <div
+        v-for="item in crops"
+        v-on:click="select('crop', item)"
+        :key="item.id"
+        class="custom-item cursor-pointer hover:bg-gray-200"
+      >
+        <div
+          :class="{
+            'salmon-border-selected': data.selectedCrop.id === item.id,
+          }"
+          class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
+        >
+          <h1 class="text-lg">{{ item.name }}</h1>
+        </div>
+      </div>
+    </div>
+    <!-- <div
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
       <h1 class="text-xl m-auto text-center">{{fieldData.crop_name ? fieldData.crop_name : "None"}}</h1>
-    </div>
+    </div> -->
     <!-- <div
       v-on:click="activate('herbicide')"
       v-show="active === 'herbicide' || !active"
@@ -63,10 +91,38 @@
       </div>
     </div> -->
     <div
+      v-on:click="activate('trait')"
+      v-show="active === 'trait' || !active"
+      class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
+    >
+      <div v-if="!active" class="arrow-down my-auto mr-3"></div>
+      <div v-else class="arrow-up my-auto mr-2"></div>
+      <h1 class="text-xl m-auto">
+        {{ data.selectedTrait.id ? data.selectedTrait.name : "Trait" }}
+      </h1>
+    </div>
+    <div class="w-full overflow-auto h-96" v-show="active === 'trait'">
+      <div
+        v-for="item in traits"
+        v-on:click="select('trait', item)"
+        :key="item.id"
+        class="custom-item cursor-pointer hover:bg-gray-200"
+      >
+        <div
+          :class="{
+            'salmon-border-selected': data.selectedTrait.id === item.id,
+          }"
+          class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
+        >
+          <h1 class="text-lg">{{ item.name }}</h1>
+        </div>
+      </div>
+    </div>
+    <!-- <div
       class="flex border-b border-gray-200 px-8 py-8 cursor-pointer"
     >
       <h1 class="text-xl m-auto text-center">{{fieldData.crop_trait_name ? fieldData.crop_trait_name : "None"}}</h1>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -75,59 +131,131 @@ import DatePicker from "v-calendar/lib/components/date-picker.umd";
 
 export default {
   name: "FieldData",
-  props:["fieldData"],
+  props: ["fieldData"],
   components: {
-    DatePicker
+    DatePicker,
   },
   data() {
     return {
+      data: {
+        selectedCrop: {
+          id: "",
+          name: "",
+        },
+        selectedTrait: {
+          id: "",
+          name: "",
+        },
+      },
       date: "",
+      crops: "",
+      traits: "",
       active: "",
       items: 10,
       selectedCrops: [],
       selectedHerbicides: [],
-      selectedTraits: []
+      selectedTraits: [],
     };
   },
+  computed: {
+    watchUpdateProps() {
+      return this.fieldData;
+    },
+  },
+  watch: {
+    watchUpdateProps(newProps, oldProps) {
+      this.updateProps();
+    },
+  },
   methods: {
+    updateProps() {
+      this.data = {
+        selectedCrop: {
+          id: this.fieldData.crop ? this.fieldData.crop : "",
+          name: this.fieldData.crop_name ? this.fieldData.crop_name : "",
+        },
+        selectedTrait: {
+          id: this.fieldData.crop_trait ? this.fieldData.crop_trait : "",
+          name: this.fieldData.crop_trait_name
+            ? this.fieldData.crop_trait_name
+            : "",
+        },
+      };
+    },
     activate(id) {
       if (!this.active) {
         this.active = id;
       } else this.active = "";
     },
-    select(item, id) {
-      switch (item) {
-        case "crops":
-          if (this.selectedCrops.find(element => element === id)) {
-            this.selectedCrops = this.selectedCrops.filter(item => item !== id);
+    select(name, item) {
+      switch (name) {
+        case "crop":
+          if (
+            !this.data.selectedCrop ||
+            this.data.selectedCrop.id !== item.id
+          ) {
+            this.data.selectedCrop = item;
+            this.active = "";
           } else {
-            this.selectedCrops.push(id);
+            this.data.selectedCrop = "";
           }
           break;
-        case "herbicides":
-          if (this.selectedHerbicides.find(element => element === id)) {
-            this.selectedHerbicides = this.selectedHerbicides.filter(
-              item => item !== id
-            );
+        // case "herbicides":
+        //   if (this.selectedHerbicides.find(element => element === id)) {
+        //     this.selectedHerbicides = this.selectedHerbicides.filter(
+        //       item => item !== id
+        //     );
+        //   } else {
+        //     this.selectedHerbicides.push(id);
+        //   }
+        //   break;
+        case "trait":
+          if (
+            !this.data.selectedTrait ||
+            this.data.selectedTrait.id !== item.id
+          ) {
+            this.data.selectedTrait = item;
+            this.active = "";
           } else {
-            this.selectedHerbicides.push(id);
-          }
-          break;
-        case "traits":
-          if (this.selectedTraits.find(element => element === id)) {
-            this.selectedTraits = this.selectedTraits.filter(
-              item => item !== id
-            );
-          } else {
-            this.selectedTraits.push(id);
+            this.data.selectedTrait = "";
           }
           break;
       }
+    },
+    updateField(){
+      
     }
   },
   beforeMount() {
+    this.updateProps()
     this.date = new Date();
-  }
+    this.$axios
+      .get(`farms/crops/me/`)
+      .then((res) => {
+        this.crops = res.data.my_crop.crops;
+      })
+      .catch((err) => {});
+    // this.$axios
+    //   .get(`herbicides/me/`)
+    //   .then(res => {
+    //     this.herbicides = res.data.my_herbicide.herbicides;
+    //   })
+    //   .catch(err => {
+    //   });
+    // this.$axios
+    //   .get(`herbicides/tank-mixes/`)
+    //   .then(res => {
+    //     this.mixes = res.data.tank_mix;
+    //   })
+    //   .catch(err => {
+    //   });
+    this.$axios
+      .get(`farms/crop-traits/me/`)
+      .then((res) => {
+        this.traits = res.data.my_crop_trait.crop_traits;
+      })
+      .catch((err) => {});
+  },
 };
 </script>
 

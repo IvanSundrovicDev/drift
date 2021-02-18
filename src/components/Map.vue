@@ -62,7 +62,7 @@ export default {
       this.removePolygon();
       this.activePolygon = true;
       var polygon = L.polygon(newPolygon)
-        .setStyle({ color: "orange" })
+        .setStyle({ color: "#FFF", fillColor: "#FFF", fillOpacity: 0.3 })
         .addTo(this.map);
     },
     removedPolygon(newState, oldState) {
@@ -75,27 +75,35 @@ export default {
     },
     drawNeighbor(newNeighbors, oldNeighbors) {
       let map = this.map;
-      let store = this.$store
+      let store = this.$store;
       for (const neighbor in newNeighbors.dispute_coords) {
         var polygon = L.polygon(newNeighbors.dispute_coords[neighbor].mpoly)
-          .setStyle({ color: "red" })
+          .setStyle({
+            color: "#EC2828",
+            fillColor: "#EC2828",
+            fillOpacity: 0.3,
+          })
           .addTo(this.map);
       }
       for (const neighbor in newNeighbors.neighbour_coords) {
         if (newNeighbors.neighbour_coords[neighbor].is_confirmed) {
-          var polygon = L.polygon(
-            newNeighbors.neighbour_coords[neighbor].mpoly
-          ).addTo(this.map);
+          var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
+            .setStyle({
+              color: "#FFFFFF",
+              fillColor: "#28AAE1",
+              fillOpacity: 0.3,
+              id: neighbor,
+            })
+            .addTo(this.map);
         } else {
           var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
             .bindPopup(`<div style="width:344px" id="popup"></div>`)
-            .setStyle({ color: "cyan", id: neighbor })
+            .setStyle({ color: "#FFF", fillOpacity: 0, id: neighbor })
             .addTo(this.map);
           polygon.on("click", function () {
             let img = "@/assets/images/icons/envelope.png";
             new Vue({
               el: "#popup",
-
               data: function () {
                 return {
                   neighborEmail: "",
@@ -108,9 +116,11 @@ export default {
               methods: {
                 inviteNeighbor() {
                   this.$axios
-                    .post(`/farms/fields/${neighbor}/invite/`, {email: this.neighborEmail})
+                    .post(`/farms/fields/${neighbor}/invite/`, {
+                      email: this.neighborEmail,
+                    })
                     .then((res) => {
-                      console.log(res.data);
+                      map.closePopup();
                       store.dispatch("addNotification", {
                         type: "success",
                         message: "Neighbor successfully invited!",
@@ -123,9 +133,9 @@ export default {
                       });
                     });
                 },
-                claimField(){
-                  console.log('claim');
-                }
+                claimField() {
+                  console.log("claim");
+                },
               },
               template: `<div>
                 <div class="w-full">
@@ -286,19 +296,34 @@ export default {
 
       let map = this.map;
 
+      let fieldsShown = false
       //on zoom get neighbour fields
       this.map.on("zoomend", function () {
         if (
           map.getZoom() > 14 &&
           !scopeThis.fieldPolygon[0] &&
           !scopeThis.drawing &&
-          !scopeThis.activePolygon
+          !scopeThis.activePolygon &&
+          !fieldsShown
         ) {
-          //console.log(map.getCenter());
+          let coords = map.getCenter();
+
+          scopeThis.$axios
+            .post(`farms/fields/location-search/`, coords)
+            .then((res) => {
+              fieldsShown = true
+              let fields = {neighbour_coords: res.data, dispute_coords: []};
+              store.dispatch("drawNeighbor", fields);
+            })
+            .catch((err) => {});
           store.dispatch("addNotification", {
             type: "success",
             message: "Calculating neighboring fields...",
           });
+        }
+        else if (map.getZoom() <= 14){
+          fieldsShown = false
+          scopeThis.removePolygon()
         }
       });
 
@@ -307,7 +332,10 @@ export default {
         let layer = e.layer;
 
         let newCoords = [];
-        layer.options.color = "orange";
+
+        layer.options.color = "#FFF";
+        layer.options.fillColor = "#FFF";
+        layer.options.fillOpacity = 0.3;
         layer.options.name = "last";
 
         layer.editing.latlngs[0][0].map(function (value, key) {
@@ -371,6 +399,7 @@ export default {
         }
       }
     },
+    
     inviteNeighbor() {
       console.log("fds");
     },
