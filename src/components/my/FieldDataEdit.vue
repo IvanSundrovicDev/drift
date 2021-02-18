@@ -221,13 +221,34 @@ export default {
           }
           break;
       }
+      this.updateField()
     },
-    updateField(){
-      
-    }
+    updateField() {
+      let field = {
+        crop_trait: this.data.selectedTrait.id,
+        crop: this.data.selectedCrop.id
+      }
+      this.$axios
+        .patch(`/farms/${this.fieldData.farm}/fields/${this.fieldData.id}/`, field)
+        .then((res) => {
+          this.$store.dispatch("setAddedField", this.fieldData);
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Field successfully updated!",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "There was an error updating field!",
+          });
+        });
+    },
   },
   beforeMount() {
-    this.updateProps()
+    console.log(this.fieldData);
+    this.updateProps();
     this.date = new Date();
     this.$axios
       .get(`farms/crops/me/`)
