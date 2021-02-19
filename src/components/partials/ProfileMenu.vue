@@ -1,7 +1,7 @@
 <template>
   <div class="fixed right-0 bg-white rounded-md border border-gray-200">
     <div v-if="active !== 'membership'" class="m-5">
-      <div v-if="active === 'menu'">
+      <div class="select-none" v-if="active === 'menu'">
         <div class="flex mb-6">
           <img
             class="h-9 w-9 rounded-md"
@@ -34,16 +34,48 @@
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
-          v-on:click="active = 'invite'"
+          v-on:click="menuOpen = !menuOpen"
         >
-          <Help class="h-6 w-6 mt-1 invert-to-white" />
+          <Legal class="h-6 w-6 mt-0.5 invert-to-white" />
           <h3 class="text-lg ml-3">Legal</h3>
+        </div>
+        <div
+          class="py-1 my-1 border-b-2 border-t-2 border-drift-blue"
+          v-if="menuOpen"
+        >
+          <div
+            v-on:click="
+              openModal = true;
+              modalNo = 1;
+            "
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 1</h3>
+          </div>
+          <div
+            v-on:click="
+              openModal = true;
+              modalNo = 2;
+            "
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 2</h3>
+          </div>
+          <div
+            v-on:click="
+              openModal = true;
+              modalNo = 3;
+            "
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 3</h3>
+          </div>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           v-on:click="logout"
         >
-          <Logout class="h-6 w-6 mt-1 invert-to-white" />
+          <Logout class="h-6 w-6 mt-0.5 invert-to-white" />
           <h3 class="text-lg ml-3">Logout</h3>
         </div>
       </div>
@@ -348,6 +380,25 @@
         </div>
       </div>
     </div>
+    <div v-if="openModal" class="whitescreen-active flex">
+      <div
+        class="bg-white border-2 border-gray-300 h-96 w-96 m-auto text-center"
+      >
+        <div>
+          <font-awesome-icon
+            class="float-right fa-lg hover:text-red-600 cursor-pointer"
+            icon="times"
+            v-on:click="
+              openModal = false;
+              modalNo = 0;
+            "
+          ></font-awesome-icon>
+        </div>
+        <div>
+          test
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -355,7 +406,7 @@
 import EditProfile from "../../assets/images/icons/edit.svg";
 import Subscriptions from "../../assets/images/icons/Subscriptions.svg";
 import Invite from "../../assets/images/icons/Invite.svg";
-import Help from "../../assets/images/icons/Help.svg";
+import Legal from "../../assets/images/icons/Legal.svg";
 import Logout from "../../assets/images/icons/Logout.svg";
 import LeftArrow from "../../assets/images/icons/LeftArrow.svg";
 import GiftCard from "../../assets/images/icons/GiftCard.svg";
@@ -367,7 +418,7 @@ export default {
     EditProfile,
     Subscriptions,
     Invite,
-    Help,
+    Legal,
     Logout,
     LeftArrow,
     GiftCard,
@@ -376,6 +427,9 @@ export default {
   data() {
     return {
       active: "menu",
+      menuOpen: false,
+      openModal: false,
+      modalNo: 0,
       paymentDetailsActive: false,
       subscriptionPlan: false,
       activePlan: "",

@@ -11,6 +11,7 @@ import CropList from "../views/CropList";
 import HerbicideList from "../views/HerbicideList";
 import TraitList from "../views/TraitList";
 import TankMix from "../views/TankMix";
+import { auth } from "@/store/auth.module";
 
 Vue.use(VueRouter);
 
@@ -90,7 +91,18 @@ router.beforeEach((to, from, next) => {
     next("/");
   } else if (authRequired && jwt && !subscription) {
     next("/pricing_plans");
-  } else if ((to.path === "/" && jwt) || (to.path === "/register" && jwt)) {
+  } else if (
+    !authRequired &&
+    jwt &&
+    !subscription &&
+    to.path !== "/pricing_plans"
+  ) {
+    localStorage.clear();
+    next();
+  } else if (
+    (to.path === "/" && jwt && subscription) ||
+    (to.path === "/register" && jwt && subscription)
+  ) {
     next("/dashboard");
   } else {
     next();

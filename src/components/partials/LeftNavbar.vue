@@ -109,7 +109,7 @@
 <script>
 import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
-import Traits from "../../assets/images/navbar-icons/traits.svg";
+import Traits from "../../assets/images/navbar-icons/trait-icon.svg";
 import Crops from "../../assets/images/navbar-icons/crops.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
 import Analytics from "../../assets/images/navbar-icons/analitics.svg";

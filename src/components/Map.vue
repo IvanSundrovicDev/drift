@@ -15,14 +15,14 @@ import Vue from "vue";
 
 export default {
   name: "Map",
-  data: function () {
+  data: function() {
     return {
       map: null,
       center: [45.72727000000003, 18.10650000000004],
       active: false,
       fieldPolygon: [],
       drawing: false,
-      activePolygon: false,
+      activePolygon: false
     };
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
     },
     drawNeighbor() {
       return this.$store.state.neighborFields;
-    },
+    }
   },
   watch: {
     locationChange(newLocation, oldLocation) {
@@ -81,7 +81,7 @@ export default {
           .setStyle({
             color: "#EC2828",
             fillColor: "#EC2828",
-            fillOpacity: 0.3,
+            fillOpacity: 0.3
           })
           .addTo(this.map);
       }
@@ -92,7 +92,7 @@ export default {
               color: "#FFFFFF",
               fillColor: "#28AAE1",
               fillOpacity: 0.3,
-              id: neighbor,
+              id: neighbor
             })
             .addTo(this.map);
         } else {
@@ -100,42 +100,60 @@ export default {
             .bindPopup(`<div style="width:344px" id="popup"></div>`)
             .setStyle({ color: "#FFF", fillOpacity: 0, id: neighbor })
             .addTo(this.map);
-          polygon.on("click", function () {
+          polygon.on("click", function() {
             let img = "@/assets/images/icons/envelope.png";
             new Vue({
               el: "#popup",
-              data: function () {
+              data: function() {
                 return {
                   neighborEmail: "",
                   fieldName: "",
                   img: require("@/assets/images/icons/envelope.png"),
                   img2: require("@/assets/images/icons/farm.png"),
-                  active: "main",
+                  active: "main"
                 };
               },
               methods: {
                 inviteNeighbor() {
                   this.$axios
                     .post(`/farms/fields/${neighbor}/invite/`, {
-                      email: this.neighborEmail,
+                      email: this.neighborEmail
                     })
-                    .then((res) => {
+                    .then(res => {
                       map.closePopup();
                       store.dispatch("addNotification", {
                         type: "success",
-                        message: "Neighbor successfully invited!",
+                        message: "Neighbor successfully invited!"
                       });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                       this.$store.dispatch("addNotification", {
                         type: "error",
-                        message: "There was an error inviting neighbor!",
+                        message: "There was an error inviting neighbor!"
                       });
                     });
                 },
                 claimField() {
-                  console.log("claim");
-                },
+                  this.$axios
+                    .patch(
+                      `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                      { name: this.fieldName, farm: newNeighbors.farm }
+                    )
+                    .then(res => {
+                      res.data.mpoly = [];
+                      store.dispatch("setAddedField", res.data.field);
+                      store.dispatch("addNotification", {
+                        type: "success",
+                        message: "Neighbor field successfully claimed!"
+                      });
+                    })
+                    .catch(err => {
+                      store.dispatch("addNotification", {
+                        type: "error",
+                        message: "There was an error claiming neighbor!"
+                      });
+                    });
+                }
               },
               template: `<div>
                 <div class="w-full">
@@ -222,25 +240,25 @@ export default {
                     </div>
                   </div>
                 </div>
-              </div>`,
+              </div>`
             });
           });
         }
       }
-    },
+    }
   },
   methods: {
-    setupLeafletMap: function () {
+    setupLeafletMap: function() {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true,
+        editable: true
       }).setView(this.center, 13);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright",
+          position: "bottomright"
         })
         .addTo(this.map);
 
@@ -249,7 +267,7 @@ export default {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
         attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -264,24 +282,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10,
-            },
+              weight: 10
+            }
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false,
+          marker: false
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true,
-        },
+          remove: true
+        }
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -296,11 +314,11 @@ export default {
 
       let map = this.map;
 
-      let fieldsShown = false
+      let fieldsShown = false;
       //on zoom get neighbour fields
-      this.map.on("zoomend", function () {
+      this.map.on("zoomend", function() {
         if (
-          map.getZoom() > 14 &&
+          map.getZoom() > 10 &&
           !scopeThis.fieldPolygon[0] &&
           !scopeThis.drawing &&
           !scopeThis.activePolygon &&
@@ -310,25 +328,24 @@ export default {
 
           scopeThis.$axios
             .post(`farms/fields/location-search/`, coords)
-            .then((res) => {
-              fieldsShown = true
-              let fields = {neighbour_coords: res.data, dispute_coords: []};
+            .then(res => {
+              fieldsShown = true;
+              let fields = { neighbour_coords: res.data, dispute_coords: [] };
               store.dispatch("drawNeighbor", fields);
             })
-            .catch((err) => {});
+            .catch(err => {});
           store.dispatch("addNotification", {
             type: "success",
-            message: "Calculating neighboring fields...",
+            message: "Calculating neighboring fields..."
           });
-        }
-        else if (map.getZoom() <= 14){
-          fieldsShown = false
-          scopeThis.removePolygon()
+        } else if (map.getZoom() <= 10) {
+          fieldsShown = false;
+          scopeThis.removePolygon();
         }
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function (e) {
+      this.map.on("draw:created", function(e) {
         let layer = e.layer;
 
         let newCoords = [];
@@ -338,7 +355,7 @@ export default {
         layer.options.fillOpacity = 0.3;
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function (value, key) {
+        layer.editing.latlngs[0][0].map(function(value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -352,13 +369,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function (e) {
+      this.map.on("draw:edited", function(e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function (layer) {
-          layer.editing.latlngs[0][0].map(function (value, key) {
+        layers.eachLayer(function(layer) {
+          layer.editing.latlngs[0][0].map(function(value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -368,7 +385,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function (e) {
+      this.map.on("draw:canceled", function(e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -399,14 +416,14 @@ export default {
         }
       }
     },
-    
+
     inviteNeighbor() {
       console.log("fds");
-    },
+    }
   },
   mounted() {
     this.setupLeafletMap();
-  },
+  }
 };
 </script>
 
