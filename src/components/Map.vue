@@ -74,7 +74,6 @@ export default {
       this.$store.dispatch("setRemoveAllPolygons", false);
     },
     drawNeighbor(newNeighbors, oldNeighbors) {
-      console.log(newNeighbors);
       let map = this.map;
       let store = this.$store;
       for (const neighbor in newNeighbors.dispute_coords) {
@@ -135,14 +134,21 @@ export default {
                     });
                 },
                 claimField() {
-                  console.log(newNeighbors.neighbour_coords[neighbor]);
                   this.$axios
-                    .patch(`farms/fields/${neighbor}/claim/`)
+                    .patch(`farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`, {name: this.fieldName, farm: newNeighbors.farm})
                     .then(res => {
-                      console.log("success");
+                      res.data.mpoly = []
+                      store.dispatch("setAddedField", res.data.field);
+                      store.dispatch("addNotification", {
+                        type: "success",
+                        message: "Neighbor field successfully claimed!"
+                      });
                     })
                     .catch(err => {
-                      console.log("error");
+                      store.dispatch("addNotification", {
+                        type: "error",
+                        message: "There was an error claiming neighbor!"
+                      });
                     });
                 }
               },

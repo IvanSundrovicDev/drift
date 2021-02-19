@@ -11,7 +11,7 @@
           <div v-else class="arrow-up m-auto ml-2"></div>
         </div>
       </div>
-      <div v-if="farmOpen">
+      <div v-if="farmOpen" class="pb-1">
         <MyField
           v-for="item in fields"
           :field="item"
@@ -104,6 +104,7 @@ export default {
   },
   watch: {
     newActiveField(newField, oldField) {
+      console.log(newField);
       this.$store.dispatch("setFieldPolygon", newField.mpoly);
       this.$store.dispatch("drawNeighbor", newField);
       this.$axios

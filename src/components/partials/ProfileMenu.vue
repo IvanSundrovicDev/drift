@@ -1,7 +1,7 @@
 <template>
   <div class="fixed right-0 bg-white rounded-md border border-gray-200">
     <div v-if="active !== 'membership'" class="m-5">
-      <div v-if="active === 'menu'">
+      <div class="select-none" v-if="active === 'menu'">
         <div class="flex mb-6">
           <img
             class="h-9 w-9 rounded-md"
@@ -34,16 +34,39 @@
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
-          v-on:click="active = 'invite'"
+          v-on:click="menuOpen = !menuOpen"
         >
-          <Help class="h-6 w-6 mt-1 invert-to-white" />
+          <Legal class="h-6 w-6 mt-0.5 invert-to-white" />
           <h3 class="text-lg ml-3">Legal</h3>
+        </div>
+        <div
+          class="py-1 my-1 border-b-2 border-t-2 border-drift-blue"
+          v-if="menuOpen"
+        >
+          <div
+            v-on:click="openModal = true"
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 1</h3>
+          </div>
+          <div
+            v-on:click="openModal = true"
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 2</h3>
+          </div>
+          <div
+            v-on:click="openModal = true"
+            class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
+          >
+            <h3 class="text-lg ml-3">Legal 3</h3>
+          </div>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           v-on:click="logout"
         >
-          <Logout class="h-6 w-6 mt-1 invert-to-white" />
+          <Logout class="h-6 w-6 mt-0.5 invert-to-white" />
           <h3 class="text-lg ml-3">Logout</h3>
         </div>
       </div>
@@ -348,6 +371,21 @@
         </div>
       </div>
     </div>
+    <div v-if="openModal" class="whitescreen-active flex">
+      
+      <div
+        class="bg-white border-2 border-gray-300 m-auto h-96 w-96 text-center"
+      >
+      <div>
+        <font-awesome-icon
+          class="float-right fa-lg hover:text-red-600 cursor-pointer"
+          icon="times"
+          v-on:click="openModal = false"
+        ></font-awesome-icon>
+      </div>
+        Open legal
+      </div>
+    </div>
   </div>
 </template>
 
@@ -355,7 +393,7 @@
 import EditProfile from "../../assets/images/icons/edit.svg";
 import Subscriptions from "../../assets/images/icons/Subscriptions.svg";
 import Invite from "../../assets/images/icons/Invite.svg";
-import Help from "../../assets/images/icons/Help.svg";
+import Legal from "../../assets/images/icons/Legal.svg";
 import Logout from "../../assets/images/icons/Logout.svg";
 import LeftArrow from "../../assets/images/icons/LeftArrow.svg";
 import GiftCard from "../../assets/images/icons/GiftCard.svg";
@@ -367,64 +405,66 @@ export default {
     EditProfile,
     Subscriptions,
     Invite,
-    Help,
+    Legal,
     Logout,
     LeftArrow,
     GiftCard,
-    PaymentDetailsView
+    PaymentDetailsView,
   },
   data() {
     return {
       active: "menu",
+      menuOpen: false,
+      openModal: false,
       paymentDetailsActive: false,
       subscriptionPlan: false,
       activePlan: "",
       user: {
         full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email
+        email: this.$store.state.auth.user.email,
       },
       giftCard: false,
       neighbourEmail: "",
-      paymentInfo: 0
+      paymentInfo: 0,
     };
   },
   computed: {
     getUser() {
       return this.$store.state.auth.user;
-    }
+    },
   },
   watch: {
     getUser(newUser, oldUser) {
       this.user = newUser;
-    }
+    },
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then(path => {
+      this.$store.dispatch("auth/logout").then((path) => {
         this.$router.push(path);
       });
     },
     saveChanges() {
       this.$axios
         .patch("auth/users/me/", this.user)
-        .then(res => {
+        .then((res) => {
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Profile successfully updated"
+            message: "Profile successfully updated",
           });
           this.active = "menu";
         })
-        .catch(err => {
+        .catch((err) => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating your profile!"
+            message: "There was an error updating your profile!",
           });
         });
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
         type: "error",
-        message: "Not implemented yet sry :]"
+        message: "Not implemented yet sry :]",
       });
     },
     getUserPricingPlan() {
@@ -435,14 +475,14 @@ export default {
         this.$axios
           .patch("subscription/me/", {
             plan: arg,
-            account: this.$store.state.auth.user.account
+            account: this.$store.state.auth.user.account,
           })
-          .then(res => {
+          .then((res) => {
             this.$store.dispatch("auth/setUserSubscription");
             this.activePlan = "F";
             this.subscriptionPlan = 0;
           })
-          .catch(err => {});
+          .catch((err) => {});
       } else {
         this.subscriptionPlan = this.subscriptionPlan + 1;
       }
@@ -450,14 +490,14 @@ export default {
     setSubscriptionPlanPro() {
       this.subscriptionPlan = 0;
       this.activePlan = "B";
-    }
+    },
   },
   beforeMount() {
     this.getUserPricingPlan();
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  }
+  },
 };
 </script>
 
