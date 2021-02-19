@@ -44,19 +44,28 @@
           v-if="menuOpen"
         >
           <div
-            v-on:click="openModal = true"
+            v-on:click="
+              openModal = true;
+              modalNo = 1;
+            "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
             <h3 class="text-lg ml-3">Legal 1</h3>
           </div>
           <div
-            v-on:click="openModal = true"
+            v-on:click="
+              openModal = true;
+              modalNo = 2;
+            "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
             <h3 class="text-lg ml-3">Legal 2</h3>
           </div>
           <div
-            v-on:click="openModal = true"
+            v-on:click="
+              openModal = true;
+              modalNo = 3;
+            "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
             <h3 class="text-lg ml-3">Legal 3</h3>
@@ -372,18 +381,22 @@
       </div>
     </div>
     <div v-if="openModal" class="whitescreen-active flex">
-      
       <div
-        class="bg-white border-2 border-gray-300 m-auto h-96 w-96 text-center"
+        class="bg-white border-2 border-gray-300 h-96 w-96 m-auto text-center"
       >
-      <div>
-        <font-awesome-icon
-          class="float-right fa-lg hover:text-red-600 cursor-pointer"
-          icon="times"
-          v-on:click="openModal = false"
-        ></font-awesome-icon>
-      </div>
-        Open legal
+        <div>
+          <font-awesome-icon
+            class="float-right fa-lg hover:text-red-600 cursor-pointer"
+            icon="times"
+            v-on:click="
+              openModal = false;
+              modalNo = 0;
+            "
+          ></font-awesome-icon>
+        </div>
+        <div>
+          test
+        </div>
       </div>
     </div>
   </div>
@@ -409,62 +422,63 @@ export default {
     Logout,
     LeftArrow,
     GiftCard,
-    PaymentDetailsView,
+    PaymentDetailsView
   },
   data() {
     return {
       active: "menu",
       menuOpen: false,
       openModal: false,
+      modalNo: 0,
       paymentDetailsActive: false,
       subscriptionPlan: false,
       activePlan: "",
       user: {
         full_name: this.$store.state.auth.user.full_name,
-        email: this.$store.state.auth.user.email,
+        email: this.$store.state.auth.user.email
       },
       giftCard: false,
       neighbourEmail: "",
-      paymentInfo: 0,
+      paymentInfo: 0
     };
   },
   computed: {
     getUser() {
       return this.$store.state.auth.user;
-    },
+    }
   },
   watch: {
     getUser(newUser, oldUser) {
       this.user = newUser;
-    },
+    }
   },
   methods: {
     logout() {
-      this.$store.dispatch("auth/logout").then((path) => {
+      this.$store.dispatch("auth/logout").then(path => {
         this.$router.push(path);
       });
     },
     saveChanges() {
       this.$axios
         .patch("auth/users/me/", this.user)
-        .then((res) => {
+        .then(res => {
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Profile successfully updated",
+            message: "Profile successfully updated"
           });
           this.active = "menu";
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating your profile!",
+            message: "There was an error updating your profile!"
           });
         });
     },
     inviteNeighbour() {
       this.$store.dispatch("addNotification", {
         type: "error",
-        message: "Not implemented yet sry :]",
+        message: "Not implemented yet sry :]"
       });
     },
     getUserPricingPlan() {
@@ -475,14 +489,14 @@ export default {
         this.$axios
           .patch("subscription/me/", {
             plan: arg,
-            account: this.$store.state.auth.user.account,
+            account: this.$store.state.auth.user.account
           })
-          .then((res) => {
+          .then(res => {
             this.$store.dispatch("auth/setUserSubscription");
             this.activePlan = "F";
             this.subscriptionPlan = 0;
           })
-          .catch((err) => {});
+          .catch(err => {});
       } else {
         this.subscriptionPlan = this.subscriptionPlan + 1;
       }
@@ -490,14 +504,14 @@ export default {
     setSubscriptionPlanPro() {
       this.subscriptionPlan = 0;
       this.activePlan = "B";
-    },
+    }
   },
   beforeMount() {
     this.getUserPricingPlan();
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  },
+  }
 };
 </script>
 

@@ -135,9 +135,12 @@ export default {
                 },
                 claimField() {
                   this.$axios
-                    .patch(`farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`, {name: this.fieldName, farm: newNeighbors.farm})
+                    .patch(
+                      `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                      { name: this.fieldName, farm: newNeighbors.farm }
+                    )
                     .then(res => {
-                      res.data.mpoly = []
+                      res.data.mpoly = [];
                       store.dispatch("setAddedField", res.data.field);
                       store.dispatch("addNotification", {
                         type: "success",
