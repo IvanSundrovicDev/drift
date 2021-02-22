@@ -8,7 +8,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    activeLocation: "",
+    activeLocation: {
+      location: "",
+      bool: false
+    },
     polygonDraw: false,
     polygonCoordinates: [],
     fieldPolygon: [],
@@ -21,7 +24,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setActiveLocation(state, value) {
-      state.activeLocation = value;
+      state.activeLocation = { location: value, bool: !state.activeLocation.bool };
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -53,10 +56,10 @@ export default new Vuex.Store({
     removeNotification(state, value) {
       state.notifications = state.notifications.filter(el => el.id !== value);
     },
-    drawNeighbor(state, value){
+    drawNeighbor(state, value) {
       state.neighborFields = value
     },
-    setAddNeighbor(state, value){
+    setAddNeighbor(state, value) {
       state.addNeighbor = value
     }
   },

@@ -47,7 +47,7 @@ export default {
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      this.map.panTo(new L.LatLng(newLocation[0], newLocation[1]));
+      this.map.panTo(new L.LatLng(newLocation.location[0], newLocation.location[1]));
     },
     initDrawPolygon(newState, oldState) {
       if (newState) {

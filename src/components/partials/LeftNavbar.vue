@@ -6,7 +6,7 @@
           <router-link to="/dashboard">
             <div
               class="flex h-20 justify-center items-center rounded-2xl"
-              :class="{ active: farmSidebarOpen }"
+              :class="{ active: farmSidebarOpen && $route.name === 'Dashboard' }"
               v-on:click="farmSidebarOpen = !farmSidebarOpen"
             >
               <div class="mx-auto">
@@ -102,7 +102,7 @@
               </svg>
           </button>-->
     </div>
-    <FarmSidebar v-show="farmSidebarOpen" />
+    <FarmSidebar v-if="$route.name === 'Dashboard'" v-show="farmSidebarOpen" />
   </div>
 </template>
 
@@ -129,7 +129,7 @@ export default {
   data: function() {
     return {
       selected: null,
-      farmSidebarOpen: false
+      farmSidebarOpen: true
     };
   },
   methods: {}

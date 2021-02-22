@@ -57,7 +57,7 @@
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
-                      {{ `${item.name} ${item.id}` }}
+                      {{ item.name }}
                     </h1>
                   </div>
                 </div>
@@ -116,7 +116,7 @@
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
-                      {{ `${item.name} ${item.id}` }}
+                      {{ item.name }}
                     </h1>
                   </div>
                 </div>
@@ -412,6 +412,7 @@ export default {
         .delete(`herbicides/tank-mixes/${this.selectedItem.id}/`)
         .then(res => {
           this.getData();
+          this.mixes = this.mixes.filter(el => el.id !== this.selectedItem.id)
           this.deletePopUp = false;
           this.selectedItem = "";
           this.$store.dispatch("addNotification", {

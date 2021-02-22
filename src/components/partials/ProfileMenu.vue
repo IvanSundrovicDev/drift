@@ -30,7 +30,7 @@
           v-on:click="active = 'invite'"
         >
           <Invite class="h-5 w-6 mt-1 invert-to-white text-drift-blue" />
-          <h3 class="text-lg ml-3">Invite Neighbour</h3>
+          <h3 class="text-lg ml-3">Invite Neighbor</h3>
         </div>
         <div
           class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
@@ -150,21 +150,15 @@
     <div v-if="active === 'membership'">
       <div class="flex grid grid-cols-2">
         <div class="p-7 col-span-1">
-          <div class="w-full text-center">
-            <img class="m-auto h-10" src="../../assets/images/drift_logo.png" />
+          <div class="w-full text-center mt-12">
+            <img class="m-auto h-10" src="../../assets/images/drift_logo_no_tag.png" />
             <h1 class="text-2xl pt-5">Your membership</h1>
             <h1
               class="text-2xl text-drift-blue cursor-pointer hover:underline mt-3"
             >
               {{ activePlan === "B" ? "Pro plan" : "Trial plan" }}
             </h1>
-            <h1 class="text-2xl mt-3">Subscription end data is NaN</h1>
-            <h1 class="text-2xl mt-3">
-              Thank you for helping us
-              <span class="text-drift-blue cursor-pointer hover:underline"
-                >spray better</span
-              >
-            </h1>
+            <h1 class="text-2xl mt-3">Subscription end date is NaN</h1>
             <!-- <div class="pt-10 flex">
               <button
                 v-on:click="paymentInfo = 1"
@@ -186,8 +180,8 @@
           </h1>
           <ol v-if="activePlan === 'B'" class="text-white text-2xl list-disc">
             <li class="mt-5 ml-7">1 User</li>
-            <li class="mt-5 ml-7">Unlimited</li>
-            <li class="mt-5 ml-7">Unlimited</li>
+            <li class="mt-5 ml-7">Unlimited fields</li>
+            <li class="mt-5 ml-7">Unlimited farms</li>
           </ol>
           <ol v-else class="text-white text-2xl list-disc">
             <li class="mt-5 ml-7">1 User</li>
@@ -207,7 +201,7 @@
     </div>
     <div v-if="active === 'invite'" class="px-6 pb-6">
       <div class="flex mb-4">
-        <h1 class="text-2xl text-drift-blue">Invite Neighbour</h1>
+        <h1 class="text-2xl text-drift-blue">Invite Neighbor</h1>
         <font-awesome-icon
           class="ml-auto fa-lg hover:text-red-600 cursor-pointer"
           icon="times"
