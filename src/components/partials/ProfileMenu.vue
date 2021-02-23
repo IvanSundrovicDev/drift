@@ -50,7 +50,7 @@
             "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
-            <h3 class="text-lg ml-3">Legal 1</h3>
+            <h3 class="text-lg ml-3">Privacy Policy</h3>
           </div>
           <div
             v-on:click="
@@ -59,7 +59,7 @@
             "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
-            <h3 class="text-lg ml-3">Legal 2</h3>
+            <h3 class="text-lg ml-3">Terms of use</h3>
           </div>
           <div
             v-on:click="
@@ -68,7 +68,7 @@
             "
             class="flex p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer list-item"
           >
-            <h3 class="text-lg ml-3">Legal 3</h3>
+            <h3 class="text-lg ml-3">Seed Trait Legal</h3>
           </div>
         </div>
         <div
@@ -376,11 +376,11 @@
     </div>
     <div v-if="openModal" class="whitescreen-active flex">
       <div
-        class="bg-white border-2 border-gray-300 h-96 w-96 m-auto text-center"
+        class="bg-white border-2 border-gray-300 m-auto text-center"
       >
         <div>
           <font-awesome-icon
-            class="float-right fa-lg hover:text-red-600 cursor-pointer"
+            class="float-right m-3 fa-lg hover:text-red-600 cursor-pointer"
             icon="times"
             v-on:click="
               openModal = false;
@@ -388,8 +388,10 @@
             "
           ></font-awesome-icon>
         </div>
-        <div>
-          test
+        <div class="legal">
+          <iframe v-if="modalNo === 1" class="w-full h-full" src="https://view.officeapps.live.com/op/embed.aspx?src=https://drift-assets-dev.s3.amazonaws.com/legal/Drift_Privacy_Policy.docx"/>
+          <iframe v-if="modalNo === 2" class="w-full h-full" src="https://view.officeapps.live.com/op/embed.aspx?src=https://drift-assets-dev.s3.amazonaws.com/legal/Drift_Terms_of_Use.docx"/>
+          <iframe v-if="modalNo === 3" class="w-full h-full" src="https://view.officeapps.live.com/op/embed.aspx?src=https://drift-assets-dev.s3.amazonaws.com/legal/Seed_Trait_Legal.docx"/>
         </div>
       </div>
     </div>
@@ -516,4 +518,9 @@ export default {
 .payment-width {
   width: 1000px;
 }
+.legal{
+  height: 600px;
+  width: 850px;
+}
+
 </style>
