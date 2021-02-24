@@ -29,7 +29,7 @@
               class="flex list-item my-4 p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer"
             >
               <Neighbor class="my-auto invert-to-white mr-2" />
-              <h1 class="text-xl">Add neighboring boundary</h1>
+              <h1 class="text-xl">Add adjacent field</h1>
             </div>
           </div>
           <div v-if="open === 'rename'" class="mx-5">

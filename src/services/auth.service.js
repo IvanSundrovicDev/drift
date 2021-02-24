@@ -2,6 +2,7 @@ import axios from "axios";
 
 class AuthService {
   async login(user) {
+    localStorage.clear();
     return await axios
       .post("auth/jwt/create/", {
         email: user.email,
