@@ -57,7 +57,7 @@
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
-                      {{ `${item.name} ${item.id}` }}
+                      {{ item.name }}
                     </h1>
                   </div>
                 </div>
@@ -116,7 +116,7 @@
                     }"
                   >
                     <h1 class="text-center my-4 text-2xl">
-                      {{ `${item.name} ${item.id}` }}
+                      {{ item.name }}
                     </h1>
                   </div>
                 </div>
@@ -207,7 +207,7 @@
         <div class="flex py-4 px-8">
           <div
             v-on:click="deleteMix"
-            class="px-6 rounded-lg hover:bg-red-600 hover:border-red-600 hover:text-white text-xl border-2 border-drift-blue text-drift-blue cursor-pointer"
+            class="px-6 rounded-lg hover:bg-red-600 hover:text-white text-xl border-2 border-red-600 text-red-600 cursor-pointer"
           >
             Yes
           </div>
@@ -412,6 +412,7 @@ export default {
         .delete(`herbicides/tank-mixes/${this.selectedItem.id}/`)
         .then(res => {
           this.getData();
+          this.mixes = this.mixes.filter(el => el.id !== this.selectedItem.id)
           this.deletePopUp = false;
           this.selectedItem = "";
           this.$store.dispatch("addNotification", {
@@ -419,7 +420,12 @@ export default {
             message: "Tank Mix successfully removed!"
           });
         })
-        .catch(err => {});
+        .catch(err => {
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "There was an error removing Tank Mix"
+          })
+        });
     }
   },
   beforeMount() {

@@ -19,6 +19,7 @@
             </div>
             <div
               class="flex list-item my-4 p-2 rounded-md hover:bg-red-500 hover:text-white cursor-pointer"
+              v-on:click="open = 'delete'"
             >
               <Delete class="my-auto invert-to-white mr-4" />
               <h1 class="text-xl">Delete field</h1>
@@ -36,7 +37,7 @@
               class="my-auto mt-4 mr-4 cursor-pointer"
               v-on:click="open = ''"
             />
-            <div class="flex mb-6 mt-2" v-on:click="open = 'rename'">
+            <div class="flex mb-6 mt-2">
               <Edit class="my-auto mr-4" />
               <h1 class="text-xl">Rename field</h1>
             </div>
@@ -44,12 +45,31 @@
               <input
                 class="w-full text-xl focus:outline-none"
                 type="text"
+                v-model="fieldName"
                 placeholder="Enter new name"
               />
             </div>
             <div class="pt-3 pb-5 flex">
-              <button class="rounded-lg py-2 m-auto w-full designActionButton">
+              <button class="rounded-lg py-2 m-auto w-full designActionButton" v-on:click="renameField()">
                 Save
+              </button>
+            </div>
+          </div>
+          <div v-if="open === 'delete'" class="mx-5 w-48">
+            <LeftArrow
+              class="my-auto mt-4 mr-4 cursor-pointer"
+              v-on:click="open = ''"
+            />
+            <div class="flex mb-6 mt-2">
+              <Delete class="my-auto mr-4" />
+              <h1 class="text-xl">Delete field?</h1>
+            </div>
+            <div class="pt-3 pb-5 flex">
+              <button class="rounded-lg w-20 py-1 m-auto hover:bg-red-600 hover:text-white text-xl border-2 border-red-600 text-red-600" v-on:click="deleteField()">
+                Yes
+              </button>
+              <button class="ml-auto rounded-lg w-20 py-1 m-auto hover:bg-drift-blue hover:text-white text-xl border-2 border-drift-blue text-drift-blue" v-on:click="open = ''">
+                No
               </button>
             </div>
           </div>
@@ -85,7 +105,8 @@ export default {
   data() {
     return {
       menuOpen: false,
-      open: ""
+      open: "",
+      fieldName: ""
     };
   },
   methods: {
@@ -102,6 +123,47 @@ export default {
     addNeighbor(){
       this.$emit("activatePopup", this.field.id);
       this.$store.dispatch("setAddNeighbor", true);
+    },
+    deleteField(){
+      this.$axios
+        .delete(`/farms/${this.field.farm}/fields/${this.field.id}/`)
+        .then(res => {
+          this.$store.dispatch("setAddedField", {});
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Field successfully removed!"
+          })
+        })
+        .catch(err => {
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "There was an error removing field"
+          })
+        });
+    },
+    renameField(){
+      let field = {
+        name: this.fieldName
+      }
+      this.$axios
+        .patch(`/farms/${this.field.farm}/fields/${this.field.id}/`, field)
+        .then((res) => {
+          this.menuOpen = false
+          this.open = ""
+          this.activatePopup()
+          this.$store.dispatch("setAddedField", this.field);
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Field successfully renamed!",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$store.dispatch("addNotification", {
+            type: "error",
+            message: "There was an error renaming field!",
+          });
+        });
     }
   }
 };
