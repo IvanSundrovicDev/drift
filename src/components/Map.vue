@@ -13,6 +13,8 @@ import Editable from "leaflet-editable";
 import Search from "leaflet-search";
 import Vue from "vue";
 
+
+
 export default {
   name: "Map",
   data: function () {
@@ -101,7 +103,7 @@ export default {
             .addTo(this.map);
         } else {
           var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
-            .bindPopup(`<div style="width:344px" id="popup"></div>`)
+            .bindPopup(`<div style="width:230px" id="popup"></div>`)
             .setStyle({ color: "#FFF", fillOpacity: 0, id: neighbor })
             .addTo(this.map);
           polygon.on("click", function () {
@@ -114,7 +116,24 @@ export default {
                   fieldName: "",
                   img: require("@/assets/images/icons/envelope.png"),
                   img2: require("@/assets/images/icons/farm.png"),
+                  cropImg: require("@/assets/images/icons/crop-icon.png"),
+                  traitImg: require("@/assets/images/icons/trait-icon.png"),
+                  inviteImg: require("@/assets/images/icons/invite-icon.png"),
+                  addImg: require("@/assets/images/icons/add-icon.png"),
                   active: "main",
+                  crops: [],
+                  traits: [],
+                  data: {
+                    selectedCrop: {
+                      id: "",
+                      name: "",
+                    },
+                    selectedTrait: {
+                      id: "",
+                      name: "",
+                    },
+                  },
+                  activeMenu: false,
                 };
               },
               methods: {
@@ -141,10 +160,16 @@ export default {
                   this.$axios
                     .patch(
                       `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
-                      { name: this.fieldName, farm: newNeighbors.farm }
+                      {
+                        name: this.fieldName,
+                        farm: newNeighbors.farm,
+                        crop_trait: this.data.selectedTrait.id,
+                        crop: this.data.selectedCrop.id,
+                      }
                     )
                     .then((res) => {
-                      res.data.mpoly = [];
+                      console.log(res.data);
+                      res.data.field.mpoly = [];
                       store.dispatch("setAddedField", res.data.field);
                       store.dispatch("addNotification", {
                         type: "success",
@@ -158,25 +183,207 @@ export default {
                       });
                     });
                 },
+                assignCropTrait(){
+                  this.$axios
+                    .patch(
+                      `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                      {
+                        crop_trait: this.data.selectedTrait.id,
+                        crop: this.data.selectedCrop.id,
+                      }
+                    )
+                    .then((res) => {
+                      res.data.field.mpoly = [];
+                      store.dispatch("setAddedField", res.data.field);
+                      store.dispatch("addNotification", {
+                        type: "success",
+                        message: "Neighbor field successfully claimed!",
+                      });
+                    })
+                    .catch((err) => {
+                      store.dispatch("addNotification", {
+                        type: "error",
+                        message: "There was an error claiming neighbor!",
+                      });
+                    });
+                },
+                activate(id) {
+                  if (!this.activeMenu) {
+                    this.activeMenu = id;
+                  } else this.activeMenu = "";
+                },
+                select(name, item) {
+                  switch (name) {
+                    case "crop":
+                      if (
+                        !this.data.selectedCrop ||
+                        this.data.selectedCrop.id !== item.id
+                      ) {
+                        this.data.selectedCrop = item;
+                        this.activeMenu = "";
+                      } else {
+                        this.data.selectedCrop = "";
+                      }
+                      break;
+                    case "trait":
+                      if (
+                        !this.data.selectedTrait ||
+                        this.data.selectedTrait.id !== item.id
+                      ) {
+                        this.data.selectedTrait = item;
+                        this.activeMenu = "";
+                      } else {
+                        this.data.selectedTrait = "";
+                      }
+                      break;
+                  }
+                },
               },
-              template: `<div>
+              beforeMount() {
+                this.data = { 
+                  selectedCrop: {
+                    id: newNeighbors.neighbour_coords[neighbor].crop,
+                    name: newNeighbors.neighbour_coords[neighbor].crop_name
+                  },
+                  selectedTrait: {
+                    id: newNeighbors.neighbour_coords[neighbor].crop_trait,
+                    name: newNeighbors.neighbour_coords[neighbor].crop_trait_name
+                  }
+                }
+                this.$axios
+                  .get(`farms/crops/me/`)
+                  .then((res) => {
+                    this.crops = res.data.my_crop.crops;
+                  })
+                  .catch((err) => {});
+
+                this.$axios
+                  .get(`farms/crop-traits/me/`)
+                  .then((res) => {
+                    this.traits = res.data.my_crop_trait.crop_traits;
+                  })
+                  .catch((err) => {});
+              },
+              template: `
+              <div>
                 <div class="w-full">
-                  <div v-if="active === 'main'" class="flex">
-                    <div class="py-5 flex">
-                      <button
-                        class="rounded-lg py-1 text-lg m-auto w-36 mr-4 designActionButton"
-                        v-on:click="active = 'invite'"
-                      >
-                        Invite neighbor
-                      </button>
+                  <div v-if="active === 'main'" class="w-full">
+                    <div class="py-2 pt-2 flex">
+                      <img
+                        class="inline h-7"
+                        :src="cropImg"
+                      />
+                      <h1 class="text-xl ml-2">{{ data.selectedCrop.name ? data.selectedCrop.name : "Assign crop" }}</h1>
                     </div>
-                    <div class="py-5 flex">
-                      <button
-                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
-                        v-on:click="active = 'claim'"
-                      >
-                        Add to my fields
-                      </button>
+                    <div class="py-2 flex">
+                      <img
+                        class="inline h-7"
+                        :src="traitImg"
+                      />
+                      <h1 class="text-xl ml-2">{{ data.selectedTrait.name ? data.selectedTrait.name : "Assign trait" }}</h1>
+                    </div>
+                    <div class="py-2 border-t-2 border-drift-blue flex">
+                      <img
+                        class="inline h-7"
+                        :src="cropImg"
+                      />
+                      <h1 v-on:click="active = 'assign'" class="text-xl ml-2 custom-underline cursor-pointer">Assign Crop and Trait</h1>
+                    </div>
+                    <div class="py-2 flex">
+                      <img
+                        class="inline h-7"
+                        :src="inviteImg"
+                      />
+                      <h1 v-on:click="active = 'invite'" class="text-xl ml-2 custom-underline cursor-pointer">Invite neighbor</h1>
+                    </div>
+                    <div class="py-2 flex">
+                      <img
+                        class="inline h-7"
+                        :src="addImg"
+                      />
+                      <h1 v-on:click="active = 'claim'" class="text-xl ml-2 custom-underline cursor-pointer">Add to my fields</h1>
+                    </div>
+                  </div>
+                  <div v-if="active === 'assign'">
+                    <div class="w-full">
+                      <div class="w-full pt-6">
+                        <div>
+                          <h1 class="text-xl text-center">Assign Crop and Trait</h1>
+                        </div>
+                        <div
+                          v-on:click="activate('crop')"
+                          v-show="activeMenu === 'crop' || !activeMenu"
+                          class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
+                        >
+                          <img
+                            class="inline h-7"
+                            :src="cropImg"
+                          />
+                          <h1 class="text-xl ml-2">
+                            {{ data.selectedCrop.id ? data.selectedCrop.name : "Select Crop" }}
+                          </h1>
+                          <div v-if="!activeMenu" class="arrow-down my-auto ml-auto mr-3"></div>
+                          <div v-else class="arrow-up ml-auto mr-2"></div>
+                        </div>
+                        <div class="w-full overflow-auto h-32" v-show="activeMenu === 'crop'">
+                          <div
+                            v-for="item in crops"
+                            v-on:click="select('crop', item)"
+                            :key="item.id"
+                            class="custom-item cursor-pointer hover:bg-gray-200"
+                          >
+                            <div
+                              :class="{
+                                'salmon-border-selected': data.selectedCrop.id === item.id,
+                              }"
+                              class="salmon-border mx-8 border-b-2 border-gray-200 text-sm text-center p-2"
+                            >
+                              <h1 class="text-lg">{{ item.name }}</h1>
+                            </div>
+                          </div>
+                        </div>
+                    
+                        <div
+                          v-on:click="activate('trait')"
+                          v-show="activeMenu === 'trait' || !activeMenu"
+                          class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
+                        >
+                          <img
+                            class="inline h-7"
+                            :src="traitImg"
+                          />
+                          <h1 class="text-xl ml-2">
+                            {{ data.selectedTrait.id ? data.selectedTrait.name : "Select Trait" }}
+                          </h1>
+                          <div v-if="!activeMenu" class="arrow-down my-auto ml-auto mr-3"></div>
+                          <div v-else class="arrow-up ml-auto mr-2"></div>
+                        </div>
+                        <div class="w-full overflow-auto h-32" v-show="activeMenu === 'trait'">
+                          <div
+                            v-for="item in traits"
+                            v-on:click="select('trait', item)"
+                            :key="item.id"
+                            class="custom-item cursor-pointer hover:bg-gray-200"
+                          >
+                            <div
+                              :class="{
+                                'salmon-border-selected': data.selectedTrait.id === item.id,
+                              }"
+                              class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-2"
+                            >
+                              <h1 class="text-lg">{{ item.name }}</h1>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="pt-8 flex">
+                          <button
+                            class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                            v-on:click="assignCropTrait()"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div v-if="active === 'invite'">
@@ -201,14 +408,14 @@ export default {
                           />
                         </div>
                       </div>
-                    </div>
-                    <div class="pt-10 flex">
-                      <button
-                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
-                        v-on:click="inviteNeighbor"
-                      >
-                        Invite
-                      </button>
+                      <div class="pt-10 flex">
+                        <button
+                          class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                          v-on:click="inviteNeighbor"
+                        >
+                          Invite
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div v-if="active === 'claim'">
@@ -231,10 +438,10 @@ export default {
                             autofocus
                             v-model="fieldName"
                           />
-                        </div>
+                        </div
                       </div>
                     </div>
-                    <div class="pt-10 flex">
+                    <div class="pt-8 flex">
                       <button
                         class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
                         v-on:click="claimField"
@@ -244,6 +451,7 @@ export default {
                     </div>
                   </div>
                 </div>
+              </div>
               </div>`,
             });
           });
@@ -445,5 +653,11 @@ export default {
 }
 .leaflet-draw-edit-remove {
   display: none !important;
+}
+.custom-underline {
+}
+.custom-underline:hover{
+  text-decoration: underline;
+  text-decoration-color: #28AAE1;
 }
 </style>

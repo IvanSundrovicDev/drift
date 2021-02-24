@@ -10,6 +10,8 @@
         <div class="menu-arrow bg-t-white mt-4"></div>
         <div class="bg-white rounded-lg">
           <div v-if="!open" class="mx-3">
+
+
             <div
               class="flex list-item my-4 p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer"
               v-on:click="open = 'rename'"
@@ -32,6 +34,8 @@
               <h1 class="text-xl">Add adjacent field</h1>
             </div>
           </div>
+
+
           <div v-if="open === 'rename'" class="mx-5">
             <LeftArrow
               class="my-auto mt-4 mr-4 cursor-pointer"
@@ -55,6 +59,8 @@
               </button>
             </div>
           </div>
+
+
           <div v-if="open === 'delete'" class="mx-5 w-48">
             <LeftArrow
               class="my-auto mt-4 mr-4 cursor-pointer"
@@ -106,7 +112,9 @@ export default {
     return {
       menuOpen: false,
       open: "",
-      fieldName: ""
+      fieldName: "",
+      crops: [],
+      traits: []
     };
   },
   methods: {
