@@ -175,7 +175,7 @@ export default {
                         class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
                         v-on:click="active = 'claim'"
                       >
-                        Claim field
+                        Add to my fields
                       </button>
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 <template>
-  <CropHerbicideTraitList
+  <TraitMenager
     :name="name"
     :data="data"
     v-on:postAddedItems="postAddedItems"
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import CropHerbicideTraitList from "./../components/cropHerbicideTraits/CropHerbicideTraitList";
+import TraitMenager from "./../components/menagers/TraitMenager";
 
 export default {
   name: "TraitList",
-  components: { CropHerbicideTraitList },
+  components: { TraitMenager },
   data() {
     return {
       name: "Traits",
