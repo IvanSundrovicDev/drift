@@ -107,7 +107,9 @@ export default {
         .then((res) => {
           this.fields = res.data;
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.fields = []
+        });
       this.fieldActive = newField;
       let coords = {
         lat: newField.lat,
@@ -130,6 +132,7 @@ export default {
           this.fieldsLoading = true;
         })
         .catch((err) => {
+          this.fields = []
           this.fieldsLoading = true;
         });
     },
