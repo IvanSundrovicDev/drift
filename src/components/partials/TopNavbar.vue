@@ -8,8 +8,8 @@
             <div class="flex w-full">
               <div class="flex items-center ml-2">
                 <img
-                  class="block lg:hidden h-8 w-auto"
-                  src="../../assets/images/drift_logo.png"
+                  class="block lg:hidden h-10 w-auto"
+                  src="../../assets/images/drift_logo_no_tag.png"
                   alt="DRIFT"
                   @click="
                     $route.name !== 'Dashboard'

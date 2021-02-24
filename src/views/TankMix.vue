@@ -207,7 +207,7 @@
         <div class="flex py-4 px-8">
           <div
             v-on:click="deleteMix"
-            class="px-6 rounded-lg hover:bg-red-600 hover:border-red-600 hover:text-white text-xl border-2 border-drift-blue text-drift-blue cursor-pointer"
+            class="px-6 rounded-lg hover:bg-red-600 hover:text-white text-xl border-2 border-red-600 text-red-600 cursor-pointer"
           >
             Yes
           </div>
@@ -420,7 +420,12 @@ export default {
             message: "Tank Mix successfully removed!"
           });
         })
-        .catch(err => {});
+        .catch(err => {
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "There was an error removing Tank Mix"
+          })
+        });
     }
   },
   beforeMount() {
