@@ -10,8 +10,6 @@
         <div class="menu-arrow bg-t-white mt-4"></div>
         <div class="bg-white rounded-lg">
           <div v-if="!open" class="mx-3">
-
-
             <div
               class="flex list-item my-4 p-2 rounded-md hover:bg-drift-blue hover:text-white cursor-pointer"
               v-on:click="open = 'rename'"
@@ -35,7 +33,6 @@
             </div>
           </div>
 
-
           <div v-if="open === 'rename'" class="mx-5">
             <LeftArrow
               class="my-auto mt-4 mr-4 cursor-pointer"
@@ -54,12 +51,14 @@
               />
             </div>
             <div class="pt-3 pb-5 flex">
-              <button class="rounded-lg py-2 m-auto w-full designActionButton" v-on:click="renameField()">
+              <button
+                class="rounded-lg py-2 m-auto w-full designActionButton"
+                v-on:click="renameField()"
+              >
                 Save
               </button>
             </div>
           </div>
-
 
           <div v-if="open === 'delete'" class="mx-5 w-48">
             <LeftArrow
@@ -71,10 +70,16 @@
               <h1 class="text-xl">Delete field?</h1>
             </div>
             <div class="pt-3 pb-5 flex">
-              <button class="rounded-lg w-20 py-1 m-auto hover:bg-red-600 hover:text-white text-xl border-2 border-red-600 text-red-600" v-on:click="deleteField()">
+              <button
+                class="rounded-lg w-20 py-1 m-auto hover:bg-red-600 hover:text-white text-xl border-2 border-red-600 text-red-600"
+                v-on:click="deleteField()"
+              >
                 Yes
               </button>
-              <button class="ml-auto rounded-lg w-20 py-1 m-auto hover:bg-drift-blue hover:text-white text-xl border-2 border-drift-blue text-drift-blue" v-on:click="open = ''">
+              <button
+                class="ml-auto rounded-lg w-20 py-1 m-auto hover:bg-drift-blue hover:text-white text-xl border-2 border-drift-blue text-drift-blue"
+                v-on:click="open = ''"
+              >
                 No
               </button>
             </div>
@@ -125,14 +130,14 @@ export default {
       this.$emit("activateField");
     },
     activatePopup() {
-      this.activateField(this.field)
+      this.activateField(this.field);
       this.$emit("activatePopup", this.field.id);
     },
-    addNeighbor(){
+    addNeighbor() {
       this.$emit("activatePopup", this.field.id);
       this.$store.dispatch("setAddNeighbor", true);
     },
-    deleteField(){
+    deleteField() {
       this.$axios
         .delete(`/farms/${this.field.farm}/fields/${this.field.id}/`)
         .then(res => {
@@ -140,36 +145,36 @@ export default {
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully removed!"
-          })
+          });
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
             message: "There was an error removing field"
-          })
+          });
         });
     },
-    renameField(){
+    renameField() {
       let field = {
         name: this.fieldName
-      }
+      };
       this.$axios
         .patch(`/farms/${this.field.farm}/fields/${this.field.id}/`, field)
-        .then((res) => {
-          this.menuOpen = false
-          this.open = ""
-          this.activatePopup()
+        .then(res => {
+          this.menuOpen = false;
+          this.open = "";
+          this.activatePopup();
           this.$store.dispatch("setAddedField", this.field);
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully renamed!",
+            message: "Field successfully renamed!"
           });
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error renaming field!",
+            message: "There was an error renaming field!"
           });
         });
     }

@@ -10,7 +10,7 @@
       <h1 class="text-xl m-auto">
         {{
           `${date.toLocaleString("default", {
-            month: "long",
+            month: "long"
           })} ${date.getDate()}`
         }}
       </h1>
@@ -23,12 +23,12 @@
       class="flex m-auto border-b border-gray-200 py-8 px-3 border-t"
     >
       <div class="flex m-auto">
-        <img class="h-5" src="../../assets/images/icons/temperature.png" />
-        <h3 class="text-sm ml-2 mr-4">52°F</h3>
+        <img class="h-5" :src="weather.weather_icons[0]" />
+        <h3 class="text-sm ml-2 mr-4">{{ weather.temperature }}°F</h3>
         <img class="h-6" src="../../assets/images/icons/weather.png" />
-        <h3 class="text-sm ml-2 mr-4">10%</h3>
+        <h3 class="text-sm ml-2 mr-4">{{ weather.precip }}%</h3>
         <img class="h-5" src="../../assets/images/icons/wind.png" />
-        <h3 class="text-sm ml-2 mr-4">10mph</h3>
+        <h3 class="text-sm ml-2 mr-4">{{ weather.wind_speed }}mph</h3>
       </div>
     </div>
     <div
@@ -51,7 +51,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedCrop.id === item.id,
+            'salmon-border-selected': data.selectedCrop.id === item.id
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -110,7 +110,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedTrait.id === item.id,
+            'salmon-border-selected': data.selectedTrait.id === item.id
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -133,19 +133,19 @@ export default {
   name: "FieldData",
   props: ["fieldData"],
   components: {
-    DatePicker,
+    DatePicker
   },
   data() {
     return {
       data: {
         selectedCrop: {
           id: "",
-          name: "",
+          name: ""
         },
         selectedTrait: {
           id: "",
-          name: "",
-        },
+          name: ""
+        }
       },
       date: "",
       crops: "",
@@ -155,32 +155,49 @@ export default {
       selectedCrops: [],
       selectedHerbicides: [],
       selectedTraits: [],
+      weather: ""
     };
   },
   computed: {
     watchUpdateProps() {
       return this.fieldData;
-    },
+    }
   },
   watch: {
     watchUpdateProps(newProps, oldProps) {
       this.updateProps();
-    },
+    }
   },
   methods: {
     updateProps() {
       this.data = {
         selectedCrop: {
           id: this.fieldData.crop ? this.fieldData.crop : "",
-          name: this.fieldData.crop_name ? this.fieldData.crop_name : "",
+          name: this.fieldData.crop_name ? this.fieldData.crop_name : ""
         },
         selectedTrait: {
           id: this.fieldData.crop_trait ? this.fieldData.crop_trait : "",
           name: this.fieldData.crop_trait_name
             ? this.fieldData.crop_trait_name
-            : "",
-        },
+            : ""
+        }
       };
+      this.getFieldWeather();
+    },
+    async getFieldWeather() {
+      let coords = {
+        lat: this.fieldData.lat,
+        lng: this.fieldData.lng
+      };
+      await this.$axios
+        .post(`weather/me/`, coords)
+        .then(res => {
+          this.weather = res.data.current;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      console.log(this.weather);
     },
     activate(id) {
       if (!this.active) {
@@ -221,41 +238,44 @@ export default {
           }
           break;
       }
-      this.updateField()
+      this.updateField();
     },
     updateField() {
       let field = {
         crop_trait: this.data.selectedTrait.id,
         crop: this.data.selectedCrop.id
-      }
+      };
       this.$axios
-        .patch(`/farms/${this.fieldData.farm}/fields/${this.fieldData.id}/`, field)
-        .then((res) => {
+        .patch(
+          `/farms/${this.fieldData.farm}/fields/${this.fieldData.id}/`,
+          field
+        )
+        .then(res => {
           this.$store.dispatch("setAddedField", this.fieldData);
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully updated!",
+            message: "Field successfully updated!"
           });
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating field!",
+            message: "There was an error updating field!"
           });
         });
-    },
+    }
   },
   beforeMount() {
-    console.log(this.fieldData);
+    this.getFieldWeather();
     this.updateProps();
     this.date = new Date();
     this.$axios
       .get(`farms/crops/me/`)
-      .then((res) => {
+      .then(res => {
         this.crops = res.data.my_crop.crops;
       })
-      .catch((err) => {});
+      .catch(err => {});
     // this.$axios
     //   .get(`herbicides/me/`)
     //   .then(res => {
@@ -272,11 +292,11 @@ export default {
     //   });
     this.$axios
       .get(`farms/crop-traits/me/`)
-      .then((res) => {
+      .then(res => {
         this.traits = res.data.my_crop_trait.crop_traits;
       })
-      .catch((err) => {});
-  },
+      .catch(err => {});
+  }
 };
 </script>
 
