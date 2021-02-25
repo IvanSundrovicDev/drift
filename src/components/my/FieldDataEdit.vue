@@ -23,7 +23,7 @@
       class="flex m-auto border-b border-gray-200 py-8 px-3 border-t"
     >
       <div class="flex m-auto">
-        <img class="h-5" :src="weather.weather_icons[0]" />
+        <img class="h-5" src="../../assets/images/icons/temperature.png" />
         <h3 class="text-sm ml-2 mr-4">{{ weather.temperature }}°F</h3>
         <img class="h-6" src="../../assets/images/icons/weather.png" />
         <h3 class="text-sm ml-2 mr-4">{{ weather.precip }}%</h3>
