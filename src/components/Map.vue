@@ -294,14 +294,14 @@ export default {
                         class="inline h-7"
                         :src="cropImg"
                       />
-                      <h1 class="text-xl ml-2">{{ data.selectedCrop.name ? data.selectedCrop.name : "Assign crop" }}</h1>
+                      <h1 class="text-xl ml-2">{{ data.selectedCrop.name ? data.selectedCrop.name : "N/A" }}</h1>
                     </div>
                     <div class="py-2 flex">
                       <img
                         class="inline h-7"
                         :src="traitImg"
                       />
-                      <h1 class="text-xl ml-2">{{ data.selectedTrait.name ? data.selectedTrait.name : "Assign trait" }}</h1>
+                      <h1 class="text-xl ml-2">{{ data.selectedTrait.name ? data.selectedTrait.name : "N/A" }}</h1>
                     </div>
                     <div class="py-2 border-t-2 border-drift-blue flex">
                       <img
