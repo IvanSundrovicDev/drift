@@ -42,7 +42,7 @@
               </div>
               <div class="w-full mt-4">
                 <div
-                  v-for="item in herbicides"
+                  v-for="item in displayedMyItems"
                   class="flex mb-8"
                   :key="item.id"
                   :class="{
@@ -51,14 +51,21 @@
                   v-on:click="addHerbicide(item)"
                 >
                   <div
-                    class="w-full m-auto rounded-lg bg-white hover:border-drift-salmon border-white border-2 cursor-pointer"
+                    class="w-full m-auto rounded-lg bg-white p-2 hover:border-drift-salmon border-white border-2 cursor-pointer"
                     :class="{
                       'border-drift-salmon': selectedHerbicides.includes(item)
                     }"
                   >
-                    <h1 class="text-center my-4 text-2xl">
-                      {{ item.name }}
-                    </h1>
+                    <h1 class="text-center text-xl">{{ item.group_type }}</h1>
+                    <div class="mt-1 flex flex-wrap text-center">
+                      <span
+                        v-for="(item, index) in item.herbicide_names"
+                        :key="index"
+                        class="text-sm pr-1"
+                      >
+                        {{ `${item},` }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -110,14 +117,21 @@
                   v-on:click="addMixHerbicide(item)"
                 >
                   <div
-                    class="w-full m-auto rounded-lg bg-white hover:border-drift-salmon border-white border-2 cursor-pointer"
+                    class="w-full m-auto rounded-lg p-2 bg-white hover:border-drift-salmon border-white border-2 cursor-pointer"
                     :class="{
                       'border-drift-salmon': selectedMix.includes(item)
                     }"
                   >
-                    <h1 class="text-center my-4 text-2xl">
-                      {{ item.name }}
-                    </h1>
+                    <h1 class="text-center text-xl">{{ item.group_type }}</h1>
+                    <div class="mt-1 flex flex-wrap text-center">
+                      <span
+                        v-for="(item, index) in item.herbicide_names"
+                        :key="index"
+                        class="text-sm pr-1"
+                      >
+                        {{ `${item},` }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -317,12 +331,21 @@ export default {
       mixes: []
     };
   },
+  computed: {
+    displayedMyItems() {
+      return this.herbicides.filter(el =>
+        el.group_type
+          .toLowerCase()
+          .includes(this.searchHerbicide.toLocaleLowerCase())
+      );
+    }
+  },
   methods: {
     getData() {
       this.$axios
         .get(`herbicides/me/`)
         .then(res => {
-          this.herbicides = res.data.my_herbicide.herbicides;
+          this.herbicides = res.data.my_herbicide.herbicide_groups;
         })
         .catch(err => {});
 
@@ -370,13 +393,12 @@ export default {
       }
     },
     postTankMix() {
+      console.log(this.$store.state.auth.user.account);
       if (this.data.mixName && this.data.mix[0]) {
         let TankMix = {
           name: this.data.mixName,
-          tank: 1,
-          herbicides: this.data.mix.map(el => el.id),
-          // TODO: add proper foreign key
-          owner: 1
+          herbicide_groups: this.data.mix.map(el => el.id),
+          owner: this.$store.state.auth.user.account
         };
         this.$axios
           .post(`herbicides/tank-mixes/me/`, TankMix)
@@ -412,7 +434,7 @@ export default {
         .delete(`herbicides/tank-mixes/${this.selectedItem.id}/`)
         .then(res => {
           this.getData();
-          this.mixes = this.mixes.filter(el => el.id !== this.selectedItem.id)
+          this.mixes = this.mixes.filter(el => el.id !== this.selectedItem.id);
           this.deletePopUp = false;
           this.selectedItem = "";
           this.$store.dispatch("addNotification", {
@@ -424,7 +446,7 @@ export default {
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "There was an error removing Tank Mix"
-          })
+          });
         });
     }
   },

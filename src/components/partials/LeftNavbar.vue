@@ -6,7 +6,9 @@
           <router-link to="/dashboard">
             <div
               class="flex h-20 justify-center items-center rounded-2xl"
-              :class="{ active: farmSidebarOpen && $route.name === 'Dashboard' }"
+              :class="{
+                active: farmSidebarOpen && $route.name === 'Dashboard'
+              }"
               v-on:click="farmSidebarOpen = !farmSidebarOpen"
             >
               <div class="mx-auto">
@@ -18,7 +20,7 @@
             </div>
           </router-link>
         </li>
-        <hr class="mt-3">
+        <hr class="mt-3" />
         <li class="navitem">
           <router-link to="/crops">
             <div
@@ -110,7 +112,7 @@
 import Farms from "../../assets/images/navbar-icons/farms.svg";
 import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/trait-icon.svg";
-import Crops from "../../assets/images/navbar-icons/crops.svg";
+import Crops from "../../assets/images/navbar-icons/traits.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
 import Analytics from "../../assets/images/navbar-icons/analitics.svg";
 import FarmSidebar from "./FarmSidebar.vue";

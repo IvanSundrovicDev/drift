@@ -13,20 +13,18 @@ import Editable from "leaflet-editable";
 import Search from "leaflet-search";
 import Vue from "vue";
 
-
-
 export default {
   name: "Map",
-  data: function () {
+  data: function() {
     return {
       map: null,
-      center: [45.72727000000003, 18.10650000000004],
+      center: [46.4237242, -95.6042309],
       active: false,
       fieldPolygon: [],
       drawing: false,
       fieldsShown: false,
       activePolygon: false,
-      activeCoords: false,
+      activeCoords: false
     };
   },
   computed: {
@@ -47,7 +45,7 @@ export default {
     },
     drawNeighbor() {
       return this.$store.state.neighborFields;
-    },
+    }
   },
   watch: {
     locationChange(newLocation, oldLocation) {
@@ -87,7 +85,7 @@ export default {
           .setStyle({
             color: "#EC2828",
             fillColor: "#EC2828",
-            fillOpacity: 0.3,
+            fillOpacity: 0.3
           })
           .addTo(this.map);
       }
@@ -98,7 +96,7 @@ export default {
               color: "#FFFFFF",
               fillColor: "#28AAE1",
               fillOpacity: 0.3,
-              id: neighbor,
+              id: neighbor
             })
             .addTo(this.map);
         } else {
@@ -106,11 +104,11 @@ export default {
             .bindPopup(`<div style="width:230px" id="popup"></div>`)
             .setStyle({ color: "#FFF", fillOpacity: 0, id: neighbor })
             .addTo(this.map);
-          polygon.on("click", function () {
+          polygon.on("click", function() {
             let img = "@/assets/images/icons/envelope.png";
             new Vue({
               el: "#popup",
-              data: function () {
+              data: function() {
                 return {
                   neighborEmail: "",
                   fieldName: "",
@@ -120,90 +118,91 @@ export default {
                   traitImg: require("@/assets/images/icons/trait-icon.png"),
                   inviteImg: require("@/assets/images/icons/invite-icon.png"),
                   addImg: require("@/assets/images/icons/add-icon.png"),
+                  farmImg: require("@/assets/images/icons/FarmsLogo.png"),
                   active: "main",
                   crops: [],
                   traits: [],
                   data: {
                     selectedCrop: {
                       id: "",
-                      name: "",
+                      name: ""
                     },
                     selectedTrait: {
                       id: "",
-                      name: "",
-                    },
+                      name: ""
+                    }
                   },
-                  activeMenu: false,
+                  activeMenu: false
                 };
               },
               methods: {
                 inviteNeighbor() {
                   this.$axios
                     .post(`/farms/fields/${neighbor}/invite/`, {
-                      email: this.neighborEmail,
+                      email: this.neighborEmail
                     })
-                    .then((res) => {
+                    .then(res => {
                       map.closePopup();
                       store.dispatch("addNotification", {
                         type: "success",
-                        message: "Neighbor successfully invited!",
+                        message: "Neighbor successfully invited!"
                       });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                       this.$store.dispatch("addNotification", {
                         type: "error",
-                        message: "There was an error inviting neighbor!",
+                        message: "There was an error inviting neighbor!"
                       });
                     });
                 },
                 claimField() {
-                  this.$axios
-                    .patch(
-                      `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
-                      {
-                        name: this.fieldName,
-                        farm: newNeighbors.farm,
-                        crop_trait: this.data.selectedTrait.id,
-                        crop: this.data.selectedCrop.id,
-                      }
-                    )
-                    .then((res) => {
-                      console.log(res.data);
-                      res.data.field.mpoly = [];
-                      store.dispatch("setAddedField", res.data.field);
-                      store.dispatch("addNotification", {
-                        type: "success",
-                        message: "Neighbor field successfully claimed!",
+                  if (this.data.selectedFarm.id && this.fieldName) {
+                    this.$axios
+                      .patch(
+                        `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                        {
+                          name: this.fieldName,
+                          farm: this.data.selectedFarm.id
+                        }
+                      )
+                      .then(res => {
+                        console.log(res.data);
+                        res.data.field.mpoly = [];
+                        store.dispatch("setAddedField", res.data.field);
+                        store.dispatch("addNotification", {
+                          type: "success",
+                          message: "Neighbor field successfully claimed!"
+                        });
+                      })
+                      .catch(err => {
+                        store.dispatch("addNotification", {
+                          type: "error",
+                          message: "There was an error claiming neighbor!"
+                        });
                       });
-                    })
-                    .catch((err) => {
-                      store.dispatch("addNotification", {
-                        type: "error",
-                        message: "There was an error claiming neighbor!",
-                      });
-                    });
+                  }
                 },
-                assignCropTrait(){
+                assignCropTrait() {
                   this.$axios
                     .patch(
                       `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
                       {
                         crop_trait: this.data.selectedTrait.id,
-                        crop: this.data.selectedCrop.id,
+                        crop: this.data.selectedCrop.id
                       }
                     )
-                    .then((res) => {
+                    .then(res => {
                       res.data.field.mpoly = [];
                       store.dispatch("setAddedField", res.data.field);
                       store.dispatch("addNotification", {
                         type: "success",
-                        message: "Neighbor field successfully claimed!",
+                        message: "Neighbor field successfully claimed!"
                       });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                       store.dispatch("addNotification", {
                         type: "error",
-                        message: "There was an error claiming neighbor!",
+                        message: "There was an error claiming neighbor!"
                       });
                     });
                 },
@@ -236,33 +235,55 @@ export default {
                         this.data.selectedTrait = "";
                       }
                       break;
+                    case "farm":
+                      if (
+                        !this.data.selectedFarm ||
+                        this.data.selectedFarm.id !== item.id
+                      ) {
+                        this.data.selectedFarm = item;
+                        this.activeMenu = "";
+                      } else {
+                        this.data.selectedFarm = "";
+                      }
+                      break;
                   }
-                },
+                }
               },
               beforeMount() {
-                this.data = { 
+                this.data = {
                   selectedCrop: {
                     id: newNeighbors.neighbour_coords[neighbor].crop,
                     name: newNeighbors.neighbour_coords[neighbor].crop_name
                   },
                   selectedTrait: {
                     id: newNeighbors.neighbour_coords[neighbor].crop_trait,
-                    name: newNeighbors.neighbour_coords[neighbor].crop_trait_name
+                    name:
+                      newNeighbors.neighbour_coords[neighbor].crop_trait_name
+                  },
+                  selectedFarm: {
+                    id: "",
+                    name: ""
                   }
-                }
+                };
                 this.$axios
                   .get(`farms/crops/me/`)
-                  .then((res) => {
+                  .then(res => {
                     this.crops = res.data.my_crop.crops;
                   })
-                  .catch((err) => {});
+                  .catch(err => {});
 
                 this.$axios
                   .get(`farms/crop-traits/me/`)
-                  .then((res) => {
+                  .then(res => {
                     this.traits = res.data.my_crop_trait.crop_traits;
                   })
-                  .catch((err) => {});
+                  .catch(err => {});
+                this.$axios
+                  .get(`farms/me/`)
+                  .then(res => {
+                    this.farms = res.data;
+                  })
+                  .catch(err => {});
               },
               template: `
               <div>
@@ -438,12 +459,49 @@ export default {
                             autofocus
                             v-model="fieldName"
                           />
-                        </div
+                        </div>
                       </div>
                     </div>
+                  <div
+                          v-on:click="activate('crop')"
+                          v-show="activeMenu === 'crop' || !activeMenu"
+                          class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
+                        >
+                          <img
+                            class="inline h-7"
+                            :src="farmImg"
+                          />
+                          <h1 class="text-xl ml-2">
+                            {{ data.selectedFarm.id ? data.selectedFarm.name : "Select Farm" }}
+                          </h1>
+                          <div v-if="!activeMenu" class="arrow-down my-auto ml-auto mr-3"></div>
+                          <div v-else class="arrow-up ml-auto mr-2"></div>
+                        </div>
+                        <div class="w-full overflow-auto h-32" v-show="activeMenu === 'crop'">
+                          <div
+                            v-for="item in farms"
+                            v-on:click="select('farm', item)"
+                            :key="item.id"
+                            class="custom-item cursor-pointer hover:bg-gray-200"
+                          >
+                            <div
+                              :class="{
+                                'salmon-border-selected': data.selectedFarm.id === item.id,
+                              }"
+                              class="salmon-border mx-8 border-b-2 border-gray-200 text-sm text-center p-2"
+                            >
+                              <h1 class="text-lg">{{ item.name }}</h1>
+                            </div>
+                          </div>
+                        </div>
                     <div class="pt-8 flex">
                       <button
-                        class="rounded-lg text-lg py-1 m-auto w-36 designActionButton"
+                        :class="{
+                          'opacity-100 hover:bg-drift-blue hover:text-white':
+                            data.selectedFarm.id && fieldName,
+                          'cursor-not-allowed': !data.selectedFarm.id && !fieldName
+                        }"
+                        class="rounded-lg text-lg py-1 m-auto w-36 border-2 border-drift-blue text-drift-blue hover:bg-white opacity-50"
                         v-on:click="claimField"
                       >
                         Claim
@@ -452,26 +510,26 @@ export default {
                   </div>
                 </div>
               </div>
-              </div>`,
+              </div>`
             });
           });
         }
       }
     },
-    drawAllFields() {},
+    drawAllFields() {}
   },
   methods: {
-    setupLeafletMap: function () {
+    setupLeafletMap: function() {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true,
-      }).setView(this.center, 13);
+        editable: true
+      }).setView(this.center, 11);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright",
+          position: "bottomright"
         })
         .addTo(this.map);
 
@@ -480,7 +538,7 @@ export default {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
         attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -495,24 +553,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10,
-            },
+              weight: 10
+            }
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false,
+          marker: false
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true,
-        },
+          remove: true
+        }
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -528,7 +586,7 @@ export default {
       let map = this.map;
 
       //on zoom get neighbour fields
-      this.map.on("zoomend", function () {
+      this.map.on("zoomend", function() {
         if (map.getZoom() <= 13) {
           scopeThis.fieldsShown = false;
           scopeThis.activeCoords = false;
@@ -536,7 +594,7 @@ export default {
         }
       });
 
-      this.map.on("moveend", function () {
+      this.map.on("moveend", function() {
         if (
           map.getZoom() > 13 &&
           !scopeThis.fieldPolygon[0] &&
@@ -550,7 +608,7 @@ export default {
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function (e) {
+      this.map.on("draw:created", function(e) {
         let layer = e.layer;
 
         let newCoords = [];
@@ -560,7 +618,7 @@ export default {
         layer.options.fillOpacity = 0.3;
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function (value, key) {
+        layer.editing.latlngs[0][0].map(function(value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -574,13 +632,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function (e) {
+      this.map.on("draw:edited", function(e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function (layer) {
-          layer.editing.latlngs[0][0].map(function (value, key) {
+        layers.eachLayer(function(layer) {
+          layer.editing.latlngs[0][0].map(function(value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -590,7 +648,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function (e) {
+      this.map.on("draw:canceled", function(e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -624,13 +682,13 @@ export default {
     getAllFields(coords) {
       this.$axios
         .post(`farms/fields/location-search/`, coords)
-        .then((res) => {
+        .then(res => {
           this.activeCoords = coords;
           this.removePolygon();
           let fields = { neighbour_coords: res.data, dispute_coords: [] };
           this.$store.dispatch("drawNeighbor", fields);
         })
-        .catch((err) => {
+        .catch(err => {
           this.activeCoords = false;
           this.removePolygon();
           let fields = { neighbour_coords: [], dispute_coords: [] };
@@ -639,11 +697,11 @@ export default {
     },
     inviteNeighbor() {
       console.log("fds");
-    },
+    }
   },
   mounted() {
     this.setupLeafletMap();
-  },
+  }
 };
 </script>
 
@@ -656,8 +714,8 @@ export default {
 }
 .custom-underline {
 }
-.custom-underline:hover{
+.custom-underline:hover {
   text-decoration: underline;
-  text-decoration-color: #28AAE1;
+  text-decoration-color: #28aae1;
 }
 </style>
