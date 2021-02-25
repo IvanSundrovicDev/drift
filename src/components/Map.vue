@@ -266,16 +266,16 @@ export default {
                   }
                 };
                 this.$axios
-                  .get(`farms/crops/me/`)
+                  .get(`farms/crops/`)
                   .then(res => {
-                    this.crops = res.data.my_crop.crops;
+                    this.crops = res.data;
                   })
                   .catch(err => {});
 
                 this.$axios
-                  .get(`farms/crop-traits/me/`)
+                  .get(`farms/crop-traits/`)
                   .then(res => {
-                    this.traits = res.data.my_crop_trait.crop_traits;
+                    this.traits = res.data;
                   })
                   .catch(err => {});
                 this.$axios
@@ -337,11 +337,11 @@ export default {
                           class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
                         >
                           <img
-                            class="inline h-7"
+                            class="inline my-auto h-7"
                             :src="cropImg"
                           />
                           <h1 class="text-xl ml-2">
-                            {{ data.selectedCrop.id ? data.selectedCrop.name : "Select Crop" }}
+                            {{ data.selectedCrop.id ? data.selectedCrop.name : "N/A" }}
                           </h1>
                           <div v-if="!activeMenu" class="arrow-down my-auto ml-auto mr-3"></div>
                           <div v-else class="arrow-up ml-auto mr-2"></div>
@@ -370,11 +370,11 @@ export default {
                           class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
                         >
                           <img
-                            class="inline h-7"
+                            class="inline h-7 my-auto"
                             :src="traitImg"
                           />
                           <h1 class="text-xl ml-2">
-                            {{ data.selectedTrait.id ? data.selectedTrait.name : "Select Trait" }}
+                            {{ data.selectedTrait.id ? data.selectedTrait.name : "N/A" }}
                           </h1>
                           <div v-if="!activeMenu" class="arrow-down my-auto ml-auto mr-3"></div>
                           <div v-else class="arrow-up ml-auto mr-2"></div>
