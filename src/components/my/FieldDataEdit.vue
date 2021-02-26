@@ -1,24 +1,6 @@
 <template>
   <div class="field-data">
     <div
-      v-on:click="activate('calendar')"
-      v-show="active === 'calendar' || !active"
-      class="flex py-8 px-8 cursor-pointer"
-    >
-      <div v-if="!active" class="arrow-down my-auto mr-2"></div>
-      <div v-else class="arrow-up my-auto mr-2"></div>
-      <h1 class="text-xl m-auto">
-        {{
-          `${date.toLocaleString("default", {
-            month: "long"
-          })} ${date.getDate()}`
-        }}
-      </h1>
-    </div>
-    <div v-show="active === 'calendar'">
-      <DatePicker v-model="date"></DatePicker>
-    </div>
-    <div
       v-show="!active"
       class="flex m-auto border-b border-gray-200 py-8 px-3 border-t"
     >
@@ -127,14 +109,9 @@
 </template>
 
 <script>
-import DatePicker from "v-calendar/lib/components/date-picker.umd";
-
 export default {
   name: "FieldData",
   props: ["fieldData"],
-  components: {
-    DatePicker
-  },
   data() {
     return {
       data: {
