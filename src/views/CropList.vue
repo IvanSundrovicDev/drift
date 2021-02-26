@@ -86,9 +86,6 @@ export default {
         })
         .catch(err => {});
     }
-  },
-  beforeMount() {
-    this.getHerbicides();
   }
 };
 </script>
