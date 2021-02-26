@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CropMenager
+    <CropManager
       :name="name"
       :data="data"
       v-on:postAddedItems="postAddedItems"
@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import CropMenager from "./../components/menagers/CropMenager";
+import CropManager from "../components/managers/CropManager";
 
 export default {
   name: "CropList",
-  components: { CropMenager },
+  components: { CropManager },
   data() {
     return {
       name: "Crops",

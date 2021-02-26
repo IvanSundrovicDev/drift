@@ -4,7 +4,7 @@
       <InfoTooltip
         icon="info-circle"
         :text="
-          `Choose ${name} that you use on your farm. These selections will
+          `Choose herbicides that you use on your farm. These selections will
         personalize your app experience`
         "
       ></InfoTooltip>
@@ -14,14 +14,14 @@
           v-on:click="active = 'list'"
           class="text-drift-blue text-2xl px-8 py-4 shadow-md cursor-pointer"
         >
-          My {{ name }}
+          My herbicides
         </div>
         <div
           :class="{ active: active === 'add' }"
           v-on:click="active = 'add'"
           class="text-drift-blue text-2xl px-8 py-4 shadow-md cursor-pointer"
         >
-          Add {{ name }}
+          Add herbicides
         </div>
       </div>
 
@@ -45,16 +45,27 @@
               :key="item.id"
               v-on:click="removeItem(item.id)"
               :class="{ 'bg-drift-blue': removeList.includes(item.id) }"
-              class="w-56 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
+              class="w-72 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
-              <div class="flex herbicide-trait-button h-full py-2 px-4">
-                <div class="flex m-auto text-center text-xl">
+              <div
+                class="flex herbicide-trait-button h-full py-2 px-4 text-xl text-center"
+              >
+                <div class="w-full">
                   <img
                     class="h-5 w-5 mt-1 mr-2"
                     v-if="item.logo"
                     :src="item.logo"
                   />
-                  <h1>{{ item.name || item.long_name }}</h1>
+                  <h1>{{ item.group_type }}</h1>
+                  <div class="mt-1 flex flex-wrap text-center">
+                    <span
+                      v-for="(item, index) in item.herbicide_names"
+                      :key="index"
+                      class="text-sm pr-1"
+                    >
+                      {{ `${item},` }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,16 +106,27 @@
               :key="item.id"
               v-on:click="addItem(item.id)"
               :class="{ 'bg-drift-blue': addList.includes(item.id) }"
-              class="w-56 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
+              class="w-72 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
             >
               <div class="flex herbicide-trait-button h-full py-2 px-4">
                 <div class="flex m-auto text-center text-xl">
-                  <img
-                    class="h-5 w-5 mt-1 mr-2"
-                    v-if="item.logo"
-                    :src="item.logo"
-                  />
-                  <h1>{{ item.name || item.long_name }}</h1>
+                  <div class="w-full">
+                    <img
+                      class="h-5 w-5 mt-1 mr-2"
+                      v-if="item.logo"
+                      :src="item.logo"
+                    />
+                    <h1>{{ item.group_type }}</h1>
+                    <div class="mt-1 flex flex-wrap text-center">
+                      <span
+                        v-for="(item, index) in item.herbicides"
+                        :key="index"
+                        class="text-sm pr-1"
+                      >
+                        {{ `${item},` }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -131,8 +153,7 @@
         $store.state.tutorial.loaded &&
           !$store.state.tutorial.herbicideTutorialDone &&
           $store.state.tutorial.herbicideTutorial === 0 &&
-          active === 'list' &&
-          $route.name === 'Herbicides'
+          active === 'list'
       "
     >
       <Tutorial
@@ -149,8 +170,7 @@
       v-if="
         !$store.state.tutorial.herbicideTutorialDone &&
           $store.state.tutorial.herbicideTutorial === 1 &&
-          active === 'list' &&
-          $route.name === 'Herbicides'
+          active === 'list'
       "
     >
       <Tutorial
@@ -165,8 +185,7 @@
       v-if="
         !$store.state.tutorial.herbicideTutorialDone &&
           $store.state.tutorial.herbicideTutorial === 2 &&
-          active === 'list' &&
-          $route.name === 'Herbicides'
+          active === 'list'
       "
     >
       <Tutorial
@@ -183,8 +202,7 @@
       v-if="
         !$store.state.tutorial.herbicideTutorialDone &&
           $store.state.tutorial.herbicideTutorial === 3 &&
-          active === 'add' &&
-          $route.name === 'Herbicides'
+          active === 'add'
       "
     >
       <Tutorial
@@ -196,23 +214,6 @@
         class="top-0 left-64 fixed ml-96 mt-56"
       />
     </div>
-    <div
-      class="whitescreen-active"
-      v-if="
-        $store.state.tutorial.loaded &&
-          !$store.state.tutorial.traitTutorialDone &&
-          $route.name === 'Traits'
-      "
-    >
-      <Tutorial
-        v-on:exit="$store.dispatch('tutorial/setTraitTutorialDone')"
-        :direction="'left'"
-        :text="
-          'Your Trait Manager has the same layout as your Herbicide Manager. Go ahead and try to add a few of your favourite traits. '
-        "
-        class="top-0 left-4 fixed ml-96 mt-56"
-      />
-    </div>
   </app-layout>
 </template>
 
@@ -222,13 +223,13 @@ import Tutorial from "../common/Tutorial";
 import InfoTooltip from "@/components/common/InfoTooltip";
 
 export default {
-  name: "TraitMenager",
+  name: "HerbicideManager",
   components: {
     AppLayout,
     Tutorial,
     InfoTooltip
   },
-  props: ["name", "data"],
+  props: ["data"],
   data() {
     return {
       active: "list",
@@ -241,12 +242,16 @@ export default {
   computed: {
     displayedAddItems() {
       return this.data.allItems.filter(el =>
-        el.name.toLowerCase().includes(this.allItemsSearch.toLocaleLowerCase())
+        el.group_type
+          .toLowerCase()
+          .includes(this.allItemsSearch.toLocaleLowerCase())
       );
     },
     displayedMyItems() {
       return this.data.selectedItems.filter(el =>
-        el.name.toLowerCase().includes(this.myItemsSearch.toLocaleLowerCase())
+        el.group_type
+          .toLowerCase()
+          .includes(this.myItemsSearch.toLocaleLowerCase())
       );
     }
   },
@@ -280,6 +285,7 @@ export default {
     }
   },
   beforeMount() {
+    console.log(this.data);
     if (!this.$store.state.traitTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }

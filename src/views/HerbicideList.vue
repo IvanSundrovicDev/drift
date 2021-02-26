@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HerbicideMenager
+    <HerbicideManager
       :data="data"
       v-on:postAddedItems="postAddedItems"
       v-on:deleteAddedItems="deleteAddedItems"
@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import HerbicideMenager from "./../components/menagers/HerbicideMenager";
+import HerbicideManager from "../components/managers/HerbicideManager";
 
 export default {
   name: "HerbicideList",
-  components: { HerbicideMenager },
+  components: { HerbicideManager },
   data() {
     return {
       data: {

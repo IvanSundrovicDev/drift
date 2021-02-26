@@ -222,7 +222,7 @@ import Tutorial from "../common/Tutorial";
 import InfoTooltip from "@/components/common/InfoTooltip";
 
 export default {
-  name: "CropMenager",
+  name: "CropManager",
   components: {
     AppLayout,
     Tutorial,
