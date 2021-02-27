@@ -18,7 +18,7 @@ export default {
   data: function() {
     return {
       map: null,
-      center: [46.4237242, -95.6042309],
+      center: [39.8859636, -95.6042309],
       active: false,
       fieldPolygon: [],
       drawing: false,
@@ -524,7 +524,7 @@ export default {
       this.map = L.map("mapContainer", {
         zoomControl: false,
         editable: true
-      }).setView(this.center, 11);
+      }).setView(this.center, 4);
 
       // Put zoom control bottom right
       L.control

@@ -18,8 +18,8 @@
                   "
                 />
                 <img
-                  class="hidden lg:block h-8 w-auto"
-                  src="../../assets/images/drift_logo.png"
+                  class="hidden lg:block h-10 w-auto"
+                  src="../../assets/images/drift_logo_no_tag.png"
                   alt="DRIFT"
                   @click="
                     $route.name !== 'Dashboard'
