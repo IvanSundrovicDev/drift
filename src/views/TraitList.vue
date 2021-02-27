@@ -1,5 +1,5 @@
 <template>
-  <TraitMenager
+  <TraitManager
     :name="name"
     :data="data"
     v-on:postAddedItems="postAddedItems"
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import TraitMenager from "./../components/menagers/TraitMenager";
+import TraitManager from "../components/managers/TraitManager";
 
 export default {
   name: "TraitList",
-  components: { TraitMenager },
+  components: { TraitManager },
   data() {
     return {
       name: "Traits",
@@ -66,6 +66,7 @@ export default {
       this.$axios
         .get(`farms/crop-traits/`)
         .then(res => {
+          console.log(res.data);
           this.data.allItems = res.data;
           this.$axios
             .get(`farms/crop-traits/me/`)

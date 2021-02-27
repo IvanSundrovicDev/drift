@@ -1,11 +1,5 @@
 <template>
   <div class="bg-drift-blue ">
-    <router-link
-      class="absolute top-8 right-10 rounded-lg designInverseButton"
-      :to="{ name: 'Login' }"
-      v-if="registration"
-      >Sign In Instead</router-link
-    >
     <div :class="{ 'flex h-screen': registration }">
       <div class="m-auto py-12 px-16 rounded-md bg-white">
         <div class="w-full text-center">

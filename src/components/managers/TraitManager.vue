@@ -222,7 +222,7 @@ import Tutorial from "../common/Tutorial";
 import InfoTooltip from "@/components/common/InfoTooltip";
 
 export default {
-  name: "TraitMenager",
+  name: "TraitManager",
   components: {
     AppLayout,
     Tutorial,

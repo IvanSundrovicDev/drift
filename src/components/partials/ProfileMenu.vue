@@ -218,7 +218,7 @@
                 alt=""
               />
               <span class="my-auto ml-2 align-middle"
-                >Neighbour e-mail address</span
+                >Neighboccr e-mail address</span
               >
             </div>
             <div class="flex">

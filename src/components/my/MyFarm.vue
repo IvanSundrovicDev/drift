@@ -149,21 +149,6 @@ export default {
     },
     activateField(field) {
       this.fieldActive = field;
-      let coords = {
-        lat: field.lat,
-        lng: field.lng
-      };
-      this.getFieldWeather(coords);
-    },
-    getFieldWeather(coords) {
-      this.$axios
-        .post(`weather/me/`, coords)
-        .then(res => {
-          console.log(res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
     }
   }
 };
