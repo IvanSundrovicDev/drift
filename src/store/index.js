@@ -12,7 +12,9 @@ export default new Vuex.Store({
       location: "",
       bool: false
     },
-    activeField:[],
+    activeField:{
+      coords:[]
+    },
     fields: [],
     polygonDraw: false,
     polygonCoordinates: [],
@@ -30,46 +32,51 @@ export default new Vuex.Store({
     },
     setFields(state, value){
       let fields = [] 
+      let neighbors = []
+      let dispute = []
       if(state.fields[0]){
         fields = state.fields
         fields.forEach(el => {
-          if(el.coords !== state.activeField){
-            console.log(el.status)
+          if(el.uuid !== state.activeField.uuid && el.status !== "dispute"){
             return el.status =  "neighbor"
           }
         });
       }
       if(value.mpoly[0]){
-        state.activeField = value.mpoly
-        let activeField = fields.findIndex(el => el.coords[0] === value.mpoly[0])
+        value.status = "active"
+        value.is_confirmed = true
+        value.coords = value.mpoly
+        state.activeField = value
+        let activeField = fields.findIndex(el => el.uuid === value.uuid)
         if(activeField !== -1){
-          value.status = "active"
-          value.is_confirmed = true
-          value.coords = value.mpoly
           fields[activeField] = value
         }
         else{
-          value.status = "active"
-          value.is_confirmed = true
-          value.coords = value.mpoly
           fields.push(value)
         }
       }
       if(Object.keys(value.neighbour_coords).length > 0){
-        let neighbors = []
         for (const i in value.neighbour_coords) {
           value.neighbour_coords[i].coords = value.neighbour_coords[i].mpoly;
           value.neighbour_coords[i].status = "neighbor"
           neighbors.push(value.neighbour_coords[i]);   
         }
-        let merged = neighbors.concat(fields)
-        let sorted = merged.filter((elem, index, self) => self.findIndex(
-          (t) => {return (t.uuid === elem.uuid && elem.status !== "active")}) === index)
-        fields = sorted
+        neighbors = neighbors.filter(el => el.uuid !== state.activeField.uuid)
       }
-      if(value.dispute_coords[0]){
-        console.log(value.dispute_coords);
+      if(Object.keys(value.dispute_coords).length > 0){
+        for (const i in value.dispute_coords) {
+          value.dispute_coords[i].coords = value.dispute_coords[i].mpoly;
+          value.dispute_coords[i].status = "dispute"
+          dispute.push(value.dispute_coords[i]);   
+        }
+        dispute = dispute.filter(el => el.uuid !== state.activeField.uuid)
       }
+      let current = neighbors.concat(dispute)
+      fields.forEach(el => {
+        current = current.filter(item => item.uuid !== el.uuid)
+      })
+      fields = fields.concat(current)
+      console.log(fields)
       state.fields = fields
     },
     setPolygonDraw(state, value) {
@@ -115,6 +122,9 @@ export default new Vuex.Store({
     },
     setFields(context, value) {
       context.commit("setFields", value);
+    },
+    setNeighbor(context, value) {
+      context.commit("setNeighbor", value);
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);
