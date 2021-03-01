@@ -74,8 +74,25 @@ export default {
       newFields.forEach(field => {
         if(field.status === "active"){
           var polygon = L.polygon(field.coords)
-            .setStyle({ color: "red", fillColor: "#FFF", fillOpacity: 0.3 })
+            .setStyle({ color: "#FFF", fillColor: "#FFF", fillOpacity: 0.3 })
             .addTo(this.map);
+        }
+        else if(field.status === "dispute"){
+          if (field.is_confirmed) {
+          var polygon = L.polygon(field.coords)
+            .setStyle({ color: "#EC2828", fillColor: "#EC2828", fillOpacity: 0.3 })
+            .addTo(this.map);
+          }
+           else {
+          var polygon = L.polygon(field.coords)
+            .bindPopup(`<div style="width:230px" id="popup"></div>`)
+            .setStyle({ color: "#EC2828", fillOpacity: 0, id: field.uuid })
+            .addTo(this.map);
+          polygon.on("click", function() {
+            let img = "@/assets/images/icons/envelope.png";
+            menu(field)
+          });
+        }
         }
         else if(field.status === "neighbor"){
           if (field.is_confirmed) {
@@ -94,7 +111,12 @@ export default {
             .addTo(this.map);
           polygon.on("click", function() {
             let img = "@/assets/images/icons/envelope.png";
-            new Vue({
+            menu(field)
+          });
+        }
+        }
+        let menu = () => {
+          new Vue({
               el: "#popup",
               data: function() {
                 return {
@@ -238,15 +260,15 @@ export default {
                 }
               },
               beforeMount() {
+                console.log(field)
                 this.data = {
                   selectedCrop: {
-                    id: newNeighbors.neighbour_coords[neighbor].crop,
-                    name: newNeighbors.neighbour_coords[neighbor].crop_name
+                    id: field.crop,
+                    name: field.crop_name
                   },
                   selectedTrait: {
-                    id: newNeighbors.neighbour_coords[neighbor].crop_trait,
-                    name:
-                      newNeighbors.neighbour_coords[neighbor].crop_trait_name
+                    id: field.crop_trait,
+                    name: field.crop_trait_name
                   },
                   selectedFarm: {
                     id: "",
@@ -500,8 +522,6 @@ export default {
               </div>
               </div>`
             });
-          });
-        }
         }
       })
     },
@@ -574,18 +594,17 @@ export default {
 
       let map = this.map;
 
-      //on zoom get neighbour fields
-      this.map.on("zoomend", function() {
-        if (map.getZoom() <= 13) {
-          scopeThis.fieldsShown = false;
-          scopeThis.activeCoords = false;
-          scopeThis.removePolygon();
-        }
-      });
+      // //on zoom get neighbour fields
+      // this.map.on("zoomend", function() {
+      //   if (map.getZoom() <= 13) {
+      //     scopeThis.fieldsShown = false;
+      //     scopeThis.activeCoords = false;
+      //     scopeThis.removePolygon();
+      //   }
+      // });
 
       this.map.on("moveend", function() {
         if (
-          map.getZoom() > 13 &&
           !scopeThis.fieldPolygon[0] &&
           !scopeThis.drawing &&
           !scopeThis.activePolygon &&
@@ -640,6 +659,9 @@ export default {
       this.map.on("draw:canceled", function(e) {
         store.dispatch("setPolygonDraw", false);
       });
+
+      this.getAllFields(map.getCenter())
+
     },
     removePolygon() {
       this.fieldPolygon = [];
@@ -673,7 +695,7 @@ export default {
         .post(`farms/fields/location-search/`, coords)
         .then(res => {
           this.activeCoords = coords;
-          this.$store.dispatch("setFields", { mpoly:[],  neighbour_coords: res.data, dispute_coords:[] });
+          this.$store.dispatch("setNeighbor", res.data);
         })
         .catch(err => {
           this.activeCoords = false;

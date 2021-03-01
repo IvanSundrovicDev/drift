@@ -140,7 +140,7 @@ export default {
       this.$axios
         .delete(`/farms/${this.field.farm}/fields/${this.field.id}/`)
         .then(res => {
-          this.$store.dispatch("setAddedField", {});
+          this.$store.dispatch("setAllToNeighbor");
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully removed!"

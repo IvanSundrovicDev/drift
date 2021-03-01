@@ -150,11 +150,9 @@ export default {
     },
     activateAddField() {
       this.active = "addField";
-      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     activateAddFarm() {
       this.active = "addFarm";
-      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     closeAndRefreshFarms() {
       this.active = "farmSidebar";

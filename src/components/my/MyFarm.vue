@@ -104,8 +104,7 @@ export default {
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.$store.dispatch("setFieldPolygon", newField.mpoly);
-      this.$store.dispatch("drawNeighbor", newField);
+      this.$store.dispatch("setFields", newField);
       this.$axios
         .get(`farms/${this.farm.id}/fields/`)
         .then(res => {
@@ -124,7 +123,7 @@ export default {
   methods: {
     toggle(id) {
       this.farmOpen = !this.farmOpen;
-      this.$store.dispatch("setRemoveAllPolygons", true);
+      this.$store.dispatch("setAllToNeighbor");
       this.fieldActive = "";
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;

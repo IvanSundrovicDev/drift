@@ -13,7 +13,7 @@ export default new Vuex.Store({
       bool: false
     },
     activeField:{
-      coords:[]
+      dispute_coords:{}
     },
     fields: [],
     polygonDraw: false,
@@ -37,9 +37,7 @@ export default new Vuex.Store({
       if(state.fields[0]){
         fields = state.fields
         fields.forEach(el => {
-          if(el.uuid !== state.activeField.uuid && el.status !== "dispute"){
-            return el.status =  "neighbor"
-          }
+          return el.status =  "neighbor"
         });
       }
       if(value.mpoly[0]){
@@ -63,21 +61,43 @@ export default new Vuex.Store({
         }
         neighbors = neighbors.filter(el => el.uuid !== state.activeField.uuid)
       }
-      if(Object.keys(value.dispute_coords).length > 0){
-        for (const i in value.dispute_coords) {
-          value.dispute_coords[i].coords = value.dispute_coords[i].mpoly;
-          value.dispute_coords[i].status = "dispute"
-          dispute.push(value.dispute_coords[i]);   
+      if(Object.keys(state.activeField.dispute_coords).length > 0){
+        for (const i in state.activeField.dispute_coords) {
+          state.activeField.dispute_coords[i].coords = state.activeField.dispute_coords[i].mpoly;
+          state.activeField.dispute_coords[i].status = "dispute"
+          dispute.push(state.activeField.dispute_coords[i]);   
         }
         dispute = dispute.filter(el => el.uuid !== state.activeField.uuid)
       }
       let current = neighbors.concat(dispute)
-      fields.forEach(el => {
-        current = current.filter(item => item.uuid !== el.uuid)
+      current.forEach(el => {
+        fields = fields.filter(item => item.uuid !== el.uuid)
       })
       fields = fields.concat(current)
-      console.log(fields)
       state.fields = fields
+    },
+    setNeighbor(state, value){
+      let fields = []
+      for (const i in value) {
+        value[i].coords = value[i].mpoly;
+        value[i].status = "neighbor"
+        fields.push(value[i]);   
+      }
+      state.fields.forEach(el => {
+        fields = fields.filter(item => item.uuid !== el.uuid)
+      })
+      fields = fields.concat(state.fields)
+      state.fields = fields
+    },
+    setAllToNeighbor(state){
+      let fields = state.fields.map(el => {
+        el.status = "neighbor"
+        return el
+      })
+      state.fields = fields
+      state.activeField = {
+        dispute_coords:{}
+      }
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -125,6 +145,9 @@ export default new Vuex.Store({
     },
     setNeighbor(context, value) {
       context.commit("setNeighbor", value);
+    },
+    setAllToNeighbor(context){
+      context.commit("setAllToNeighbor");
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);
