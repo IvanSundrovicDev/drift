@@ -285,7 +285,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log(this.data);
     if (!this.$store.state.traitTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }

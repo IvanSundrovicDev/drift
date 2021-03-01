@@ -12,6 +12,8 @@ export default new Vuex.Store({
       location: "",
       bool: false
     },
+    activeField:[],
+    fields: [],
     polygonDraw: false,
     polygonCoordinates: [],
     fieldPolygon: [],
@@ -25,6 +27,50 @@ export default new Vuex.Store({
   mutations: {
     setActiveLocation(state, value) {
       state.activeLocation = { location: value, bool: !state.activeLocation.bool };
+    },
+    setFields(state, value){
+      let fields = [] 
+      if(state.fields[0]){
+        fields = state.fields
+        fields.forEach(el => {
+          if(el.coords !== state.activeField){
+            console.log(el.status)
+            return el.status =  "neighbor"
+          }
+        });
+      }
+      if(value.mpoly[0]){
+        state.activeField = value.mpoly
+        let activeField = fields.findIndex(el => el.coords[0] === value.mpoly[0])
+        if(activeField !== -1){
+          value.status = "active"
+          value.is_confirmed = true
+          value.coords = value.mpoly
+          fields[activeField] = value
+        }
+        else{
+          value.status = "active"
+          value.is_confirmed = true
+          value.coords = value.mpoly
+          fields.push(value)
+        }
+      }
+      if(Object.keys(value.neighbour_coords).length > 0){
+        let neighbors = []
+        for (const i in value.neighbour_coords) {
+          value.neighbour_coords[i].coords = value.neighbour_coords[i].mpoly;
+          value.neighbour_coords[i].status = "neighbor"
+          neighbors.push(value.neighbour_coords[i]);   
+        }
+        let merged = neighbors.concat(fields)
+        let sorted = merged.filter((elem, index, self) => self.findIndex(
+          (t) => {return (t.uuid === elem.uuid && elem.status !== "active")}) === index)
+        fields = sorted
+      }
+      if(value.dispute_coords[0]){
+        console.log(value.dispute_coords);
+      }
+      state.fields = fields
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -66,6 +112,9 @@ export default new Vuex.Store({
   actions: {
     setActiveLocation(context, value) {
       context.commit("setActiveLocation", value);
+    },
+    setFields(context, value) {
+      context.commit("setFields", value);
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);

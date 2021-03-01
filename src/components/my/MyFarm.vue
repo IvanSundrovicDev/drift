@@ -119,7 +119,6 @@ export default {
         lat: newField.lat,
         lng: newField.lng
       };
-      this.getFieldWeather(coords);
     }
   },
   methods: {

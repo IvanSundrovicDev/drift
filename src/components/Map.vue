@@ -34,17 +34,14 @@ export default {
     initDrawPolygon() {
       return this.$store.state.polygonDraw;
     },
-    drawPolygon() {
-      return this.$store.state.fieldPolygon;
-    },
     removedPolygon() {
       return this.$store.state.removedPolygon;
     },
     removeAllPolygons() {
       return this.$store.state.removeAllPolygons;
     },
-    drawNeighbor() {
-      return this.$store.state.neighborFields;
+    fieldsUpdate() {
+      return this.$store.state.fields
     }
   },
   watch: {
@@ -62,13 +59,6 @@ export default {
         this.drawing = false;
       }
     },
-    drawPolygon(newPolygon, oldPolygon) {
-      this.removePolygon();
-      this.activePolygon = true;
-      var polygon = L.polygon(newPolygon)
-        .setStyle({ color: "#FFF", fillColor: "#FFF", fillOpacity: 0.3 })
-        .addTo(this.map);
-    },
     removedPolygon(newState, oldState) {
       this.removeDrawnPolygon();
       this.$store.dispatch("setRemovedPolygon", true);
@@ -77,32 +67,30 @@ export default {
       this.removePolygon();
       this.$store.dispatch("setRemoveAllPolygons", false);
     },
-    drawNeighbor(newNeighbors, oldNeighbors) {
+    fieldsUpdate(newFields, oldFields) {
+      this.removePolygon();
       let map = this.map;
       let store = this.$store;
-      for (const neighbor in newNeighbors.dispute_coords) {
-        var polygon = L.polygon(newNeighbors.dispute_coords[neighbor].mpoly)
-          .setStyle({
-            color: "#EC2828",
-            fillColor: "#EC2828",
-            fillOpacity: 0.3
-          })
-          .addTo(this.map);
-      }
-      for (const neighbor in newNeighbors.neighbour_coords) {
-        if (newNeighbors.neighbour_coords[neighbor].is_confirmed) {
-          var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
+      newFields.forEach(field => {
+        if(field.status === "active"){
+          var polygon = L.polygon(field.coords)
+            .setStyle({ color: "red", fillColor: "#FFF", fillOpacity: 0.3 })
+            .addTo(this.map);
+        }
+        else if(field.status === "neighbor"){
+          if (field.is_confirmed) {
+          var polygon = L.polygon(field.coords)
             .setStyle({
               color: "#FFFFFF",
               fillColor: "#28AAE1",
               fillOpacity: 0.3,
-              id: neighbor
+              id: field.uuid
             })
             .addTo(this.map);
         } else {
-          var polygon = L.polygon(newNeighbors.neighbour_coords[neighbor].mpoly)
+          var polygon = L.polygon(field.coords)
             .bindPopup(`<div style="width:230px" id="popup"></div>`)
-            .setStyle({ color: "#FFF", fillOpacity: 0, id: neighbor })
+            .setStyle({ color: "#FFF", fillOpacity: 0, id: field.uuid })
             .addTo(this.map);
           polygon.on("click", function() {
             let img = "@/assets/images/icons/envelope.png";
@@ -137,29 +125,29 @@ export default {
               },
               methods: {
                 inviteNeighbor() {
-                  this.$axios
-                    .post(`/farms/fields/${neighbor}/invite/`, {
-                      email: this.neighborEmail
-                    })
-                    .then(res => {
-                      map.closePopup();
-                      store.dispatch("addNotification", {
-                        type: "success",
-                        message: "Neighbor successfully invited!"
-                      });
-                    })
-                    .catch(err => {
-                      this.$store.dispatch("addNotification", {
-                        type: "error",
-                        message: "There was an error inviting neighbor!"
-                      });
-                    });
+                  // this.$axios
+                  //   .post(`/farms/fields/${neighbor}/invite/`, {
+                  //     email: this.neighborEmail
+                  //   })
+                  //   .then(res => {
+                  //     map.closePopup();
+                  //     store.dispatch("addNotification", {
+                  //       type: "success",
+                  //       message: "Neighbor successfully invited!"
+                  //     });
+                  //   })
+                  //   .catch(err => {
+                  //     this.$store.dispatch("addNotification", {
+                  //       type: "error",
+                  //       message: "There was an error inviting neighbor!"
+                  //     });
+                  //   });
                 },
                 claimField() {
                   if (this.data.selectedFarm.id && this.fieldName) {
                     this.$axios
                       .patch(
-                        `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                        `farms/fields/${field.uuid}/claim/`,
                         {
                           name: this.fieldName,
                           farm: this.data.selectedFarm.id
@@ -185,7 +173,7 @@ export default {
                 assignCropTrait() {
                   this.$axios
                     .patch(
-                      `farms/fields/${newNeighbors.neighbour_coords[neighbor].uuid}/claim/`,
+                      `farms/fields/${field.uuid}/claim/`,
                       {
                         crop_trait: this.data.selectedTrait.id,
                         crop: this.data.selectedCrop.id
@@ -514,7 +502,8 @@ export default {
             });
           });
         }
-      }
+        }
+      })
     },
     drawAllFields() {}
   },
@@ -524,7 +513,7 @@ export default {
       this.map = L.map("mapContainer", {
         zoomControl: false,
         editable: true
-      }).setView(this.center, 4);
+      }).setView(this.center, 14);
 
       // Put zoom control bottom right
       L.control
@@ -684,15 +673,11 @@ export default {
         .post(`farms/fields/location-search/`, coords)
         .then(res => {
           this.activeCoords = coords;
-          this.removePolygon();
-          let fields = { neighbour_coords: res.data, dispute_coords: [] };
-          this.$store.dispatch("drawNeighbor", fields);
+          this.$store.dispatch("setFields", { mpoly:[],  neighbour_coords: res.data, dispute_coords:[] });
         })
         .catch(err => {
           this.activeCoords = false;
-          this.removePolygon();
-          let fields = { neighbour_coords: [], dispute_coords: [] };
-          this.$store.dispatch("drawNeighbor", fields);
+          this.$store.dispatch("setFields", { mpoly:[], neighbour_coords: [], dispute_coords:[]});
         });
     },
     inviteNeighbor() {

@@ -66,7 +66,6 @@ export default {
       this.$axios
         .get(`farms/crop-traits/`)
         .then(res => {
-          console.log(res.data);
           this.data.allItems = res.data;
           this.$axios
             .get(`farms/crop-traits/me/`)

@@ -124,9 +124,8 @@ export default {
   },
   methods: {
     activateField(field) {
+      this.$store.dispatch("setFields", field);                                                                         
       this.$store.dispatch("setActiveLocation", field.mpoly[0]);
-      this.$store.dispatch("setFieldPolygon", field.mpoly);
-      this.$store.dispatch("drawNeighbor", field);
       this.$emit("activateField");
     },
     activatePopup() {
