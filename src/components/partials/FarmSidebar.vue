@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     newActiveField() {
-      return this.$store.state.addedField;
+      return this.$store.state.activeField;
     },
     addNeighbor() {
       return this.$store.state.addNeighbor

@@ -201,7 +201,7 @@ export default {
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
-          this.$store.dispatch("setAddedField", res.data.field);
+          this.$store.dispatch("setFields", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully added!"

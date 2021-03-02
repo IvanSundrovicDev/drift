@@ -13,9 +13,11 @@ export default new Vuex.Store({
       bool: false
     },
     activeField:{
-      dispute_coords:{}
+      dispute_coords:{},
+      id:""
     },
     fields: [],
+    farmActiveField: false,
     polygonDraw: false,
     polygonCoordinates: [],
     fieldPolygon: [],
@@ -96,8 +98,16 @@ export default new Vuex.Store({
       })
       state.fields = fields
       state.activeField = {
-        dispute_coords:{}
+        dispute_coords:{},
+        id:""
       }
+    },
+    deleteField(state, value){
+      let fields = state.fields.filter(el => el.uuid !== value)
+      state.fields = fields
+    },
+    farmNoActive(state){
+      state.farmActiveField = !state.farmActiveField
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -148,6 +158,12 @@ export default new Vuex.Store({
     },
     setAllToNeighbor(context){
       context.commit("setAllToNeighbor");
+    },
+    deleteField(context, value){
+      context.commit("deleteField", value)
+    },
+    farmNoActive(context, value){
+      context.commit("farmNoActive")
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);

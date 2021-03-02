@@ -176,9 +176,8 @@ export default {
                         }
                       )
                       .then(res => {
-                        console.log(res.data);
-                        res.data.field.mpoly = [];
-                        store.dispatch("setAddedField", res.data.field);
+                        //this.$store.dispatch("setAllToNeighbor");
+                        //this.$store.dispatch("farmNoActive")
                         store.dispatch("addNotification", {
                           type: "success",
                           message: "Neighbor field successfully claimed!"
@@ -478,7 +477,7 @@ export default {
                           class="flex border-b border-gray-200 mt-2 px-2 py-3 cursor-pointer"
                         >
                           <img
-                            class="inline h-7"
+                            class="inline h-5 my-auto"
                             :src="farmImg"
                           />
                           <h1 class="text-xl ml-2">
