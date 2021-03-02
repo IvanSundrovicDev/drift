@@ -69,7 +69,6 @@ export default {
         .get(`farms/crops/`)
         .then(res => {
           this.data.allItems = res.data;
-          console.log(res.data);
           this.$axios
             .get(`farms/crops/me/`)
             .then(res => {

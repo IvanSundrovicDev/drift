@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     newActiveField() {
-      return this.$store.state.addedField;
+      return this.$store.state.activeField;
     },
     addNeighbor() {
       return this.$store.state.addNeighbor
@@ -150,11 +150,9 @@ export default {
     },
     activateAddField() {
       this.active = "addField";
-      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     activateAddFarm() {
       this.active = "addFarm";
-      this.$store.dispatch("setRemoveAllPolygons", true);
     },
     closeAndRefreshFarms() {
       this.active = "farmSidebar";

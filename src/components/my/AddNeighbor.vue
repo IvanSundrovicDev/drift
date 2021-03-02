@@ -8,7 +8,7 @@
       ></font-awesome-icon>
       <div class="px-32">
         <div class="flex m-auto">
-          <h1 class="text-2xl m-auto text-drift-blue">Add Neighbor Field</h1>
+          <h1 class="text-2xl m-auto text-drift-blue">Add Adjacent Field</h1>
         </div>
       </div>
     </div>
@@ -126,7 +126,8 @@ export default {
       this.$axios
         .post(`farms/fields/`, field)
         .then((res) => {
-          this.$store.dispatch("setAddedField", res.data.field);
+          this.$store.dispatch("setAllToNeighbor");
+          this.$store.dispatch("farmNoActive")
           this.$store.dispatch("setAddNeighbor", false);
           this.$store.dispatch("addNotification", {
             type: "success",

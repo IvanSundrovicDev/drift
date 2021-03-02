@@ -88,7 +88,7 @@
       </div>
     </div>
     <div
-      :class="{ 'salmon-border-selected': activeField === field.id }"
+      :class="{ 'salmon-border-selected': $store.state.activeField.id === field.id }"
       class="w-full field-item pb-2 text-center mx-8 border-b-2 border-gray-200 cursor-pointer"
       v-on:click="activateField(field)"
     >
@@ -124,10 +124,8 @@ export default {
   },
   methods: {
     activateField(field) {
+      this.$store.dispatch("setFields", field);                                                                         
       this.$store.dispatch("setActiveLocation", field.mpoly[0]);
-      this.$store.dispatch("setFieldPolygon", field.mpoly);
-      this.$store.dispatch("drawNeighbor", field);
-      this.$emit("activateField");
     },
     activatePopup() {
       this.activateField(this.field);
@@ -141,11 +139,14 @@ export default {
       this.$axios
         .delete(`/farms/${this.field.farm}/fields/${this.field.id}/`)
         .then(res => {
-          this.$store.dispatch("setAddedField", {});
+          this.$store.dispatch("setAllToNeighbor");
+          this.$store.dispatch("deleteField", this.field.uuid);
+          this.$store.dispatch("farmNoActive")
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully removed!"
           });
+          this.$destroy();
         })
         .catch(err => {
           this.$store.dispatch("addNotification", {

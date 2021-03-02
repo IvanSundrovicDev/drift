@@ -393,7 +393,6 @@ export default {
       }
     },
     postTankMix() {
-      console.log(this.$store.state.auth.user.account);
       if (this.data.mixName && this.data.mix[0]) {
         let TankMix = {
           name: this.data.mixName,
