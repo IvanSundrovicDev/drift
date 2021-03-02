@@ -31,7 +31,7 @@
       </div>
     </div>
     <div
-      v-if="farmOpen && fieldActive.id"
+      v-if="farmOpen && fieldActive"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
       <FieldDataEdit :fieldData="fieldActive" />
@@ -40,14 +40,16 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
-        $store.state.tutorial.farmTutorial === 2 &&
-        fields[0]
+          $store.state.tutorial.farmTutorial === 2 &&
+          fields[0]
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
-        :text="'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'"
+        :text="
+          'You’ve successfully added your first field. You can view and edit this field at any time by simply selecting it from the list'
+        "
         class="top-0 left-12 fixed ml-80 mt-48"
       />
     </div>
@@ -55,14 +57,16 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
-        $store.state.tutorial.farmTutorial === 3 &&
-        fieldActive.id
+          $store.state.tutorial.farmTutorial === 3 &&
+          fieldActive.id
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialDone')"
         :direction="'right'"
-        :text="'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'"
+        :text="
+          'Once selected, you can view the field you’ve just added. You can edit the fields CLU as well as update the associated crop, herbicide and trait.'
+        "
         class="top-0 left-32 fixed ml-80 mt-80"
       />
     </div>
@@ -81,52 +85,56 @@ export default {
     MyField,
     FieldDataEdit,
     AddField,
-    Tutorial,
+    Tutorial
   },
   props: ["farm"],
   data() {
     return {
       farmOpen: false,
       fields: [],
-      fieldActive: {
-        id:""
-      },
+      fieldActive: "",
       popupActive: "",
-      fieldsLoading: true,
+      fieldsLoading: true
     };
   },
   computed: {
     newActiveField() {
-      return this.$store.state.activeField;
-    },
-    activeField(){
-      return this.$store.state.activeField
+      return this.$store.state.addedField;
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.getFields(this.farm.id)
+      this.$store.dispatch("setFieldPolygon", newField.mpoly);
+      this.$store.dispatch("drawNeighbor", newField);
+      this.$axios
+        .get(`farms/${this.farm.id}/fields/`)
+        .then(res => {
+          this.fields = res.data;
+        })
+        .catch(err => {
+          this.fields = [];
+        });
       this.fieldActive = newField;
-      console.log(this.fieldActive);
+      let coords = {
+        lat: newField.lat,
+        lng: newField.lng
+      };
     }
   },
   methods: {
     toggle(id) {
       this.farmOpen = !this.farmOpen;
-      this.$store.dispatch("setAllToNeighbor");
+      this.$store.dispatch("setRemoveAllPolygons", true);
       this.fieldActive = "";
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;
-      this.getFields(id)
-    },
-    getFields(id) {
       this.$axios
         .get(`farms/${id}/fields/`)
-        .then((res) => {
+        .then(res => {
           this.fields = res.data;
           this.fieldsLoading = true;
         })
-        .catch((err) => {
+        .catch(err => {
           this.fields = [];
           this.fieldsLoading = true;
         });
@@ -137,12 +145,10 @@ export default {
       } else {
         this.popupActive = id;
       }
-      console.log(this.popupActive);
     },
     activateField(field) {
       this.fieldActive = field;
-      console.log(this.fieldActive);
-    },
-  },
+    }
+  }
 };
 </script>

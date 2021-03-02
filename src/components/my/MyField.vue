@@ -93,7 +93,7 @@
       v-on:click="activateField(field)"
     >
       <h1 class="text-2xl">{{ field.name }}</h1>
-      <p>Field Info</p>
+      <p>{{ field.area }} ac.</p>
     </div>
   </div>
 </template>

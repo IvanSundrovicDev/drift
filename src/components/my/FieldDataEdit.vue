@@ -6,11 +6,18 @@
     >
       <div class="flex m-auto">
         <img class="h-5" src="../../assets/images/icons/temperature.png" />
-        <h3 class="text-sm ml-2 mr-4">{{ weather.temperature ? weather.temperature : "N/A" }}°F</h3>
+        <h3 class="text-sm ml-2 mr-4" v-if="weather">
+          {{ weather.temperature }}°F
+        </h3>
+        <h3 class="text-sm ml-2 mr-4" v-else>N/A</h3>
         <img class="h-6" src="../../assets/images/icons/weather.png" />
-        <h3 class="text-sm ml-2 mr-4">{{ weather.precip ? weather.precip : "N/A" }}%</h3>
+        <h3 class="text-sm ml-2 mr-4" v-if="weather">{{ weather.precip }}%</h3>
+        <h3 class="text-sm ml-2 mr-4" v-else>N/A</h3>
         <img class="h-5" src="../../assets/images/icons/wind.png" />
-        <h3 class="text-sm ml-2 mr-4">{{ weather.wind_speed ? weather.wind_speed : "N/A" }}mph</h3>
+        <h3 class="text-sm ml-2 mr-4" v-if="weather">
+          {{ weather.wind_speed }}mph
+        </h3>
+        <h3 class="text-sm ml-2 mr-4" v-else>N/A</h3>
       </div>
     </div>
     <div
@@ -124,11 +131,6 @@ export default {
           name: ""
         }
       },
-      weather:{
-        temperature: "",
-        precip: "",
-        wind_speed: ""
-      },
       date: "",
       crops: "",
       traits: "",
@@ -137,7 +139,11 @@ export default {
       selectedCrops: [],
       selectedHerbicides: [],
       selectedTraits: [],
-      weather: ""
+      weather: {
+        temperature: "",
+        precip: "",
+        wind_speed: ""
+      }
     };
   },
   computed: {
@@ -174,9 +180,7 @@ export default {
       await this.$axios
         .post(`weather/me/`, coords)
         .then(res => {
-          if(res.data.current){
-            this.weather = res.data.current;
-          }
+          this.weather = res.data.current;
         })
         .catch(err => {
           console.log(err);
@@ -259,6 +263,20 @@ export default {
         this.crops = res.data.my_crop.crops;
       })
       .catch(err => {});
+    // this.$axios
+    //   .get(`herbicides/me/`)
+    //   .then(res => {
+    //     this.herbicides = res.data.my_herbicide.herbicides;
+    //   })
+    //   .catch(err => {
+    //   });
+    // this.$axios
+    //   .get(`herbicides/tank-mixes/`)
+    //   .then(res => {
+    //     this.mixes = res.data.tank_mix;
+    //   })
+    //   .catch(err => {
+    //   });
     this.$axios
       .get(`farms/crop-traits/me/`)
       .then(res => {
