@@ -31,7 +31,7 @@
       </div>
     </div>
     <div
-      v-if="farmOpen && fieldActive"
+      v-if="farmOpen && fieldActive.id"
       class="fixed border-t border-gray-200 top-16 right-0 bg-white"
     >
       <FieldDataEdit :fieldData="fieldActive" />
@@ -92,42 +92,38 @@ export default {
     return {
       farmOpen: false,
       fields: [],
-      fieldActive: "",
+      fieldActive: {
+        id: ""
+      },
       popupActive: "",
       fieldsLoading: true
     };
   },
   computed: {
     newActiveField() {
-      return this.$store.state.addedField;
+      return this.$store.state.activeField;
+    },
+    activeField() {
+      return this.$store.state.activeField;
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.$store.dispatch("setFieldPolygon", newField.mpoly);
-      this.$store.dispatch("drawNeighbor", newField);
-      this.$axios
-        .get(`farms/${this.farm.id}/fields/`)
-        .then(res => {
-          this.fields = res.data;
-        })
-        .catch(err => {
-          this.fields = [];
-        });
+      this.getFields(this.farm.id);
       this.fieldActive = newField;
-      let coords = {
-        lat: newField.lat,
-        lng: newField.lng
-      };
+      console.log(this.fieldActive);
     }
   },
   methods: {
     toggle(id) {
       this.farmOpen = !this.farmOpen;
-      this.$store.dispatch("setRemoveAllPolygons", true);
+      this.$store.dispatch("setAllToNeighbor");
       this.fieldActive = "";
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;
+      this.getFields(id);
+    },
+    getFields(id) {
       this.$axios
         .get(`farms/${id}/fields/`)
         .then(res => {
@@ -145,9 +141,11 @@ export default {
       } else {
         this.popupActive = id;
       }
+      console.log(this.popupActive);
     },
     activateField(field) {
       this.fieldActive = field;
+      console.log(this.fieldActive);
     }
   }
 };
