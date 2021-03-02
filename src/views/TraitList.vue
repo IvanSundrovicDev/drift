@@ -1,7 +1,7 @@
 <template>
   <TraitManager
     :name="name"
-    :data="data"
+    :items="data"
     v-on:postAddedItems="postAddedItems"
     v-on:deleteAddedItems="deleteAddedItems"
   />
@@ -17,16 +17,18 @@ export default {
     return {
       name: "Traits",
       data: {
-        allItems: [],
+        allItems: {},
         selectedItems: [],
-        selectedItemsId: []
+        selectedItemsId: {}
       }
     };
   },
   methods: {
     postAddedItems(items) {
       let baseItems = [];
-      this.data.selectedItems.forEach(item => baseItems.push(item.id));
+      for(const i in this.data.selectedItems){
+        baseItems.concat(this.data.selectedItems[i])
+      }
       let postItems = baseItems.concat(items);
       let count = items.length;
       this.$axios
@@ -45,7 +47,9 @@ export default {
     },
     deleteAddedItems(items) {
       let baseItems = [];
-      this.data.selectedItems.forEach(item => baseItems.push(item.id));
+      for(const i in this.data.selectedItems){
+        baseItems.concat(this.data.selectedItems[i])
+      }
       let postItems = baseItems.filter(el => !items.includes(el));
       let count = items.length;
       this.$axios

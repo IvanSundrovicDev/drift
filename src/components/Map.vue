@@ -659,8 +659,6 @@ export default {
         store.dispatch("setPolygonDraw", false);
       });
 
-      this.getAllFields(map.getCenter())
-
     },
     removePolygon() {
       this.fieldPolygon = [];
