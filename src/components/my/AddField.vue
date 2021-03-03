@@ -201,6 +201,7 @@ export default {
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
+          this.$store.dispatch("activateClu", false)
           this.$store.dispatch("setFields", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
@@ -216,6 +217,7 @@ export default {
     },
     close() {
       this.$emit("toggle-farm-sidebar");
+      this.$store.dispatch("activateClu", false)
       this.$store.dispatch("setRemovedPolygon", false);
       this.$store.dispatch("setPolygonDraw", false);
     },

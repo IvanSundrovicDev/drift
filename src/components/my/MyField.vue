@@ -133,6 +133,7 @@ export default {
     },
     addNeighbor() {
       this.$emit("activatePopup", this.field.id);
+      this.$store.dispatch("activateClu", true)
       this.$store.dispatch("setAddNeighbor", true);
     },
     deleteField() {

@@ -688,16 +688,18 @@ export default {
       }
     },
     getAllFields(coords) {
-      this.$axios
-        .post(`farms/fields/location-search/`, coords)
-        .then(res => {
-          this.activeCoords = coords;
-          this.$store.dispatch("setNeighbor", res.data);
-        })
-        .catch(err => {
-          this.activeCoords = false;
-          this.$store.dispatch("setFields", { mpoly:[], neighbour_coords: [], dispute_coords:[]});
-        });
+      if(this.$store.state.cluActive){
+        this.$axios
+          .post(`farms/fields/location-search/`, coords)
+          .then(res => {
+            this.activeCoords = coords;
+            this.$store.dispatch("setNeighbor", res.data);
+          })
+          .catch(err => {
+            this.activeCoords = false;
+            this.$store.dispatch("setFields", { mpoly:[], neighbour_coords: [], dispute_coords:[]});
+          });
+      }
     },
     inviteNeighbor() {
       console.log("fds");
@@ -705,6 +707,18 @@ export default {
   },
   mounted() {
     this.setupLeafletMap();
+  },
+  beforeMount(){
+    this.$axios
+        .get(`farms/${id}/fields/`)
+        .then(res => {
+          this.fields = res.data;
+          this.fieldsLoading = true;
+        })
+        .catch(err => {
+          this.fields = [];
+          this.fieldsLoading = true;
+        });
   }
 };
 </script>

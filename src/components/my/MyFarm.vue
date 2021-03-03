@@ -111,7 +111,6 @@ export default {
     newActiveField(newField, oldField) {
       this.getFields(this.farm.id);
       this.fieldActive = newField;
-      console.log(this.fieldActive);
     }
   },
   methods: {
