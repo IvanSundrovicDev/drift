@@ -27,7 +27,9 @@ export default {
     postAddedItems(items) {
       let baseItems = [];
       for(const i in this.data.selectedItems){
-        baseItems.concat(this.data.selectedItems[i])
+        this.data.selectedItems[i].forEach(el => {
+          baseItems.push(el.id)
+        });
       }
       let postItems = baseItems.concat(items);
       let count = items.length;
@@ -48,7 +50,9 @@ export default {
     deleteAddedItems(items) {
       let baseItems = [];
       for(const i in this.data.selectedItems){
-        baseItems.concat(this.data.selectedItems[i])
+        this.data.selectedItems[i].forEach(el => {
+          baseItems.push(el.id)
+        });
       }
       let postItems = baseItems.filter(el => !items.includes(el));
       let count = items.length;
@@ -75,14 +79,19 @@ export default {
             .get(`farms/crop-traits/me/`)
             .then(res => {
               this.data.selectedItems = res.data.my_crop_trait.crop_traits;
-              let selectedItems = this.data.selectedItems;
-              this.data.allItems = this.data.allItems.filter(function(
-                objFromA
-              ) {
-                return !selectedItems.find(function(objFromB) {
-                  return objFromA.id === objFromB.id;
+              let selectedItems = [];
+              for(const i in this.data.selectedItems){
+                selectedItems = selectedItems.concat(this.data.selectedItems[i])
+              }
+              for(const i in this.data.allItems){
+                this.data.allItems[i] = this.data.allItems[i].filter(function(
+                  objFromA
+                ) {
+                  return !selectedItems.find(function(objFromB) {
+                    return objFromA.id === objFromB.id;
+                  });
                 });
-              });
+              }
             })
             .catch(err => {});
         })

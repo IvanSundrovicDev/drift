@@ -38,7 +38,7 @@
         </div>
         <div class="mt-12 ml-8 pb-28 list">
           <div v-for="(value, i) in displayedMyItems" :key="i">
-            <div class="w-full">
+            <div v-if="value[0]" class="w-full">
               <div class="border-b-2 border-drift-blue my-4">
                 <h1 class="text-xl">{{ i }}</h1>
               </div>
@@ -53,9 +53,9 @@
                   <div class="flex herbicide-trait-button h-full py-2 px-4">
                     <div class="flex m-auto text-center text-xl">
                       <img
-                        class="h-5 w-5 mt-1 mr-2"
-                        v-if="item.logo"
-                        :src="item.logo"
+                        class="h-6 w-6 my-auto mr-2"
+                        v-if="item.logo_url"
+                        :src="item.logo_url"
                       />
                       <h1>{{ item.name || item.long_name }}</h1>
                     </div>
@@ -89,14 +89,13 @@
           <input
             class="w-full text-xl ml-4 focus:outline-none"
             type="text"
-            v-on:input="searchAllItems()"
             v-model="allItemsSearch"
             placeholder="Search"
           />
         </div>
         <div class="mt-12 ml-8 list pb-28">
           <div v-for="(value, i) in displayedAddItems" :key="i">
-            <div class="w-full">
+            <div v-if="value[0]" class="w-full">
               <div class="border-b-2 border-drift-blue my-4">
                 <h1 class="text-xl">{{ i }}</h1>
               </div>
@@ -106,15 +105,15 @@
                   :key="item.id"
                   v-on:click="addItem(item.id)"
                   :class="{ 'bg-drift-blue': addList.includes(item.id) }"
-                  class="w-56 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
+                  class="w-72 my-8 mr-8 rounded-lg justify-self-center shadow-md center hover:bg-drift-blue cursor-pointer"
                 >
                   <div class="flex herbicide-trait-button h-full py-2 px-4">
+                    <img
+                      class="max-h-6 my-auto mr-2"
+                      v-if="item.logo_url"
+                      :src="item.logo_url"
+                    />
                     <div class="flex m-auto text-center text-xl">
-                      <img
-                        class="h-5 w-5 mt-1 mr-2"
-                        v-if="item.logo"
-                        :src="item.logo"
-                      />
                       <h1>{{ item.name || item.long_name }}</h1>
                     </div>
                   </div>
@@ -239,21 +238,44 @@ export default {
       active: "list",
       removeList: [],
       addList: [],
-      displayedAddItems: {},
-      displayedMyItems: {},
       myItemsSearch: "",
       allItemsSearch: "",
     };
   },
-  watch:{
-    '$props':{
-      handler: function (val, oldVal) { 
-        this.displayedAddItems = val.items.allItems
-        this.displayedMyItems = val.items.selectedItems
-      },
-      deep: true
-    }
+  computed: {
+    displayedAddItems() {
+      let items = this.items.allItems;
+      let search = {};
+      for (const i in items) {
+        search[i] = items[i].filter((el) =>
+          el.name
+            .toLowerCase()
+            .includes(this.allItemsSearch.toLocaleLowerCase())
+        );
+      }
+      return search;
+    },
+    displayedMyItems() {
+      let items = this.items.selectedItems;
+      let search = {};
+      for (const i in items) {
+        search[i] = items[i].filter((el) =>
+          el.name.toLowerCase().includes(this.myItemsSearch.toLocaleLowerCase())
+        );
+      }
+      return search;
+    },
   },
+  // watch:{
+  //   '$props':{
+  //     handler: function (val, oldVal) {
+  //       console.log("called");
+  //       this.displayedAddItems = val.items.allItems
+  //       this.displayedMyItems = val.items.selectedItems
+  //     },
+  //     deep: true
+  //   }
+  // },
   methods: {
     removeItem(id) {
       if (this.removeList.find((element) => element === id)) {
@@ -283,17 +305,6 @@ export default {
         this.active = "list";
       }
     },
-    searchAllItems(){
-      let items = this.items.allItems;
-        for (const i in items) {
-          items[i] = items[i].filter((el) =>
-            el.name
-              .toLowerCase()
-              .includes(this.allItemsSearch.toLocaleLowerCase())
-          );
-        }
-        this.displayedAddItems = items;
-    }
   },
   beforeMount() {
     if (!this.$store.state.traitTutorialDone) {
