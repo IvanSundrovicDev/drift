@@ -20,7 +20,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedCrop.id === item.id
+            'salmon-border-selected': data.selectedCrop.id === item.id,
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -94,7 +94,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedTrait.id === item.id
+            'salmon-border-selected': data.selectedTrait.id === item.id,
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -111,7 +111,7 @@ import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
 export default {
   name: "FieldData",
   components: {
-    TankMix
+    TankMix,
   },
   data() {
     return {
@@ -126,8 +126,8 @@ export default {
         selectedCrop: "",
         selectedHerbicide: "",
         selectedMix: "",
-        selectedTrait: ""
-      }
+        selectedTrait: "",
+      },
     };
   },
   computed: {
@@ -139,7 +139,7 @@ export default {
       } else {
         return "Herbicide";
       }
-    }
+    },
   },
   methods: {
     activate(id) {
@@ -197,17 +197,16 @@ export default {
           break;
       }
       this.$emit("fieldDataUpdate", this.data);
-    }
+    },
   },
   beforeMount() {
     this.date = new Date();
     this.$axios
       .get(`farms/crops/me/`)
-      .then(res => {
+      .then((res) => {
         this.crops = res.data.my_crop.crops;
       })
-      .catch(err => {
-      });
+      .catch((err) => {});
     // this.$axios
     //   .get(`herbicides/me/`)
     //   .then(res => {
@@ -224,12 +223,15 @@ export default {
     //   });
     this.$axios
       .get(`farms/crop-traits/me/`)
-      .then(res => {
-        this.traits = res.data.my_crop_trait.crop_traits;
+      .then((res) => {
+        let traits = [];
+        for (const i in res.data.my_crop_trait.crop_traits) {
+          res.data.my_crop_trait.crop_traits[i].forEach((el) => traits.push(el));
+        }
+        this.traits = traits;
       })
-      .catch(err => {
-      });
-  }
+      .catch((err) => {});
+  },
 };
 </script>
 

@@ -284,7 +284,11 @@ export default {
                 this.$axios
                   .get(`farms/crop-traits/`)
                   .then(res => {
-                    this.traits = res.data;
+                    let traits = [];
+                    for(const i in res.data){
+                      res.data[i].forEach(el => traits.push(el))
+                    }
+                    this.traits = traits
                   })
                   .catch(err => {});
                 this.$axios

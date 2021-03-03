@@ -300,7 +300,6 @@ export default {
     postAddedItems() {
       if (this.addList[0]) {
         this.$emit("postAddedItems", this.addList);
-        console.log(this.addList);
         this.addList = [];
         this.active = "list";
       }
