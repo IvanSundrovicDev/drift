@@ -19,6 +19,7 @@ export default {
     return {
       map: null,
       center: [39.8859636, -95.6042309],
+      zoom: 4,
       active: false,
       fieldPolygon: [],
       drawing: false,
@@ -46,9 +47,8 @@ export default {
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      this.map.panTo(
-        new L.LatLng(newLocation.location[0], newLocation.location[1])
-      );
+      console.log(newLocation)
+      this.map.flyTo(newLocation.location, 14)
     },
     initDrawPolygon(newState, oldState) {
       if (newState) {
@@ -284,7 +284,11 @@ export default {
                 this.$axios
                   .get(`farms/crop-traits/`)
                   .then(res => {
-                    this.traits = res.data;
+                    let traits = [];
+                    for(const i in res.data){
+                      res.data[i].forEach(el => traits.push(el))
+                    }
+                    this.traits = traits
                   })
                   .catch(err => {});
                 this.$axios
@@ -532,7 +536,7 @@ export default {
       this.map = L.map("mapContainer", {
         zoomControl: false,
         editable: true
-      }).setView(this.center, 14);
+      }).setView(this.center, this.zoom);
 
       // Put zoom control bottom right
       L.control
@@ -688,16 +692,18 @@ export default {
       }
     },
     getAllFields(coords) {
-      this.$axios
-        .post(`farms/fields/location-search/`, coords)
-        .then(res => {
-          this.activeCoords = coords;
-          this.$store.dispatch("setNeighbor", res.data);
-        })
-        .catch(err => {
-          this.activeCoords = false;
-          this.$store.dispatch("setFields", { mpoly:[], neighbour_coords: [], dispute_coords:[]});
-        });
+      if(this.$store.state.cluActive){
+        this.$axios
+          .post(`farms/fields/location-search/`, coords)
+          .then(res => {
+            this.activeCoords = coords;
+            this.$store.dispatch("setNeighbor", res.data);
+          })
+          .catch(err => {
+            this.activeCoords = false;
+            this.$store.dispatch("setFields", { mpoly:[], neighbour_coords: [], dispute_coords:[]});
+          });
+      }
     },
     inviteNeighbor() {
       console.log("fds");
@@ -705,6 +711,18 @@ export default {
   },
   mounted() {
     this.setupLeafletMap();
+  },
+  beforeMount(){
+    this.$axios
+        .get(`farms/fields/mpoly/me/`)
+        .then(res => {
+          console.log(res.data);
+          this.map.flyTo(res.data[0].mpoly[0], 11)
+          this.$store.dispatch("setMyFields", res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
   }
 };
 </script>

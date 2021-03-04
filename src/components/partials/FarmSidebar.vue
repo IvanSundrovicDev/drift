@@ -150,6 +150,7 @@ export default {
     },
     activateAddField() {
       this.active = "addField";
+      this.$store.dispatch("activateClu", true)
     },
     activateAddFarm() {
       this.active = "addFarm";

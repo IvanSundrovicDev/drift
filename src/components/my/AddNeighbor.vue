@@ -129,6 +129,7 @@ export default {
           this.$store.dispatch("setAllToNeighbor");
           this.$store.dispatch("farmNoActive")
           this.$store.dispatch("setAddNeighbor", false);
+          this.$store.dispatch("activateClu", false)
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Neighbor field successfully added!",
@@ -142,6 +143,8 @@ export default {
         });
     },
     close() {
+      console.log("close");
+      this.$store.dispatch("activateClu", false)
       this.$emit("toggle-farm-sidebar");
       this.$store.dispatch("setAddNeighbor", false);
       this.$store.dispatch("setRemovedPolygon", false);
