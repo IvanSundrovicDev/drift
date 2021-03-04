@@ -100,7 +100,14 @@ export default new Vuex.Store({
     activateClu(state, value) {
       state.cluActive = value
       state.fields = []
-      console.log(state.fields);
+    },
+    setMyFields(state, value) {
+      value.forEach(el => {
+        el.status = "neighbor"
+        el.is_confirmed = true
+        el.coords = el.mpoly
+      })
+      state.fields = value
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -160,6 +167,9 @@ export default new Vuex.Store({
     },
     activateClu(context, value) {
       context.commit("activateClu", value)
+    },
+    setMyFields(context, value) {
+      context.commit("setMyFields", value)
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);

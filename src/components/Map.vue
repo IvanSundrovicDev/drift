@@ -19,6 +19,7 @@ export default {
     return {
       map: null,
       center: [39.8859636, -95.6042309],
+      zoom: 4,
       active: false,
       fieldPolygon: [],
       drawing: false,
@@ -46,9 +47,8 @@ export default {
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      this.map.panTo(
-        new L.LatLng(newLocation.location[0], newLocation.location[1])
-      );
+      console.log(newLocation)
+      this.map.flyTo(newLocation.location, 14)
     },
     initDrawPolygon(newState, oldState) {
       if (newState) {
@@ -536,7 +536,7 @@ export default {
       this.map = L.map("mapContainer", {
         zoomControl: false,
         editable: true
-      }).setView(this.center, 14);
+      }).setView(this.center, this.zoom);
 
       // Put zoom control bottom right
       L.control
@@ -714,14 +714,14 @@ export default {
   },
   beforeMount(){
     this.$axios
-        .get(`farms/${id}/fields/`)
+        .get(`farms/fields/mpoly/me/`)
         .then(res => {
-          this.fields = res.data;
-          this.fieldsLoading = true;
+          console.log(res.data);
+          this.map.flyTo(res.data[0].mpoly[0], 11)
+          this.$store.dispatch("setMyFields", res.data);
         })
         .catch(err => {
-          this.fields = [];
-          this.fieldsLoading = true;
+          console.log(err);
         });
   }
 };
