@@ -43,11 +43,13 @@ export default {
     },
     fieldsUpdate() {
       return this.$store.state.fields
+    },
+    refreshMyFields(){
+      return this.$store.state.myRefresh
     }
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      console.log(newLocation)
       this.map.flyTo(newLocation.location, 14)
     },
     initDrawPolygon(newState, oldState) {
@@ -58,6 +60,9 @@ export default {
         this.polygonDrawer.disable();
         this.drawing = false;
       }
+    },
+    refreshMyFields(){
+      this.getMyFields()
     },
     removedPolygon(newState, oldState) {
       this.removeDrawnPolygon();
@@ -705,6 +710,17 @@ export default {
           });
       }
     },
+    getMyFields(){
+      this.$axios
+        .get(`farms/fields/mpoly/me/`)
+        .then(res => {
+          this.map.flyTo(res.data[0].mpoly[0], 11)
+          this.$store.dispatch("setMyFields", res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     inviteNeighbor() {
       console.log("fds");
     }
@@ -713,16 +729,7 @@ export default {
     this.setupLeafletMap();
   },
   beforeMount(){
-    this.$axios
-        .get(`farms/fields/mpoly/me/`)
-        .then(res => {
-          console.log(res.data);
-          this.map.flyTo(res.data[0].mpoly[0], 11)
-          this.$store.dispatch("setMyFields", res.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    this.getMyFields()
   }
 };
 </script>

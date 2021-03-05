@@ -124,6 +124,7 @@ export default {
   },
   methods: {
     activateField(field) {
+      field.new = false
       this.$store.dispatch("setFields", field);                                                                         
       this.$store.dispatch("setActiveLocation", [field.lat, field.lng]);
     },
@@ -142,7 +143,8 @@ export default {
         .then(res => {
           this.$store.dispatch("setAllToNeighbor");
           this.$store.dispatch("deleteField", this.field.uuid);
-          this.$store.dispatch("farmNoActive")
+          this.$store.dispatch("refreshFields");
+          this.$store.dispatch("refreshMyFields");
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully removed!"

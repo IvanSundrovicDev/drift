@@ -123,7 +123,10 @@ export default {
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.active = "farmSidebar";
+      if(newField.new){
+        this.active = "farmSidebar";
+
+      }
       //this.activeFarm = newField.farm;
     },
     addNeighbor(newState, oldState) {
@@ -149,8 +152,8 @@ export default {
       }
     },
     activateAddField() {
-      this.active = "addField";
       this.$store.dispatch("activateClu", true)
+      this.active = "addField";
     },
     activateAddFarm() {
       this.active = "addFarm";
