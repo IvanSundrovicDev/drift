@@ -181,8 +181,8 @@ export default {
                         }
                       )
                       .then(res => {
-                        //this.$store.dispatch("setAllToNeighbor");
-                        //this.$store.dispatch("farmNoActive")
+                        this.$store.dispatch("refreshMyFields");
+                        this.$store.dispatch("refreshFields");
                         store.dispatch("addNotification", {
                           type: "success",
                           message: "Neighbor field successfully claimed!"
@@ -210,13 +210,13 @@ export default {
                       store.dispatch("setAddedField", res.data.field);
                       store.dispatch("addNotification", {
                         type: "success",
-                        message: "Neighbor field successfully claimed!"
+                        message: "Crop and trait successfully assigned!"
                       });
                     })
                     .catch(err => {
                       store.dispatch("addNotification", {
                         type: "error",
-                        message: "There was an error claiming neighbor!"
+                        message: "There was an error assigning crop and trait!"
                       });
                     });
                 },
