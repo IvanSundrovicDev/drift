@@ -16,9 +16,11 @@ export default new Vuex.Store({
       dispute_coords: {},
       id: ""
     },
+    myFields: [],
     fields: [],
-    farmActiveField: false,
     cluActive: false,
+    refresh:false,
+    myRefresh:false,
     polygonDraw: false,
     polygonCoordinates: [],
     fieldPolygon: [],
@@ -72,19 +74,11 @@ export default new Vuex.Store({
           value[i].status = "neighbor"
           fields.push(value[i]);
         }
-        state.fields.forEach(el => {
-          fields = fields.filter(item => item.uuid !== el.uuid)
-        })
-        fields = fields.concat(state.fields)
         state.fields = fields
       }
     },
     setAllToNeighbor(state) {
-      let fields = state.fields.map(el => {
-        el.status = "neighbor"
-        return el
-      })
-      state.fields = fields
+      state.fields = state.myFields
       state.activeField = {
         dispute_coords: {},
         id: ""
@@ -94,12 +88,13 @@ export default new Vuex.Store({
       let fields = state.fields.filter(el => el.uuid !== value)
       state.fields = fields
     },
-    farmNoActive(state) {
-      state.farmActiveField = !state.farmActiveField
-    },
     activateClu(state, value) {
+      state.fields = state.myFields
       state.cluActive = value
-      state.fields = []
+      state.activeField = {
+        dispute_coords: {},
+        id: ""
+      }
     },
     setMyFields(state, value) {
       value.forEach(el => {
@@ -107,7 +102,14 @@ export default new Vuex.Store({
         el.is_confirmed = true
         el.coords = el.mpoly
       })
+      state.myFields = value
       state.fields = value
+    },
+    refreshFields(state){
+      state.refresh = !state.refresh
+    },
+    refreshMyFields(state){
+      state.myRefresh = !state.myRefresh
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -162,14 +164,17 @@ export default new Vuex.Store({
     deleteField(context, value) {
       context.commit("deleteField", value)
     },
-    farmNoActive(context, value) {
-      context.commit("farmNoActive")
-    },
     activateClu(context, value) {
       context.commit("activateClu", value)
     },
     setMyFields(context, value) {
       context.commit("setMyFields", value)
+    },
+    refreshFields(context){
+      context.commit("refreshFields")
+    },
+    refreshMyFields(context){
+      context.commit("refreshMyFields")
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);

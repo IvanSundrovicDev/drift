@@ -204,15 +204,6 @@ export default {
             this.data.selectedCrop = "";
           }
           break;
-        // case "herbicides":
-        //   if (this.selectedHerbicides.find(element => element === id)) {
-        //     this.selectedHerbicides = this.selectedHerbicides.filter(
-        //       item => item !== id
-        //     );
-        //   } else {
-        //     this.selectedHerbicides.push(id);
-        //   }
-        //   break;
         case "trait":
           if (
             !this.data.selectedTrait ||
@@ -263,20 +254,6 @@ export default {
         this.crops = res.data.my_crop.crops;
       })
       .catch(err => {});
-    // this.$axios
-    //   .get(`herbicides/me/`)
-    //   .then(res => {
-    //     this.herbicides = res.data.my_herbicide.herbicides;
-    //   })
-    //   .catch(err => {
-    //   });
-    // this.$axios
-    //   .get(`herbicides/tank-mixes/`)
-    //   .then(res => {
-    //     this.mixes = res.data.tank_mix;
-    //   })
-    //   .catch(err => {
-    //   });
     this.$axios
       .get(`farms/crop-traits/me/`)
       .then(res => {
