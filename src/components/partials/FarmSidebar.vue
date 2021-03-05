@@ -119,18 +119,23 @@ export default {
     },
     addNeighbor() {
       return this.$store.state.addNeighbor
+    },
+    refreshFields(){
+      return this.$store.state.refresh
     }
   },
   watch: {
     newActiveField(newField, oldField) {
       if(newField.new){
         this.active = "farmSidebar";
-
       }
       //this.activeFarm = newField.farm;
     },
     addNeighbor(newState, oldState) {
       newState ? this.active = 'addNeighbor' : this.active = 'farmSidebar'
+    },
+    refreshFields(newRefresh, oldRefresh){
+      this.active = "farmSidebar";
     }
   },
   methods: {
