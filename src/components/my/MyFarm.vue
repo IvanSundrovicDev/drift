@@ -116,7 +116,6 @@ export default {
         this.getFields(this.farm.id);
       }
       this.fieldActive = newField;
-      console.log(this.fieldActive);
     },
     cluActive(newClu, oldClu){
       this.fieldActive = {
@@ -124,7 +123,6 @@ export default {
       }
     },
     refreshFields(newRefresh, oldRefresh){
-      console.log(this.farm.id);
       this.getFields(this.farm.id)
     }
   },

@@ -26,7 +26,6 @@ export default new Vuex.Store({
     fieldPolygon: [],
     removedPolygon: true,
     removeAllPolygons: false,
-    addedField: {},
     notifications: [],
     neighborFields: [],
     addNeighbor: false
@@ -111,6 +110,11 @@ export default new Vuex.Store({
     refreshMyFields(state){
       state.myRefresh = !state.myRefresh
     },
+    updateField(state, value){
+      //let i = state.fields.findIndex(x => x.uuid = value.uuid);
+      console.log(state.fields);
+      console.log(value.crop);
+    },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
     },
@@ -125,9 +129,6 @@ export default new Vuex.Store({
     },
     setRemoveAllPolygons(state, value) {
       state.removeAllPolygons = value;
-    },
-    setAddedField(state, value) {
-      state.addedField = value;
     },
     addNotification(state, value) {
       state.notifications.push({
@@ -176,6 +177,9 @@ export default new Vuex.Store({
     refreshMyFields(context){
       context.commit("refreshMyFields")
     },
+    updateField(context, value){
+      context.commit("updateField", value)
+    },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);
     },
@@ -190,9 +194,6 @@ export default new Vuex.Store({
     },
     setRemoveAllPolygons(context, value) {
       context.commit("setRemoveAllPolygons", value);
-    },
-    setAddedField(contex, value) {
-      contex.commit("setAddedField", value);
     },
     addNotification(contex, value) {
       contex.commit("addNotification", value);

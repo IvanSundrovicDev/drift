@@ -168,7 +168,7 @@ export default {
           this.menuOpen = false;
           this.open = "";
           this.activatePopup();
-          this.$store.dispatch("setAddedField", this.field);
+          this.$store.dispatch("updateField", this.field);
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully renamed!"
