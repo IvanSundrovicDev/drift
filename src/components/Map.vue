@@ -216,11 +216,13 @@ export default {
       this.fieldPolygon = [];
       this.activePolygon = false;
       for (let i in this.map._layers) {
-        if (this.map._layers[i]._path !== undefined || this.map._layers[i].options.name) {
-          try {
-            this.map.removeLayer(this.map._layers[i]);
-          } catch (e) {
-            console.log("problem with " + e + this.map._layers[i]);
+        if(this.map._layers[i]._path !== undefined || this.map._layers[i].options.name){
+          if (this.map._layers[i].options.name !== "last") {
+            try {
+              this.map.removeLayer(this.map._layers[i]);
+            } catch (e) {
+              console.log("problem with " + e + this.map._layers[i]);
+            }
           }
         }
       }
@@ -388,13 +390,13 @@ export default {
                         store.dispatch("activateClu", false);
                         store.dispatch("addNotification", {
                           type: "success",
-                          message: "Neighbor field successfully claimed!",
+                          message: "You have successfully added your field!",
                         });
                       })
                       .catch((err) => {
                         store.dispatch("addNotification", {
                           type: "error",
-                          message: "There was an error claiming neighbor!",
+                          message: "There was an error claiming your field!",
                         });
                       });
                   }
