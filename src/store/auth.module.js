@@ -47,7 +47,7 @@ export const auth = {
       );
     },
     async setUserAction(context) {
-      await axios.get("auth/users/me").then(res => {
+      await axios.get("auth/users/me/").then(res => {
         context.commit("setUser", res.data.user);
       });
     },
