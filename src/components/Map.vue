@@ -181,8 +181,9 @@ export default {
                         }
                       )
                       .then(res => {
-                        this.$store.dispatch("refreshMyFields");
-                        this.$store.dispatch("refreshFields");
+                        store.dispatch("refreshMyFields");
+                        store.dispatch("refreshFields");
+                        store.dispatch("activateClu", false)
                         store.dispatch("addNotification", {
                           type: "success",
                           message: "Neighbor field successfully claimed!"
@@ -206,8 +207,14 @@ export default {
                       }
                     )
                     .then(res => {
-                      res.data.field.mpoly = [];
-                      store.dispatch("setAddedField", res.data.field);
+                      field.crop_trait = this.data.selectedTrait.id
+                      field.crop_trait_name = this.data.selectedTrait.name
+                      field.crop = this.data.selectedCrop.id
+                      field.crop_name = this.data.selectedCrop.name
+                      console.log(store.state.cluActive);
+                      if(!store.state.cluActive){
+                        store.dispatch("refreshFields");
+                      }
                       store.dispatch("addNotification", {
                         type: "success",
                         message: "Crop and trait successfully assigned!"
@@ -264,7 +271,6 @@ export default {
                 }
               },
               beforeMount() {
-                console.log(field)
                 this.data = {
                   selectedCrop: {
                     id: field.crop,
