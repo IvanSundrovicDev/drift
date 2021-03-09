@@ -316,11 +316,20 @@ export default {
                   if (scopeThis.editing) {
                     e.target.editing.disable();
                     scopeThis.editing = false;
+                    console.log(e.target);
                     console.log(e.target.editing.latlngs[0][0]);
                   } else {
                     e.target.editing.enable();
                     scopeThis.editing = true;
                   }
+                })
+                .addTo(map);
+            } else if (field.status === "myField") {
+              var polygon = L.polygon(field.coords)
+                .setStyle({
+                  color: "#FFF",
+                  fillColor: "#FFF",
+                  fillOpacity: 0.3
                 })
                 .addTo(map);
             } else if (field.status === "dispute") {
