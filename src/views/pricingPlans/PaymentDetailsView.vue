@@ -28,7 +28,7 @@
             <input
               type="text"
               v-model="cardName"
-              class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+              class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
               placeholder="Enter your full name"
               autofocus
             />
@@ -47,7 +47,7 @@
             <input
               type="text"
               id="cardNumber"
-              class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+              class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
               v-mask="generateCardNumberMask"
               v-model="cardNumber"
               data-ref="cardNumber"
@@ -63,7 +63,7 @@
                 <h3 class="my-auto align-middle">Month</h3>
               </div>
               <select
-                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                class="w-22 border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
                 id="cardMonth"
                 v-model="cardMonth"
                 data-ref="cardDate"
@@ -86,7 +86,7 @@
                 <h3 class="my-auto align-middle">Year</h3>
               </div>
               <select
-                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                class="w-22 border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
                 id="cardYear"
                 v-model="cardYear"
                 data-ref="cardDate"
@@ -110,7 +110,7 @@
             <div>
               <input
                 type="text"
-                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+                class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
                 id="cardCvv"
                 v-mask="'####'"
                 maxlength="4"
@@ -124,20 +124,64 @@
         <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
           <div class="w-full">
             <div class="pt-2">
-              <h3 class="my-auto align-middle">Have a voucher?</h3>
+              <h3 class="my-auto align-middle">
+                {{ voucherApplied ? "Voucher applied" : "Have a voucher?" }}
+              </h3>
             </div>
 
-            <div>
+            <div
+              class="relative items-center mt-3"
+              :class="[voucherApplied ? 'inline-flex' : 'flex']"
+            >
               <input
+                v-model="voucherCode"
                 type="text"
-                class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
-                placeholder="Enter your card number"
+                class="w-full border-2 border-white authInputField p-2"
+                :class="{
+                  'border-gray-400 focus:border-drift-blue': !voucherApplied,
+                  'bg-white': voucherApplied
+                }"
+                :disabled="voucherApplied"
+                placeholder="Enter your voucher number"
               />
+              <font-awesome-icon
+                v-if="voucherApplied"
+                :icon="['fas', 'check']"
+                class="absolute right-1/4 text-drift-blue"
+              />
+              <a
+                v-else-if="voucherError"
+                role="button"
+                class="absolute right-0 w-10 h-full flex items-center justify-center"
+                @click="resetVaucher()"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'times']"
+                  class="text-drift-red"
+                />
+              </a>
             </div>
+            <p
+              v-if="voucherApplied || voucherError"
+              class="my-auto align-middle"
+              :class="[
+                { 'text-drift-red': voucherError },
+                { 'text-drift-blue mt-2 cursor-pointer': voucherApplied }
+              ]"
+              @click="removeVoucher()"
+            >
+              {{
+                voucherApplied ? "Remove" : "Please enter a valid voucher code"
+              }}
+            </p>
           </div>
           <div class="w-96 pt-11 pl-10">
             <button
+              v-if="!voucherApplied"
               class="rounded-lg py-2 w-full payment-custom-button designActionButton"
+              :class="{ 'opacity-50': !voucherCode }"
+              :disabled="!voucherCode"
+              @click="redeemVoucher()"
             >
               Apply
             </button>
@@ -148,7 +192,7 @@
             class="rounded-lg py-1 w-full payment-custom-button designActionButton"
             v-on:click="finish()"
           >
-            Pay
+            Pay ${{ payAmount }}
           </button>
         </div>
       </div>
@@ -177,10 +221,48 @@ export default {
       amexCardMask: "#### ###### #####",
       otherCardMask: "#### #### #### ####",
       cardNumberTemp: "",
-      errors: ""
+      errors: "",
+      voucherCode: "",
+      payAmount: 79,
+      voucherApplied: false,
+      voucherError: false
     };
   },
   methods: {
+    resetVaucher() {
+      this.voucherCode = "";
+      this.voucherError = false;
+    },
+
+    removeVoucher() {
+      this.payAmount = 79;
+      this.voucherApplied = false;
+      this.voucherCode = "";
+    },
+
+    redeemVoucher() {
+      console.log("from redeem voucher");
+      this.$axios
+        .get(`https://api.giftup.app/gift-cards/${this.voucherCode}`, {
+          headers: {
+            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYjJjYjRjYS01YzY0LTQxNWUtOTQ4ZC03YjkxOTI2ZTM3YzMiLCJzdWIiOiJ0Z29sbHlAZGl0Y2hkcmlmdC5jb20iLCJleHAiOjE5MjM4MTk5ODAsImlzcyI6Imh0dHBzOi8vZ2lmdHVwLmFwcC8iLCJhdWQiOiJodHRwczovL2dpZnR1cC5hcHAvIn0.Y_XVrls-jhFzAWNYfBmxUMhIHbEDcctPXRPFTpK0eO8`,
+            "x-giftup-testmode": true // for testing purposes only, not needed for production
+          }
+        })
+        .then(res => {
+          const { canBeRedeemed, equivalentValuePerUnit } = res.data;
+
+          if (!canBeRedeemed) return;
+
+          this.payAmount = (this.payAmount - equivalentValuePerUnit).toFixed(2);
+          this.voucherApplied = true;
+          this.voucherError = false;
+        })
+        .catch(() => {
+          this.voucherError = true;
+        });
+    },
+
     async finish() {
       await this.$axios
         .post("subscription/verify-card/", {
@@ -190,6 +272,7 @@ export default {
           exp_year: this.cardYear
         })
         .then(res => {
+          console.log(res);
           this.$axios
             .patch("subscription/me/", {
               payment_method_id: res.data.payment_method_id,
@@ -275,5 +358,12 @@ export default {
 <style scoped>
 .payment-custom-button {
   height: 44px;
+}
+
+.designActionButton:disabled:hover {
+  color: rgba(40, 170, 225, 1);
+  border: 2px solid rgba(40, 170, 225, 1);
+  background-color: #fff;
+  cursor: default;
 }
 </style>
