@@ -84,7 +84,13 @@ router.beforeEach((to, from, next) => {
     "/pricing_plans"
   ];
   const authRequired = !publicPages.includes(to.path);
-  const jwt = JSON.parse(localStorage.getItem("jwt"));
+
+  const cookies = document.cookie;
+  const jwtCookie = cookies.includes("jwt")
+    ? cookies.split("jwt=")[1].split(";")[0]
+    : "";
+  const jwt = jwtCookie ? JSON.parse(jwtCookie) : "";
+
   let subscription = localStorage.getItem("subscription");
 
   if (authRequired && !jwt) {

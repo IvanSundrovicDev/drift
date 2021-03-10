@@ -1,9 +1,13 @@
 export default function authHeader() {
-  let jwt = JSON.parse(localStorage.getItem("jwt"));
+  const cookies = document.cookie;
+  const jwtCookie = cookies.includes("jwt")
+    ? cookies.split("jwt=")[1].split(";")[0]
+    : "";
+  const jwt = jwtCookie ? JSON.parse(jwtCookie) : "";
 
   if (jwt) {
     return { Authorization: "JWT " + jwt.access };
-  } else {
-    return {};
   }
+
+  return {};
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="bg-drift-blue ">
     <div :class="{ 'flex h-screen': registration }">
-      <div class="m-auto py-12 px-16 rounded-md bg-white">
+      <div class="m-auto max-w-screen-md py-12 px-16 rounded-md bg-white">
         <div class="w-full text-center">
           <h1 class="text-3xl">Enter your payment details</h1>
         </div>
@@ -21,7 +21,9 @@
 
         <div class="w-full pt-8">
           <div class="pt-2">
-            <h3 class="my-auto align-middle">Name</h3>
+            <h3 class="my-auto align-middle">
+              Name <span class="text-drift-red">*</span>
+            </h3>
           </div>
 
           <div>
@@ -29,9 +31,19 @@
               type="text"
               v-model="cardName"
               class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
+              :class="{
+                'placeholder-black placeholder-opacity-20': !cardName
+              }"
               placeholder="Enter your full name"
+              tabindex="1"
               autofocus
             />
+            <p
+              v-if="inputErrors.cardName"
+              class="my-auto align-middle text-drift-red"
+            >
+              Cardholder name is a required field.
+            </p>
           </div>
         </div>
         <div class="w-full pt-8">
@@ -40,7 +52,9 @@
               class="inline"
               src="../../assets/images/icons/credit-card.png"
             />
-            <h3 class="my-auto ml-2 align-middle">Card Number</h3>
+            <h3 class="my-auto ml-2 align-middle">
+              Card Number <span class="text-drift-red">*</span>
+            </h3>
           </div>
 
           <div>
@@ -48,28 +62,44 @@
               type="text"
               id="cardNumber"
               class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
+              :class="{
+                'placeholder-black placeholder-opacity-20': !cardNumber
+              }"
               v-mask="generateCardNumberMask"
               v-model="cardNumber"
               data-ref="cardNumber"
               autocomplete="off"
               placeholder="Enter your card number"
+              tabindex="2"
             />
+            <p
+              v-if="inputErrors.cardNumber"
+              class="my-auto align-middle text-drift-red"
+            >
+              The card number you entered appears to be invalid. Please enter a
+              valid 16-digit card number
+            </p>
           </div>
         </div>
         <div class="flex pt-8">
-          <div class="w-22 mr-12">
-            <div>
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Month</h3>
-              </div>
+          <div class="flex flex-wrap justify-between w-1/2 mr-12">
+            <div class="w-full pt-2">
+              <h3 class="my-auto align-middle">
+                Expiration <span class="text-drift-red">*</span>
+              </h3>
+            </div>
+            <div class="w-1/2 pr-1">
               <select
-                class="w-22 border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                :class="{ 'text-black text-opacity-20': !cardMonth }"
                 id="cardMonth"
                 v-model="cardMonth"
                 data-ref="cardDate"
+                tabindex="3"
               >
-                <option value="" disabled selected>Month</option>
+                <option class="hidden" value="" disabled selected>Month</option>
                 <option
+                  class="text-black text-opacity-100"
                   v-bind:value="n < 10 ? '0' + n : n"
                   v-for="n in 12"
                   v-bind:disabled="n < minCardMonth"
@@ -79,20 +109,18 @@
                 </option>
               </select>
             </div>
-          </div>
-          <div class="w-22 mr-12">
-            <div>
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Year</h3>
-              </div>
+            <div class="w-1/2 pl-1">
               <select
-                class="w-22 border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                :class="{ 'text-black text-opacity-20': !cardYear }"
                 id="cardYear"
                 v-model="cardYear"
                 data-ref="cardDate"
+                tabindex="4"
               >
-                <option value="" disabled selected>Year</option>
+                <option class="hidden" value="" disabled selected>Year</option>
                 <option
+                  class="text-black text-opacity-100"
                   v-bind:value="$index + minCardYear"
                   v-for="(n, $index) in 12"
                   v-bind:key="n"
@@ -101,8 +129,14 @@
                 </option>
               </select>
             </div>
+            <p
+              v-if="inputErrors.cardMonth || inputErrors.cardYear"
+              class="my-auto align-middle text-drift-red"
+            >
+              Month and Year are required fields.
+            </p>
           </div>
-          <div class="w-22">
+          <div class="w-1/2">
             <div class="pt-2">
               <h3 class="my-auto align-middle">CVC</h3>
             </div>
@@ -111,13 +145,23 @@
               <input
                 type="text"
                 class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
-                id="cardCvv"
+                :class="{
+                  'placeholder-black placeholder-opacity-20': !cardCvc
+                }"
+                id="cardCvc"
                 v-mask="'####'"
                 maxlength="4"
-                v-model="cardCvv"
+                v-model="cardCvc"
                 autocomplete="off"
-                placeholder="CVV"
+                placeholder="CVC"
+                tabindex="5"
               />
+              <p
+                v-if="inputErrors.cardCvc"
+                class="my-auto align-middle text-drift-red"
+              >
+                Security code is a required field.
+              </p>
             </div>
           </div>
         </div>
@@ -125,7 +169,7 @@
           <div class="w-full">
             <div class="pt-2">
               <h3 class="my-auto align-middle">
-                {{ voucherApplied ? "Voucher applied" : "Have a voucher?" }}
+                {{ voucherApplied ? "Gift card applied" : "Have a Gift card?" }}
               </h3>
             </div>
 
@@ -138,11 +182,13 @@
                 type="text"
                 class="w-full border-2 border-white authInputField p-2"
                 :class="{
+                  'placeholder-black placeholder-opacity-20': !voucherCode,
                   'border-gray-400 focus:border-drift-blue': !voucherApplied,
                   'bg-white': voucherApplied
                 }"
                 :disabled="voucherApplied"
-                placeholder="Enter your voucher number"
+                placeholder="Enter your Gift card number"
+                tabindex="6"
               />
               <font-awesome-icon
                 v-if="voucherApplied"
@@ -171,7 +217,9 @@
               @click="removeVoucher()"
             >
               {{
-                voucherApplied ? "Remove" : "Please enter a valid voucher code"
+                voucherApplied
+                  ? "Remove"
+                  : "Please enter a valid Gift card code"
               }}
             </p>
           </div>
@@ -216,19 +264,37 @@ export default {
       cardNumber: "",
       cardMonth: "",
       cardYear: "",
-      cardCvv: "",
+      cardCvc: "",
+      voucherCode: "",
       minCardYear: new Date().getFullYear(),
       amexCardMask: "#### ###### #####",
       otherCardMask: "#### #### #### ####",
       cardNumberTemp: "",
       errors: "",
-      voucherCode: "",
-      payAmount: 79,
+      payAmount: 79.99,
       voucherApplied: false,
-      voucherError: false
+      voucherError: false,
+      inputErrors: {
+        cardName: false,
+        cardNumber: false,
+        cardMonth: false,
+        cardYear: false,
+        cardCvc: false
+      }
     };
   },
   methods: {
+    validateInput() {
+      const inputs = Object.keys(this.inputErrors);
+      const $data = this.$data;
+
+      inputs.forEach(input => {
+        this.inputErrors[input] = !$data[input];
+      });
+
+      return Object.values(this.inputErrors).find(x => x === true);
+    },
+
     resetVaucher() {
       this.voucherCode = "";
       this.voucherError = false;
@@ -241,12 +307,14 @@ export default {
     },
 
     redeemVoucher() {
-      console.log("from redeem voucher");
+      // eslint-disable-next-line no-undef
+      const { VUE_APP_GIFTUP_API_KEY, VUE_APP_GIFTUP_TESTMODE } = process.env;
+
       this.$axios
         .get(`https://api.giftup.app/gift-cards/${this.voucherCode}`, {
           headers: {
-            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYjJjYjRjYS01YzY0LTQxNWUtOTQ4ZC03YjkxOTI2ZTM3YzMiLCJzdWIiOiJ0Z29sbHlAZGl0Y2hkcmlmdC5jb20iLCJleHAiOjE5MjM4MTk5ODAsImlzcyI6Imh0dHBzOi8vZ2lmdHVwLmFwcC8iLCJhdWQiOiJodHRwczovL2dpZnR1cC5hcHAvIn0.Y_XVrls-jhFzAWNYfBmxUMhIHbEDcctPXRPFTpK0eO8`,
-            "x-giftup-testmode": true // for testing purposes only, not needed for production
+            Authorization: VUE_APP_GIFTUP_API_KEY,
+            "x-giftup-testmode": VUE_APP_GIFTUP_TESTMODE
           }
         })
         .then(res => {
@@ -264,15 +332,16 @@ export default {
     },
 
     async finish() {
+      if (this.validateInput()) return;
+
       await this.$axios
         .post("subscription/verify-card/", {
           number: this.cardNumber,
-          cvc: this.cardCvv,
+          cvc: this.cardCvc,
           exp_month: this.cardMonth,
           exp_year: this.cardYear
         })
         .then(res => {
-          console.log(res);
           this.$axios
             .patch("subscription/me/", {
               payment_method_id: res.data.payment_method_id,
@@ -305,7 +374,6 @@ export default {
   },
   mounted() {
     this.cardNumberTemp = this.otherCardMask;
-    document.getElementById("cardNumber").focus();
   },
   computed: {
     getCardType() {
