@@ -8,7 +8,7 @@
         <div class="max-h-full overflow-y-auto">
           <div v-for="item in farms" :key="item.id" class="max-h-full">
             <MyFarm
-              v-if="!activeFarm || activeFarm === item.id"
+              v-show="!activeFarm || activeFarm === item.id"
               v-on:toggle-farm="activateFarm($event)"
               :farm="item"
             ></MyFarm>
@@ -126,10 +126,9 @@ export default {
   },
   watch: {
     newActiveField(newField, oldField) {
-      if(newField.new){
-        this.active = "farmSidebar";
+      if(newField.claimed){
+        this.activeFarm = newField.farm;
       }
-      //this.activeFarm = newField.farm;
     },
     addNeighbor(newState, oldState) {
       newState ? this.active = 'addNeighbor' : this.active = 'farmSidebar'

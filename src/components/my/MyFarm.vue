@@ -103,23 +103,18 @@ export default {
     newActiveField() {
       return this.$store.state.activeField;
     },
-    cluActive() {
-      return this.$store.state.cluActive;
-    },
     refreshFields(){
       return this.$store.state.refresh
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      if(newField.new){
-        this.getFields(this.farm.id);
-      }
       this.fieldActive = newField;
-    },
-    cluActive(newClu, oldClu){
-      this.fieldActive = {
-        id: ""
+      if(newField.farm === this.farm.id){
+        this.farmOpen = true
+      }
+      else{
+        this.farmOpen = false
       }
     },
     refreshFields(newRefresh, oldRefresh){
