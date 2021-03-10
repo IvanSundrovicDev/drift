@@ -315,7 +315,7 @@ export default {
     },
 
     removeVoucher() {
-      this.payAmount = 79;
+      this.payAmount = 79.99;
       this.voucherApplied = false;
       this.voucherCode = "";
     },

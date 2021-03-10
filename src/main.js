@@ -21,8 +21,10 @@ Vue.directive("mask", VueMaskDirective);
 
 const cookieExtract = cookieName => {
   const cookies = document.cookie;
-  const singleCookie = cookies.split(`${cookieName}=`)[1].split(";")[0];
-  const singleCookieParsed = JSON.parse(singleCookie);
+  const singleCookie = cookies.includes(cookieName)
+    ? cookies.split(`${cookieName}=`)[1].split(";")[0]
+    : "";
+  const singleCookieParsed = singleCookie ? JSON.parse(singleCookie) : "";
   return singleCookieParsed;
 };
 
@@ -55,10 +57,10 @@ axios.interceptors.response.use(
     // Try request again with new token
     return axios
       .post("auth/jwt/refresh", {
-        refresh: cookieExtract().refresh
+        refresh: cookieExtract("jwt").refresh
       })
       .then(token => {
-        let jwt = cookieExtract();
+        let jwt = cookieExtract("jwt");
         jwt.access = token.data.access;
         document.cookie = `jwt=${JSON.stringify(jwt)}`;
 
