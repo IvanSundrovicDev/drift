@@ -126,10 +126,13 @@ export default {
       this.$axios
         .post(`farms/fields/`, field)
         .then((res) => {
+
           this.$store.dispatch("activateClu", false)
           this.$store.dispatch("refreshMyFields");
           this.$store.dispatch("refreshFields");
           this.$store.dispatch("setAddNeighbor", false);
+          this.$store.dispatch("setRemovedPolygon", false);
+          this.$store.dispatch("setFields", this.$store.state.activeField)
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Neighbor field successfully added!",
@@ -143,11 +146,11 @@ export default {
         });
     },
     close() {
-      console.log("close");
       this.$store.dispatch("activateClu", false)
       this.$emit("toggle-farm-sidebar");
       this.$store.dispatch("setAddNeighbor", false);
       this.$store.dispatch("setRemovedPolygon", false);
+      this.$store.dispatch("setFields", this.$store.state.activeField)
     },
     removeField() {
       this.fieldCoordinates = null;

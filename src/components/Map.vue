@@ -65,7 +65,7 @@ export default {
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      this.map.flyToBounds(newLocation.location);
+      this.map.flyToBounds(newLocation.location, { maxZoom: 17 });
     },
     initDrawPolygon(newState, oldState) {
       if (newState) {
@@ -276,12 +276,13 @@ export default {
       this.$axios
         .get(`farms/fields/mpoly/me/`)
         .then((res) => {
-          //this.map.flyTo(res.data[0].mpoly[0], 12);
-          var group = new L.featureGroup();
-          res.data.forEach((el) => {
-            var marker = L.marker(el.mpoly[0]).addTo(group);
-          });
-          this.map.flyToBounds(group.getBounds());
+          if (!this.$store.state.myFields[0]) {
+            var group = new L.featureGroup();
+            res.data.forEach((el) => {
+              var marker = L.marker(el.mpoly[0]).addTo(group);
+            });
+            this.map.flyToBounds(group.getBounds(), { maxZoom: 15 });
+          }
           this.$store.dispatch("setMyFields", res.data);
         })
         .catch((err) => {
@@ -407,6 +408,7 @@ export default {
                     active: "main",
                     crops: [],
                     traits: [],
+                    farms:[],
                     data: {
                       selectedCrop: {
                         id: "",
@@ -449,9 +451,14 @@ export default {
                           farm: this.data.selectedFarm.id,
                         })
                         .then((res) => {
+                          field.farm = this.data.selectedFarm.id
+                          field.claimed = true
+                          field.neighbour_coords = []
+                          field.dispute_coords = []
                           store.dispatch("refreshMyFields");
                           store.dispatch("refreshFields");
                           store.dispatch("activateClu", false);
+                          store.dispatch("setFields", field)
                           store.dispatch("addNotification", {
                             type: "success",
                             message: "You have successfully added your field!",
@@ -477,7 +484,6 @@ export default {
                         field.crop_trait_name = this.data.selectedTrait.name;
                         field.crop = this.data.selectedCrop.id;
                         field.crop_name = this.data.selectedCrop.name;
-                        console.log(store.state.cluActive);
                         if (!store.state.cluActive) {
                           store.dispatch("refreshFields");
                         }
@@ -495,7 +501,8 @@ export default {
                       });
                   },
                   addToMergedFields() {
-                    console.log(field);
+                    console.log(field.uuid);
+                    store.dispatch("addToMerge", field.uuid);
                   },
                   activate(id) {
                     if (!this.activeMenu) {
