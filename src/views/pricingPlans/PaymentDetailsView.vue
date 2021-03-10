@@ -1,7 +1,9 @@
 <template>
   <div class="bg-drift-blue ">
     <div :class="{ 'flex h-screen': registration }">
-      <div class="m-auto max-w-screen-md py-12 px-16 rounded-md bg-white">
+      <div
+        class="m-auto w-full max-w-screen-md py-12 px-16 rounded-md bg-white"
+      >
         <div class="w-full text-center">
           <h1 class="text-3xl">Enter your payment details</h1>
         </div>
@@ -19,7 +21,7 @@
           </ol>
         </div>
 
-        <div class="w-full pt-8">
+        <div class="w-full pt-4">
           <div class="pt-2">
             <h3 class="my-auto align-middle">
               Name <span class="text-drift-red">*</span>
@@ -46,7 +48,7 @@
             </p>
           </div>
         </div>
-        <div class="w-full pt-8">
+        <div class="w-full pt-4">
           <div class="pt-2 flex">
             <img
               class="inline"
@@ -81,16 +83,16 @@
             </p>
           </div>
         </div>
-        <div class="flex pt-8">
+        <div class="flex pt-4 items-start">
           <div class="flex flex-wrap justify-between w-1/2 mr-12">
             <div class="w-full pt-2">
               <h3 class="my-auto align-middle">
                 Expiration <span class="text-drift-red">*</span>
               </h3>
             </div>
-            <div class="w-1/2 pr-1">
+            <div class="relative w-1/2 pr-1 mt-1">
               <select
-                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 appearance-none"
                 :class="{ 'text-black text-opacity-20': !cardMonth }"
                 id="cardMonth"
                 v-model="cardMonth"
@@ -108,10 +110,14 @@
                   {{ n < 10 ? "0" + n : n }}
                 </option>
               </select>
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="absolute right-1 fa-fw inset-y-0 my-auto to text-drift-blue bg-white pointer-events-none"
+              />
             </div>
-            <div class="w-1/2 pl-1">
+            <div class="relative w-1/2 pl-1 mt-1">
               <select
-                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 appearance-none"
                 :class="{ 'text-black text-opacity-20': !cardYear }"
                 id="cardYear"
                 v-model="cardYear"
@@ -128,6 +134,10 @@
                   {{ $index + minCardYear }}
                 </option>
               </select>
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="absolute right-1 fa-fw inset-y-0 my-auto to text-drift-blue bg-white pointer-events-none"
+              />
             </div>
             <p
               v-if="inputErrors.cardMonth || inputErrors.cardYear"
@@ -141,7 +151,7 @@
               <h3 class="my-auto align-middle">CVC</h3>
             </div>
 
-            <div>
+            <div class="mt-1">
               <input
                 type="text"
                 class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
@@ -165,8 +175,12 @@
             </div>
           </div>
         </div>
-        <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
-          <div class="w-full">
+        <div
+          v-if="$route.name === 'Payment Details'"
+          class="flex pt-4"
+          :class="{ 'w-1/2': voucherApplied }"
+        >
+          <div class="w-full" :class="{ 'flex-shrink-0': voucherApplied }">
             <div class="pt-2">
               <h3 class="my-auto align-middle">
                 {{ voucherApplied ? "Gift card applied" : "Have a Gift card?" }}
@@ -174,7 +188,7 @@
             </div>
 
             <div
-              class="relative items-center mt-3"
+              class="relative items-center mt-3 w-full"
               :class="[voucherApplied ? 'inline-flex' : 'flex']"
             >
               <input
@@ -193,7 +207,7 @@
               <font-awesome-icon
                 v-if="voucherApplied"
                 :icon="['fas', 'check']"
-                class="absolute right-1/4 text-drift-blue"
+                class="absolute right-1/3 text-drift-blue"
               />
               <a
                 v-else-if="voucherError"
@@ -235,7 +249,7 @@
             </button>
           </div>
         </div>
-        <div class="w-full pt-8">
+        <div class="w-full pt-6">
           <button
             class="rounded-lg py-1 w-full payment-custom-button designActionButton"
             v-on:click="finish()"
