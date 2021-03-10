@@ -126,7 +126,7 @@ export default {
     activateField(field) {
       field.new = false
       this.$store.dispatch("setFields", field);                                                                         
-      this.$store.dispatch("setActiveLocation", [field.lat, field.lng]);
+      this.$store.dispatch("setActiveLocation", field.coords);
     },
     activatePopup() {
       this.activateField(this.field);
