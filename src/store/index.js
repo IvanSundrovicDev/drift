@@ -16,98 +16,108 @@ export default new Vuex.Store({
       dispute_coords: {},
       id: ""
     },
+    myFields: [],
     fields: [],
-    farmActiveField: false,
     cluActive: false,
+    refresh: false,
+    myRefresh: false,
     polygonDraw: false,
     polygonCoordinates: [],
     fieldPolygon: [],
     removedPolygon: true,
     removeAllPolygons: false,
-    addedField: {},
     notifications: [],
     neighborFields: [],
     addNeighbor: false
   },
   mutations: {
     setActiveLocation(state, value) {
-      state.activeLocation = { location: value, bool: !state.activeLocation.bool };
+      state.activeLocation = {
+        location: value,
+        bool: !state.activeLocation.bool
+      };
     },
     setFields(state, value) {
-      let fields = []
-      let neighbors = []
-      let dispute = []
+      let fields = [];
+      let neighbors = [];
+      let dispute = [];
 
       if (value.mpoly[0]) {
-        value.status = "active"
-        value.is_confirmed = true
-        value.coords = value.mpoly
-        state.activeField = value
-        fields.push(value)
+        value.status = "active";
+        value.is_confirmed = true;
+        value.coords = value.mpoly;
+        state.activeField = value;
+        fields.push(value);
       }
 
       if (Object.keys(value.neighbour_coords).length > 0) {
         for (const i in value.neighbour_coords) {
           value.neighbour_coords[i].coords = value.neighbour_coords[i].mpoly;
-          value.neighbour_coords[i].status = "neighbor"
+          value.neighbour_coords[i].status = "neighbor";
           neighbors.push(value.neighbour_coords[i]);
         }
       }
 
       if (Object.keys(state.activeField.dispute_coords).length > 0) {
         for (const i in state.activeField.dispute_coords) {
-          state.activeField.dispute_coords[i].coords = state.activeField.dispute_coords[i].mpoly;
-          state.activeField.dispute_coords[i].status = "dispute"
+          state.activeField.dispute_coords[i].coords =
+            state.activeField.dispute_coords[i].mpoly;
+          state.activeField.dispute_coords[i].status = "dispute";
           dispute.push(state.activeField.dispute_coords[i]);
         }
       }
-      fields = fields.concat(dispute, neighbors)
-      state.fields = fields
+      fields = fields.concat(dispute, neighbors);
+      state.fields = fields;
     },
     setNeighbor(state, value) {
-      if(state.cluActive){
-        let fields = []
+      if (state.cluActive) {
+        let fields = [];
         for (const i in value) {
           value[i].coords = value[i].mpoly;
-          value[i].status = "neighbor"
+          value[i].status = "neighbor";
           fields.push(value[i]);
         }
-        state.fields.forEach(el => {
-          fields = fields.filter(item => item.uuid !== el.uuid)
-        })
-        fields = fields.concat(state.fields)
-        state.fields = fields
+        state.fields = fields;
       }
     },
     setAllToNeighbor(state) {
-      let fields = state.fields.map(el => {
-        el.status = "neighbor"
-        return el
-      })
-      state.fields = fields
+      state.fields = state.myFields;
       state.activeField = {
         dispute_coords: {},
         id: ""
-      }
+      };
     },
     deleteField(state, value) {
-      let fields = state.fields.filter(el => el.uuid !== value)
-      state.fields = fields
-    },
-    farmNoActive(state) {
-      state.farmActiveField = !state.farmActiveField
+      let fields = state.fields.filter(el => el.uuid !== value);
+      state.fields = fields;
     },
     activateClu(state, value) {
-      state.cluActive = value
-      state.fields = []
+      state.fields = state.myFields;
+      state.cluActive = value;
+      state.activeField = {
+        dispute_coords: {},
+        id: ""
+      };
     },
     setMyFields(state, value) {
       value.forEach(el => {
-        el.status = "neighbor"
-        el.is_confirmed = true
-        el.coords = el.mpoly
-      })
-      state.fields = value
+        el.status = "myField";
+        el.is_confirmed = true;
+        el.coords = el.mpoly;
+      });
+      state.myFields = value;
+      state.fields = value;
+    },
+    refreshFields(state) {
+      state.refresh = !state.refresh;
+    },
+    refreshMyFields(state) {
+      state.myRefresh = !state.myRefresh;
+    },
+    updateField(state, value) {
+      //let i = state.fields.findIndex(x => x.uuid = value.uuid);
+      console.log(state.fields);
+      console.log(value.crop);
     },
     setPolygonDraw(state, value) {
       state.polygonDraw = value;
@@ -124,9 +134,6 @@ export default new Vuex.Store({
     setRemoveAllPolygons(state, value) {
       state.removeAllPolygons = value;
     },
-    setAddedField(state, value) {
-      state.addedField = value;
-    },
     addNotification(state, value) {
       state.notifications.push({
         ...value,
@@ -140,10 +147,10 @@ export default new Vuex.Store({
       state.notifications = state.notifications.filter(el => el.id !== value);
     },
     drawNeighbor(state, value) {
-      state.neighborFields = value
+      state.neighborFields = value;
     },
     setAddNeighbor(state, value) {
-      state.addNeighbor = value
+      state.addNeighbor = value;
     }
   },
   actions: {
@@ -160,16 +167,22 @@ export default new Vuex.Store({
       context.commit("setAllToNeighbor");
     },
     deleteField(context, value) {
-      context.commit("deleteField", value)
-    },
-    farmNoActive(context, value) {
-      context.commit("farmNoActive")
+      context.commit("deleteField", value);
     },
     activateClu(context, value) {
-      context.commit("activateClu", value)
+      context.commit("activateClu", value);
     },
     setMyFields(context, value) {
-      context.commit("setMyFields", value)
+      context.commit("setMyFields", value);
+    },
+    refreshFields(context) {
+      context.commit("refreshFields");
+    },
+    refreshMyFields(context) {
+      context.commit("refreshMyFields");
+    },
+    updateField(context, value) {
+      context.commit("updateField", value);
     },
     setPolygonDraw(context, value) {
       context.commit("setPolygonDraw", value);
@@ -186,9 +199,6 @@ export default new Vuex.Store({
     setRemoveAllPolygons(context, value) {
       context.commit("setRemoveAllPolygons", value);
     },
-    setAddedField(contex, value) {
-      contex.commit("setAddedField", value);
-    },
     addNotification(contex, value) {
       contex.commit("addNotification", value);
     },
@@ -200,7 +210,7 @@ export default new Vuex.Store({
     },
     setAddNeighbor(contex, value) {
       contex.commit("setAddNeighbor", value);
-    },
+    }
   },
   modules: { auth, tutorial }
 });

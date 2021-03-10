@@ -103,21 +103,36 @@ export default {
     newActiveField() {
       return this.$store.state.activeField;
     },
-    activeField() {
-      return this.$store.state.activeField;
+    cluActive() {
+      return this.$store.state.cluActive;
+    },
+    refreshFields(){
+      return this.$store.state.refresh
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.getFields(this.farm.id);
+      if(newField.new){
+        this.getFields(this.farm.id);
+      }
       this.fieldActive = newField;
+    },
+    cluActive(newClu, oldClu){
+      this.fieldActive = {
+        id: ""
+      }
+    },
+    refreshFields(newRefresh, oldRefresh){
+      this.getFields(this.farm.id)
     }
   },
   methods: {
     toggle(id) {
       this.farmOpen = !this.farmOpen;
       this.$store.dispatch("setAllToNeighbor");
-      this.fieldActive = "";
+      this.fieldActive = {
+        id: ""
+      }
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;
       this.getFields(id);
@@ -140,11 +155,9 @@ export default {
       } else {
         this.popupActive = id;
       }
-      console.log(this.popupActive);
     },
     activateField(field) {
       this.fieldActive = field;
-      console.log(this.fieldActive);
     }
   }
 };

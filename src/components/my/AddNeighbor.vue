@@ -126,10 +126,10 @@ export default {
       this.$axios
         .post(`farms/fields/`, field)
         .then((res) => {
-          this.$store.dispatch("setAllToNeighbor");
-          this.$store.dispatch("farmNoActive")
-          this.$store.dispatch("setAddNeighbor", false);
           this.$store.dispatch("activateClu", false)
+          this.$store.dispatch("refreshMyFields");
+          this.$store.dispatch("refreshFields");
+          this.$store.dispatch("setAddNeighbor", false);
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Neighbor field successfully added!",

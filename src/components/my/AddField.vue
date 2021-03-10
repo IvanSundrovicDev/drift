@@ -201,8 +201,10 @@ export default {
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
+          res.data.field.new = true
           this.$store.dispatch("activateClu", false)
-          this.$store.dispatch("setFields", res.data.field);
+          this.$store.dispatch("refreshMyFields");
+          this.$store.dispatch("refreshFields");
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully added!"
@@ -231,6 +233,9 @@ export default {
     updateFieldData(data) {
       this.fieldData = data;
     }
+  },
+  beforeMount(){
+    console.log("mounted");
   }
 };
 </script>

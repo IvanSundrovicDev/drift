@@ -119,15 +119,23 @@ export default {
     },
     addNeighbor() {
       return this.$store.state.addNeighbor
+    },
+    refreshFields(){
+      return this.$store.state.refresh
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      this.active = "farmSidebar";
+      if(newField.new){
+        this.active = "farmSidebar";
+      }
       //this.activeFarm = newField.farm;
     },
     addNeighbor(newState, oldState) {
       newState ? this.active = 'addNeighbor' : this.active = 'farmSidebar'
+    },
+    refreshFields(newRefresh, oldRefresh){
+      this.active = "farmSidebar";
     }
   },
   methods: {
@@ -149,8 +157,8 @@ export default {
       }
     },
     activateAddField() {
-      this.active = "addField";
       this.$store.dispatch("activateClu", true)
+      this.active = "addField";
     },
     activateAddFarm() {
       this.active = "addFarm";

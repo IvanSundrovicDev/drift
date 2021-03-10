@@ -40,7 +40,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedCrop.id === item.id
+            'salmon-border-selected': data.selectedCrop.id === item.id,
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -99,7 +99,7 @@
       >
         <div
           :class="{
-            'salmon-border-selected': data.selectedTrait.id === item.id
+            'salmon-border-selected': data.selectedTrait.id === item.id,
           }"
           class="salmon-border mx-8 border-b-2 border-gray-200 text-center p-5"
         >
@@ -124,12 +124,12 @@ export default {
       data: {
         selectedCrop: {
           id: "",
-          name: ""
+          name: "",
         },
         selectedTrait: {
           id: "",
-          name: ""
-        }
+          name: "",
+        },
       },
       date: "",
       crops: "",
@@ -142,47 +142,47 @@ export default {
       weather: {
         temperature: "",
         precip: "",
-        wind_speed: ""
-      }
+        wind_speed: "",
+      },
     };
   },
   computed: {
     watchUpdateProps() {
       return this.fieldData;
-    }
+    },
   },
   watch: {
     watchUpdateProps(newProps, oldProps) {
       this.updateProps();
-    }
+    },
   },
   methods: {
     updateProps() {
       this.data = {
         selectedCrop: {
           id: this.fieldData.crop ? this.fieldData.crop : "",
-          name: this.fieldData.crop_name ? this.fieldData.crop_name : ""
+          name: this.fieldData.crop_name ? this.fieldData.crop_name : "",
         },
         selectedTrait: {
           id: this.fieldData.crop_trait ? this.fieldData.crop_trait : "",
           name: this.fieldData.crop_trait_name
             ? this.fieldData.crop_trait_name
-            : ""
-        }
+            : "",
+        },
       };
       this.getFieldWeather();
     },
     async getFieldWeather() {
       let coords = {
         lat: this.fieldData.lat,
-        lng: this.fieldData.lng
+        lng: this.fieldData.lng,
       };
       await this.$axios
         .post(`weather/me/`, coords)
-        .then(res => {
+        .then((res) => {
           this.weather = res.data.current;
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -204,15 +204,6 @@ export default {
             this.data.selectedCrop = "";
           }
           break;
-        // case "herbicides":
-        //   if (this.selectedHerbicides.find(element => element === id)) {
-        //     this.selectedHerbicides = this.selectedHerbicides.filter(
-        //       item => item !== id
-        //     );
-        //   } else {
-        //     this.selectedHerbicides.push(id);
-        //   }
-        //   break;
         case "trait":
           if (
             !this.data.selectedTrait ||
@@ -230,28 +221,31 @@ export default {
     updateField() {
       let field = {
         crop_trait: this.data.selectedTrait.id,
-        crop: this.data.selectedCrop.id
+        crop: this.data.selectedCrop.id,
       };
       this.$axios
         .patch(
           `/farms/${this.fieldData.farm}/fields/${this.fieldData.id}/`,
           field
         )
-        .then(res => {
-          this.$store.dispatch("setAddedField", this.fieldData);
+        .then((res) => {
+          this.fieldData.crop_trait = this.data.selectedTrait.id;
+          this.fieldData.crop_trait_name = this.data.selectedTrait.name;
+          this.fieldData.crop = this.data.selectedCrop.id;
+          this.fieldData.crop_name = this.data.selectedCrop.name;
           this.$store.dispatch("addNotification", {
             type: "success",
-            message: "Field successfully updated!"
+            message: "Field successfully updated!",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error updating field!"
+            message: "There was an error updating field!",
           });
         });
-    }
+    },
   },
   beforeMount() {
     this.getFieldWeather();
@@ -259,35 +253,23 @@ export default {
     this.date = new Date();
     this.$axios
       .get(`farms/crops/me/`)
-      .then(res => {
+      .then((res) => {
         this.crops = res.data.my_crop.crops;
       })
-      .catch(err => {});
-    // this.$axios
-    //   .get(`herbicides/me/`)
-    //   .then(res => {
-    //     this.herbicides = res.data.my_herbicide.herbicides;
-    //   })
-    //   .catch(err => {
-    //   });
-    // this.$axios
-    //   .get(`herbicides/tank-mixes/`)
-    //   .then(res => {
-    //     this.mixes = res.data.tank_mix;
-    //   })
-    //   .catch(err => {
-    //   });
+      .catch((err) => {});
     this.$axios
       .get(`farms/crop-traits/me/`)
-      .then(res => {
+      .then((res) => {
         let traits = [];
         for (const i in res.data.my_crop_trait.crop_traits) {
-          res.data.my_crop_trait.crop_traits[i].forEach((el) => traits.push(el));
+          res.data.my_crop_trait.crop_traits[i].forEach((el) =>
+            traits.push(el)
+          );
         }
         this.traits = traits;
       })
-      .catch(err => {});
-  }
+      .catch((err) => {});
+  },
 };
 </script>
 
