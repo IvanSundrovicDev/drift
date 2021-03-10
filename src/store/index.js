@@ -52,6 +52,7 @@ export default new Vuex.Store({
 
       if (Object.keys(value.neighbour_coords).length > 0) {
         for (const i in value.neighbour_coords) {
+          value.neighbour_coords[i].id = i
           value.neighbour_coords[i].coords = value.neighbour_coords[i].mpoly;
           value.neighbour_coords[i].status = "neighbor";
           neighbors.push(value.neighbour_coords[i]);
@@ -60,6 +61,7 @@ export default new Vuex.Store({
 
       if (Object.keys(state.activeField.dispute_coords).length > 0) {
         for (const i in state.activeField.dispute_coords) {
+          state.activeField.dispute_coords[i].id = i
           state.activeField.dispute_coords[i].coords =
             state.activeField.dispute_coords[i].mpoly;
           state.activeField.dispute_coords[i].status = "dispute";
@@ -115,7 +117,6 @@ export default new Vuex.Store({
       state.myRefresh = !state.myRefresh;
     },
     updateField(state, value) {
-      //let i = state.fields.findIndex(x => x.uuid = value.uuid);
       console.log(state.fields);
       console.log(value.crop);
     },

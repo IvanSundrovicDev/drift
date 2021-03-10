@@ -20,12 +20,12 @@ delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 export default {
   name: "Map",
-  data: function() {
+  data: function () {
     return {
       map: null,
       center: [39.8859636, -95.6042309],
@@ -37,7 +37,7 @@ export default {
       activePolygon: false,
       activeCoords: false,
       drawOptions: {},
-      editing: false
+      editing: false,
     };
   },
   computed: {
@@ -58,11 +58,14 @@ export default {
     },
     refreshMyFields() {
       return this.$store.state.myRefresh;
-    }
+    },
+    activeClu() {
+      return this.$store.state.cluActive;
+    },
   },
   watch: {
     locationChange(newLocation, oldLocation) {
-      this.map.flyTo(newLocation.location, 14);
+      this.map.flyToBounds(newLocation.location);
     },
     initDrawPolygon(newState, oldState) {
       if (newState) {
@@ -88,27 +91,31 @@ export default {
       this.editing = false;
       this.fieldRender(newFields);
     },
-    drawAllFields() {}
+    activeClu(newState, oldState) {
+      if (newState) {
+        this.getAllFields(this.map.getCenter());
+      }
+    },
   },
   methods: {
-    setupLeafletMap: function() {
+    setupLeafletMap: function () {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true
+        editable: true,
       }).setView(this.center, this.zoom);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright"
+          position: "bottomright",
         })
         .addTo(this.map);
 
       // Set options and params
       L.tileLayer("http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}", {
         maxZoom: 20,
-        subdomains: ["mt0", "mt1", "mt2", "mt3"]
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -123,24 +130,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10
-            }
+              weight: 10,
+            },
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false
+          marker: false,
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true
-        }
+          remove: true,
+        },
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -155,24 +162,23 @@ export default {
 
       let map = this.map;
 
-      this.map.on("zoomend", function() {
+      this.map.on("zoomend", function () {
         scopeThis.fieldRender(store.state.fields);
       });
 
-      this.map.on("moveend", function() {
+      this.map.on("moveend", function () {
         if (
           !scopeThis.fieldPolygon[0] &&
           !scopeThis.drawing &&
           !scopeThis.activePolygon &&
           !scopeThis.fieldsShown
         ) {
-          let coords = map.getCenter();
-          scopeThis.getAllFields(coords);
+          scopeThis.getAllFields(map.getCenter());
         }
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function(e) {
+      this.map.on("draw:created", function (e) {
         let layer = e.layer;
 
         let newCoords = [];
@@ -182,7 +188,7 @@ export default {
         layer.options.fillOpacity = 0.3;
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function(value, key) {
+        layer.editing.latlngs[0][0].map(function (value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -196,13 +202,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function(e) {
+      this.map.on("draw:edited", function (e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function(layer) {
-          layer.editing.latlngs[0][0].map(function(value, key) {
+        layers.eachLayer(function (layer) {
+          layer.editing.latlngs[0][0].map(function (value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -212,7 +218,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function(e) {
+      this.map.on("draw:canceled", function (e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -252,16 +258,16 @@ export default {
       if (this.$store.state.cluActive) {
         this.$axios
           .post(`farms/fields/location-search/`, coords)
-          .then(res => {
+          .then((res) => {
             this.activeCoords = coords;
             this.$store.dispatch("setNeighbor", res.data);
           })
-          .catch(err => {
+          .catch((err) => {
             this.activeCoords = false;
             this.$store.dispatch("setFields", {
               mpoly: [],
               neighbour_coords: [],
-              dispute_coords: []
+              dispute_coords: [],
             });
           });
       }
@@ -269,16 +275,16 @@ export default {
     getMyFields() {
       this.$axios
         .get(`farms/fields/mpoly/me/`)
-        .then(res => {
+        .then((res) => {
           //this.map.flyTo(res.data[0].mpoly[0], 12);
           var group = new L.featureGroup();
-          res.data.forEach(el => {
+          res.data.forEach((el) => {
             var marker = L.marker(el.mpoly[0]).addTo(group);
           });
-          this.map.fitBounds(group.getBounds());
+          this.map.flyToBounds(group.getBounds());
           this.$store.dispatch("setMyFields", res.data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -290,19 +296,28 @@ export default {
         this.removePolygon();
         let newMarker = L.icon({
           iconUrl: newIcon,
-          iconSize: [40, 40]
+          iconSize: [40, 40],
         });
         let map = this.map;
         let store = this.$store;
         if (map.getZoom() <= 11) {
-          store.state.myFields.forEach(el => {
-            var marker = L.marker(el.coords[0], {
+          store.state.myFields.forEach((el) => {
+            let center = el.coords.reduce(
+              function (x, y) {
+                return [
+                  x[0] + y[0] / el.coords.length,
+                  x[1] + y[1] / el.coords.length,
+                ];
+              },
+              [0, 0]
+            );
+            var marker = L.marker(center, {
               icon: newMarker,
-              name: "marker"
+              name: "marker",
             }).addTo(map);
           });
         } else {
-          newFields.forEach(field => {
+          newFields.forEach((field) => {
             if (field.status === "active") {
               let scopeThis = this;
               var selectedFeature = this.editing;
@@ -310,13 +325,12 @@ export default {
                 .setStyle({
                   color: "#FFF",
                   fillColor: "#FFF",
-                  fillOpacity: 0.3
+                  fillOpacity: 0.3,
                 })
-                .on("click", function(e) {
+                .on("click", function (e) {
                   if (scopeThis.editing) {
                     e.target.editing.disable();
                     scopeThis.editing = false;
-                    console.log(e.target);
                     console.log(e.target.editing.latlngs[0][0]);
                   } else {
                     e.target.editing.enable();
@@ -329,7 +343,7 @@ export default {
                 .setStyle({
                   color: "#FFF",
                   fillColor: "#FFF",
-                  fillOpacity: 0.3
+                  fillOpacity: 0.3,
                 })
                 .addTo(map);
             } else if (field.status === "dispute") {
@@ -338,7 +352,7 @@ export default {
                   .setStyle({
                     color: "#EC2828",
                     fillColor: "#EC2828",
-                    fillOpacity: 0.3
+                    fillOpacity: 0.3,
                   })
                   .addTo(map);
               } else {
@@ -347,10 +361,10 @@ export default {
                   .setStyle({
                     color: "#EC2828",
                     fillOpacity: 0,
-                    id: field.uuid
+                    id: field.uuid,
                   })
                   .addTo(this.map);
-                polygon.on("click", function() {
+                polygon.on("click", function () {
                   let img = "@/assets/images/icons/envelope.png";
                   menu(field);
                 });
@@ -362,7 +376,7 @@ export default {
                     color: "#FFFFFF",
                     fillColor: "#28AAE1",
                     fillOpacity: 0.3,
-                    id: field.uuid
+                    id: field.uuid,
                   })
                   .addTo(map);
               } else {
@@ -370,7 +384,7 @@ export default {
                   .bindPopup(`<div style="width:230px" id="popup"></div>`)
                   .setStyle({ color: "#FFF", fillOpacity: 0, id: field.uuid })
                   .addTo(map);
-                polygon.on("click", function() {
+                polygon.on("click", function () {
                   let img = "@/assets/images/icons/envelope.png";
                   menu(field);
                 });
@@ -379,7 +393,7 @@ export default {
             let menu = () => {
               new Vue({
                 el: "#popup",
-                data: function() {
+                data: function () {
                   return {
                     neighborEmail: "",
                     fieldName: "",
@@ -396,14 +410,15 @@ export default {
                     data: {
                       selectedCrop: {
                         id: "",
-                        name: ""
+                        name: "",
                       },
                       selectedTrait: {
                         id: "",
-                        name: ""
-                      }
+                        name: "",
+                      },
                     },
-                    activeMenu: false
+                    cluActive: store.state.cluActive,
+                    activeMenu: false,
                   };
                 },
                 methods: {
@@ -431,21 +446,21 @@ export default {
                       this.$axios
                         .patch(`farms/fields/${field.uuid}/claim/`, {
                           name: this.fieldName,
-                          farm: this.data.selectedFarm.id
+                          farm: this.data.selectedFarm.id,
                         })
-                        .then(res => {
+                        .then((res) => {
                           store.dispatch("refreshMyFields");
                           store.dispatch("refreshFields");
                           store.dispatch("activateClu", false);
                           store.dispatch("addNotification", {
                             type: "success",
-                            message: "You have successfully added your field!"
+                            message: "You have successfully added your field!",
                           });
                         })
-                        .catch(err => {
+                        .catch((err) => {
                           store.dispatch("addNotification", {
                             type: "error",
-                            message: "There was an error claiming your field!"
+                            message: "There was an error claiming your field!",
                           });
                         });
                     }
@@ -454,9 +469,9 @@ export default {
                     this.$axios
                       .patch(`farms/fields/${field.uuid}/claim/`, {
                         crop_trait: this.data.selectedTrait.id,
-                        crop: this.data.selectedCrop.id
+                        crop: this.data.selectedCrop.id,
                       })
-                      .then(res => {
+                      .then((res) => {
                         map.closePopup();
                         field.crop_trait = this.data.selectedTrait.id;
                         field.crop_trait_name = this.data.selectedTrait.name;
@@ -468,16 +483,19 @@ export default {
                         }
                         store.dispatch("addNotification", {
                           type: "success",
-                          message: "Crop and trait successfully assigned!"
+                          message: "Crop and trait successfully assigned!",
                         });
                       })
-                      .catch(err => {
+                      .catch((err) => {
                         store.dispatch("addNotification", {
                           type: "error",
                           message:
-                            "There was an error assigning crop and trait!"
+                            "There was an error assigning crop and trait!",
                         });
                       });
+                  },
+                  addToMergedFields() {
+                    console.log(field);
                   },
                   activate(id) {
                     if (!this.activeMenu) {
@@ -520,46 +538,46 @@ export default {
                         }
                         break;
                     }
-                  }
+                  },
                 },
                 beforeMount() {
                   this.data = {
                     selectedCrop: {
                       id: field.crop,
-                      name: field.crop_name
+                      name: field.crop_name,
                     },
                     selectedTrait: {
                       id: field.crop_trait,
-                      name: field.crop_trait_name
+                      name: field.crop_trait_name,
                     },
                     selectedFarm: {
                       id: "",
-                      name: ""
-                    }
+                      name: "",
+                    },
                   };
                   this.$axios
                     .get(`farms/crops/`)
-                    .then(res => {
+                    .then((res) => {
                       this.crops = res.data;
                     })
-                    .catch(err => {});
+                    .catch((err) => {});
 
                   this.$axios
                     .get(`farms/crop-traits/`)
-                    .then(res => {
+                    .then((res) => {
                       let traits = [];
                       for (const i in res.data) {
-                        res.data[i].forEach(el => traits.push(el));
+                        res.data[i].forEach((el) => traits.push(el));
                       }
                       this.traits = traits;
                     })
-                    .catch(err => {});
+                    .catch((err) => {});
                   this.$axios
                     .get(`farms/me/`)
-                    .then(res => {
+                    .then((res) => {
                       this.farms = res.data;
                     })
-                    .catch(err => {});
+                    .catch((err) => {});
                 },
                 template: `
                   <div>
@@ -592,6 +610,13 @@ export default {
                             :src="inviteImg"
                           />
                           <h1 v-on:click="active = 'invite'" class="text-xl ml-2 custom-underline cursor-pointer">Invite neighbor</h1>
+                        </div>
+                        <div v-if="cluActive" class="py-2 flex">
+                          <img
+                            class="inline h-7"
+                            :src="inviteImg"
+                          />
+                          <h1 v-on:click="addToMergedFields" class="text-xl ml-2 custom-underline cursor-pointer">Merge</h1>
                         </div>
                         <div class="py-2 flex">
                           <img
@@ -786,20 +811,20 @@ export default {
                       </div>
                     </div>
                   </div>
-                  </div>`
+                  </div>`,
               });
             };
           });
         }
       }
-    }
+    },
   },
   mounted() {
     this.setupLeafletMap();
   },
   beforeMount() {
     this.getMyFields();
-  }
+  },
 };
 </script>
 
