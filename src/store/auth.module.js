@@ -31,6 +31,7 @@ export const auth = {
       AuthService.logout();
       delete axios.defaults.headers.common["Authorization"];
       commit("logout");
+      document.cookie = "jwt=";
       return Promise.resolve("/");
     },
     async register({ commit, dispatch }, user) {
