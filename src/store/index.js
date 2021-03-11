@@ -75,7 +75,6 @@ export default new Vuex.Store({
       }
       fields = fields.concat(dispute, neighbors);
       state.fields = fields;
-      console.log("finished");
     },
     setNeighbor(state, value) {
       if (state.cluActive) {

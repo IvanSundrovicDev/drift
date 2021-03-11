@@ -34,7 +34,7 @@ export default {
       fieldPolygon: [],
       drawing: false,
       activeCoords: false,
-      drawOptions: {}
+      drawOptions: {},
     };
   },
   computed: {
@@ -58,7 +58,7 @@ export default {
     },
     activeClu() {
       return this.$store.state.cluActive;
-    }
+    },
   },
   watch: {
     locationChange(newLocation, oldLocation) {
@@ -160,9 +160,9 @@ export default {
       let map = this.map;
 
       this.map.on("zoomend", function () {
-         if(!scopeThis.drawing){
-           scopeThis.fieldRender(store.state.fields);
-         }
+        if (!scopeThis.drawing) {
+          scopeThis.fieldRender(store.state.fields);
+        }
       });
 
       this.map.on("moveend", function () {
@@ -321,12 +321,17 @@ export default {
             let scopeThis = this;
             var selectedFeature = this.editing;
             var polygon = L.polygon(field.coords)
+              .bindPopup(`<div style="width:230px" id="popup"></div>`)
               .setStyle({
                 color: "#FFF",
                 fillColor: "#FFF",
                 fillOpacity: 0.3,
               })
               .addTo(map);
+            polygon.on("click", function () {
+              let img = "@/assets/images/icons/envelope.png";
+              menu(field);
+            });
           } else if (field.status === "myField") {
             var polygon = L.polygon(field.coords)
               .setStyle({
@@ -395,6 +400,7 @@ export default {
                   farmImg: require("@/assets/images/icons/FarmsLogo.png"),
                   active: "main",
                   crops: [],
+                  field: {},
                   traits: [],
                   farms: [],
                   data: {
@@ -407,6 +413,7 @@ export default {
                       name: "",
                     },
                   },
+                  filteredTraits: [],
                   cluActive: store.state.cluActive,
                   activeMenu: false,
                 };
@@ -461,31 +468,64 @@ export default {
                   }
                 },
                 assignCropTrait() {
-                  this.$axios
-                    .patch(`farms/fields/${field.uuid}/claim/`, {
-                      crop_trait: this.data.selectedTrait.id,
-                      crop: this.data.selectedCrop.id,
-                    })
-                    .then((res) => {
-                      map.closePopup();
-                      field.crop_trait = this.data.selectedTrait.id;
-                      field.crop_trait_name = this.data.selectedTrait.name;
-                      field.crop = this.data.selectedCrop.id;
-                      field.crop_name = this.data.selectedCrop.name;
-                      if (!store.state.cluActive) {
-                        store.dispatch("refreshFields");
-                      }
-                      store.dispatch("addNotification", {
-                        type: "success",
-                        message: "Crop and trait successfully assigned!",
+                  if (this.field.status === "neighbor") {
+                    this.$axios
+                      .patch(`farms/fields/${field.uuid}/claim/`, {
+                        crop_trait: this.data.selectedTrait.id,
+                        crop: this.data.selectedCrop.id,
+                      })
+                      .then((res) => {
+                        map.closePopup();
+                        field.crop_trait = this.data.selectedTrait.id;
+                        field.crop_trait_name = this.data.selectedTrait.name;
+                        field.crop = this.data.selectedCrop.id;
+                        field.crop_name = this.data.selectedCrop.name;
+                        if (!store.state.cluActive) {
+                          store.dispatch("refreshFields");
+                        }
+                        store.dispatch("addNotification", {
+                          type: "success",
+                          message: "Crop and trait successfully assigned!",
+                        });
+                      })
+                      .catch((err) => {
+                        store.dispatch("addNotification", {
+                          type: "error",
+                          message:
+                            "There was an error assigning crop and trait!",
+                        });
                       });
-                    })
-                    .catch((err) => {
-                      store.dispatch("addNotification", {
-                        type: "error",
-                        message: "There was an error assigning crop and trait!",
+                  } else {
+                    this.$axios
+                      .patch(
+                        `/farms/${this.field.farm}/fields/${this.field.id}/`,
+                        {
+                          crop_trait: this.data.selectedTrait.id,
+                          crop: this.data.selectedCrop.id,
+                        }
+                      )
+                      .then((res) => {
+                        map.closePopup();
+                        field.crop_trait = this.data.selectedTrait.id;
+                        field.crop_trait_name = this.data.selectedTrait.name;
+                        field.crop = this.data.selectedCrop.id;
+                        field.crop_name = this.data.selectedCrop.name;
+                        if (!store.state.cluActive) {
+                          store.dispatch("refreshFields");
+                        }
+                        store.dispatch("addNotification", {
+                          type: "success",
+                          message: "Crop and trait successfully assigned!",
+                        });
+                      })
+                      .catch((err) => {
+                        store.dispatch("addNotification", {
+                          type: "error",
+                          message:
+                            "There was an error assigning crop and trait!",
+                        });
                       });
-                    });
+                  }
                 },
                 addToMergedFields() {
                   console.log(field.uuid);
@@ -506,10 +546,12 @@ export default {
                         this.data.selectedCrop = item;
                         this.activeMenu = "";
                         this.filteredTraits = this.traits.filter(
-                          x => x.crop === this.data.selectedCrop.id
+                          (x) => x.crop === this.data.selectedCrop.id
                         );
+                        this.data.selectedTrait = "";
                       } else {
                         this.data.selectedCrop = "";
+                        this.data.selectedTrait = "";
                       }
                       break;
                     case "trait":
@@ -552,6 +594,7 @@ export default {
                     name: "",
                   },
                 };
+                this.field = field;
                 this.$axios
                   .get(`farms/crops/`)
                   .then((res) => {
@@ -561,14 +604,17 @@ export default {
 
                 this.$axios
                   .get(`farms/crop-traits/`)
-                  .then(res => {
+                  .then((res) => {
                     let traits = [];
                     for (const i in res.data) {
-                      res.data[i].forEach(el => traits.push(el));
+                      res.data[i].forEach((el) => traits.push(el));
                     }
                     this.traits = traits;
+                    this.filteredTraits = this.traits.filter(
+                      (x) => x.crop === this.data.selectedCrop.id
+                    );
                   })
-                  .catch(err => {});
+                  .catch((err) => {});
                 this.$axios
                   .get(`farms/me/`)
                   .then((res) => {
@@ -601,21 +647,21 @@ export default {
                           />
                           <h1 v-on:click="active = 'assign'" class="text-xl ml-2 custom-underline cursor-pointer">Assign Crop and Trait</h1>
                         </div>
-                        <div class="py-2 flex">
+                        <div v-if="field.status !== 'active'" class="py-2 flex">
                           <img
                             class="inline h-7"
                             :src="inviteImg"
                           />
                           <h1 v-on:click="active = 'invite'" class="text-xl ml-2 custom-underline cursor-pointer">Invite neighbor</h1>
                         </div>
-                        <div v-if="cluActive" class="py-2 flex">
+                        <div v-if="cluActive && field.status !== 'active'"  class="py-2 flex">
                           <img
                             class="inline h-7"
                             :src="inviteImg"
                           />
                           <h1 v-on:click="addToMergedFields" class="text-xl ml-2 custom-underline cursor-pointer">Merge</h1>
                         </div>
-                        <div class="py-2 flex">
+                        <div v-if="field.status !== 'active'" class="py-2 flex">
                           <img
                             class="inline h-7"
                             :src="addImg"
@@ -679,7 +725,7 @@ export default {
                             </div>
                             <div class="w-full overflow-auto h-32" v-show="activeMenu === 'trait'">
                               <div
-                                v-for="item in traits"
+                                v-for="item in filteredTraits"
                                 v-on:click="select('trait', item)"
                                 :key="item.id"
                                 class="custom-item cursor-pointer hover:bg-gray-200"
