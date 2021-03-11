@@ -60,7 +60,7 @@
       <div
         v-if="fieldCoordinates"
         class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
-        v-on:click="saveField"
+        v-on:click="saveField()"
       >
         <h1 class="text-2xl m-auto text-drift-blue">Save</h1>
       </div>
@@ -77,7 +77,7 @@ import FieldDataAdd from "./FieldDataAdd";
 export default {
   name: "AddField",
   components: {
-    FieldDataAdd,
+    FieldDataAdd
   },
   data() {
     return {
@@ -85,72 +85,73 @@ export default {
       fieldName: "",
       fieldData: {
         selectedCrop: {
-          id: null,
+          id: null
         },
         selectedHerbicide: {
-          id: null,
+          id: null
         },
         selectedMix: {
-          id: null,
+          id: null
         },
         selectedTrait: {
-          id: null,
-        },
-      },
+          id: null
+        }
+      }
     };
   },
   computed: {
     coordinatesChange() {
       return this.$store.state.polygonCoordinates;
-    },
+    }
   },
   watch: {
     coordinatesChange(newCoordinates, oldCordinates) {
       this.fieldCoordinates = newCoordinates;
-    },
+    }
   },
   methods: {
     initPolygonDraw() {
       this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
-    saveField() {
-      this.fieldCoordinates.push(this.fieldCoordinates[0]);
+    async saveField() {
+      this.fieldCoordinates.push(this.fieldCoordinates[0]); //this is done because the last point should be the same as the first point, so we add a duplicate to the end of the array
       let field = {
         herbicide: null,
         tank_mix: null,
         crop: this.fieldData.selectedCrop.id || null,
         crop_trait: this.fieldData.selectedTrait.id || null,
         name: this.fieldName,
-        mpoly: this.fieldCoordinates,
+        mpoly: this.fieldCoordinates
       };
-      this.$axios
+      await this.$axios
         .post(`farms/fields/`, field)
-        .then((res) => {
-
-          this.$store.dispatch("activateClu", false)
+        .then(res => {
+          this.$store.dispatch("activateClu", false);
           this.$store.dispatch("refreshMyFields");
           this.$store.dispatch("refreshFields");
           this.$store.dispatch("setAddNeighbor", false);
           this.$store.dispatch("setRemovedPolygon", false);
-          this.$store.dispatch("setFields", this.$store.state.activeField)
-          this.$store.dispatch("addNotification", {
-            type: "success",
-            message: "Neighbor field successfully added!",
-          });
+          this.$store.dispatch("setFields", this.$store.state.activeField);
+          setTimeout(() => {
+            this.$store.dispatch("addNotification", {
+              type: "success",
+              message: "Neighbor field successfully added here!"
+            });
+          }, 0);
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.dispatch("addNotification", {
             type: "error",
-            message: "There was an error adding neighbor filed!",
+            message: "There was an error adding neighbor filed!"
           });
         });
     },
     close() {
-      this.$store.dispatch("activateClu", false)
+      this.$store.dispatch("activateClu", false);
       this.$emit("toggle-farm-sidebar");
       this.$store.dispatch("setAddNeighbor", false);
       this.$store.dispatch("setRemovedPolygon", false);
-      this.$store.dispatch("setFields", this.$store.state.activeField)
+      this.$store.dispatch("setFields", this.$store.state.activeField);
     },
     removeField() {
       this.fieldCoordinates = null;
@@ -158,8 +159,8 @@ export default {
     },
     updateFieldData(data) {
       this.fieldData = data;
-    },
-  },
+    }
+  }
 };
 </script>
 
