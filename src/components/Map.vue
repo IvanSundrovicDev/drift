@@ -33,8 +33,6 @@ export default {
       active: false,
       fieldPolygon: [],
       drawing: false,
-      fieldsShown: false,
-      activePolygon: false,
       activeCoords: false,
       drawOptions: {},
     };
@@ -162,15 +160,15 @@ export default {
       let map = this.map;
 
       this.map.on("zoomend", function () {
-        scopeThis.fieldRender(store.state.fields);
+         if(!scopeThis.drawing){
+           scopeThis.fieldRender(store.state.fields);
+         }
       });
 
       this.map.on("moveend", function () {
         if (
           !scopeThis.fieldPolygon[0] &&
-          !scopeThis.drawing &&
-          !scopeThis.activePolygon &&
-          !scopeThis.fieldsShown
+          !scopeThis.drawing
         ) {
           scopeThis.getAllFields(map.getCenter());
         }
@@ -223,7 +221,6 @@ export default {
     },
     removePolygon() {
       this.fieldPolygon = [];
-      this.activePolygon = false;
       for (let i in this.map._layers) {
         if (
           this.map._layers[i]._path !== undefined ||
@@ -254,7 +251,7 @@ export default {
       }
     },
     getAllFields(coords) {
-      if (this.$store.state.cluActive) {
+      if (this.$store.state.cluActive && !this.drawing) {
         this.$axios
           .post(`farms/fields/location-search/`, coords)
           .then((res) => {
@@ -443,6 +440,7 @@ export default {
                         field.claimed = true;
                         field.neighbour_coords = [];
                         field.dispute_coords = [];
+                        console.log(res.data);
                         store.dispatch("refreshMyFields");
                         store.dispatch("refreshFields");
                         store.dispatch("activateClu", false);
@@ -496,6 +494,19 @@ export default {
                     this.activeMenu = id;
                   } else this.activeMenu = "";
                 },
+                getTraitsById(id){
+                  this.$axios
+                  .get(`farms/crop-traits/?crop_id=${id}`)
+                  .then((res) => {
+
+                    let traits = [];
+                    for (const i in res.data) {
+                      res.data[i].forEach((el) => traits.push(el));
+                    }
+                    this.traits = traits;
+                  })
+                  .catch((err) => {});
+                },
                 select(name, item) {
                   switch (name) {
                     case "crop":
@@ -503,10 +514,15 @@ export default {
                         !this.data.selectedCrop ||
                         this.data.selectedCrop.id !== item.id
                       ) {
+                        this.getTraitsById(item.id)
                         this.data.selectedCrop = item;
                         this.activeMenu = "";
+                        this.traits = []
+                        this.data.selectedTrait = ""
                       } else {
                         this.data.selectedCrop = "";
+                        this.traits = []
+                        this.data.selectedTrait = ""
                       }
                       break;
                     case "trait":
@@ -556,16 +572,6 @@ export default {
                   })
                   .catch((err) => {});
 
-                this.$axios
-                  .get(`farms/crop-traits/`)
-                  .then((res) => {
-                    let traits = [];
-                    for (const i in res.data) {
-                      res.data[i].forEach((el) => traits.push(el));
-                    }
-                    this.traits = traits;
-                  })
-                  .catch((err) => {});
                 this.$axios
                   .get(`farms/me/`)
                   .then((res) => {

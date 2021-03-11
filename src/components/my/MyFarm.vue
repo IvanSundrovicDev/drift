@@ -123,8 +123,10 @@ export default {
   },
   methods: {
     toggle(id) {
+      if(this.farmOpen){
+        this.$store.dispatch("setAllToNeighbor");
+      }
       this.farmOpen = !this.farmOpen;
-      this.$store.dispatch("setAllToNeighbor");
       this.fieldActive = {
         id: ""
       }
