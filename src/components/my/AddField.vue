@@ -98,7 +98,7 @@
       <div
         v-if="fieldName && fieldCoordinates"
         class="save-btn flex border-t-2 border-gray-200 py-3 px-8 hover:bg-drift-blue cursor-pointer"
-        v-on:click="saveField"
+        v-on:click="saveField()"
       >
         <h1 class="text-2xl m-auto text-drift-blue">Save</h1>
       </div>
@@ -177,12 +177,16 @@ export default {
           `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?magicKey=${item.magicKey}&f=json`
         )
         .then(res => {
-          let activeLocation = [[
-            res.data.candidates[0].extent.ymax,
-            res.data.candidates[0].extent.xmin],
-            [res.data.candidates[0].extent.ymin,
-            res.data.candidates[0].extent.xmax
-          ]];
+          let activeLocation = [
+            [
+              res.data.candidates[0].extent.ymax,
+              res.data.candidates[0].extent.xmin
+            ],
+            [
+              res.data.candidates[0].extent.ymin,
+              res.data.candidates[0].extent.xmax
+            ]
+          ];
           this.activeLocationCoordinates = activeLocation;
           this.$store.dispatch("setActiveLocation", activeLocation);
         });
@@ -191,6 +195,7 @@ export default {
       this.$store.dispatch("setPolygonDraw", !this.$store.state.polygonDraw);
     },
     saveField() {
+      console.log("goram from savefield");
       this.fieldCoordinates.push(this.fieldCoordinates[0]);
       let field = {
         herbicide: null,
@@ -203,13 +208,13 @@ export default {
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
-          res.data.field.new = true
+          res.data.field.new = true;
 
-          this.$store.dispatch("activateClu", false)
+          this.$store.dispatch("activateClu", false);
           this.$store.dispatch("refreshMyFields");
           this.$store.dispatch("refreshFields");
           this.$store.dispatch("setRemovedPolygon", false);
-          this.$store.dispatch("setFields", res.data.field)
+          this.$store.dispatch("setFields", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully added!"
@@ -224,10 +229,10 @@ export default {
     },
     close() {
       this.$emit("toggle-farm-sidebar");
-      this.$store.dispatch("activateClu", false)
+      this.$store.dispatch("activateClu", false);
       this.$store.dispatch("setRemovedPolygon", false);
       this.$store.dispatch("setPolygonDraw", false);
-      this.$store.dispatch("setFields", this.$store.state.activeField)
+      this.$store.dispatch("setFields", this.$store.state.activeField);
     },
     removeLocation() {
       this.activeLocationName = null;
@@ -239,6 +244,9 @@ export default {
     updateFieldData(data) {
       this.fieldData = data;
     }
+  },
+  beforeMount() {
+    console.log("mounted");
   }
 };
 </script>

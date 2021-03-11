@@ -6,10 +6,11 @@
     <div v-show="active === 'farmSidebar'" class=" h-full bg-white w-64">
       <div class="h-full pb-24">
         <div class="max-h-full overflow-y-auto">
-          <div v-for="item in farms" :key="item.id" class="max-h-full">
+          <div v-for="(item, index) in farms" :key="item.id" class="max-h-full">
             <MyFarm
               v-show="!activeFarm || activeFarm === item.id"
               v-on:toggle-farm="activateFarm($event)"
+              :is-first="index === 0"
               :farm="item"
             ></MyFarm>
           </div>
@@ -49,9 +50,7 @@
       />
     </div>
     <div v-if="active === 'addNeighbor'">
-      <AddNeighbor
-        v-on:toggle-farm-sidebar="active = 'farmSidebar'"
-      />
+      <AddNeighbor v-on:toggle-farm-sidebar="active = 'farmSidebar'" />
     </div>
     <div
       class="whitescreen-active"
@@ -118,22 +117,22 @@ export default {
       return this.$store.state.activeField;
     },
     addNeighbor() {
-      return this.$store.state.addNeighbor
+      return this.$store.state.addNeighbor;
     },
-    refreshFields(){
-      return this.$store.state.refresh
+    refreshFields() {
+      return this.$store.state.refresh;
     }
   },
   watch: {
     newActiveField(newField, oldField) {
-      if(newField.claimed){
+      if (newField.claimed) {
         this.activeFarm = newField.farm;
       }
     },
     addNeighbor(newState, oldState) {
-      newState ? this.active = 'addNeighbor' : this.active = 'farmSidebar'
+      newState ? (this.active = "addNeighbor") : (this.active = "farmSidebar");
     },
-    refreshFields(newRefresh, oldRefresh){
+    refreshFields(newRefresh, oldRefresh) {
       this.active = "farmSidebar";
     }
   },
@@ -156,7 +155,7 @@ export default {
       }
     },
     activateAddField() {
-      this.$store.dispatch("activateClu", true)
+      this.$store.dispatch("activateClu", true);
       this.active = "addField";
     },
     activateAddFarm() {
