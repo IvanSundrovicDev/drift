@@ -87,7 +87,7 @@ export default {
     AddField,
     Tutorial
   },
-  props: ["farm"],
+  props: ["farm", "isFirst"],
   data() {
     return {
       farmOpen: false,
@@ -103,23 +103,26 @@ export default {
     newActiveField() {
       return this.$store.state.activeField;
     },
-    refreshFields(){
-      return this.$store.state.refresh
+    refreshFields() {
+      return this.$store.state.refresh;
     }
   },
   watch: {
     newActiveField(newField, oldField) {
       this.fieldActive = newField;
-      if(newField.farm === this.farm.id){
-        this.farmOpen = true
-      }
-      else{
-        this.farmOpen = false
+      if (newField.farm === this.farm.id) {
+        this.farmOpen = true;
+      } else {
+        this.farmOpen = false;
       }
     },
-    refreshFields(newRefresh, oldRefresh){
-      this.getFields(this.farm.id)
+    refreshFields(newRefresh, oldRefresh) {
+      this.getFields(this.farm.id);
     }
+  },
+  mounted() {
+    // if this is the first farm on the list, open it
+    if (this.isFirst) this.toggle(this.farm.id);
   },
   methods: {
     toggle(id) {
@@ -127,7 +130,7 @@ export default {
       this.$store.dispatch("setAllToNeighbor");
       this.fieldActive = {
         id: ""
-      }
+      };
       this.$emit("toggle-farm", id);
       this.fieldsLoading = false;
       this.getFields(id);

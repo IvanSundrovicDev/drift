@@ -88,7 +88,9 @@
       </div>
     </div>
     <div
-      :class="{ 'salmon-border-selected': $store.state.activeField.id === field.id }"
+      :class="{
+        'salmon-border-selected': $store.state.activeField.id === field.id
+      }"
       class="w-full field-item pb-2 text-center mx-8 border-b-2 border-gray-200 cursor-pointer"
       v-on:click="activateField(field)"
     >
@@ -124,8 +126,8 @@ export default {
   },
   methods: {
     activateField(field) {
-      field.new = false
-      this.$store.dispatch("setFields", field);                                                                         
+      field.new = false;
+      this.$store.dispatch("setFields", field);
       this.$store.dispatch("setActiveLocation", field.coords);
     },
     activatePopup() {
@@ -134,12 +136,25 @@ export default {
     },
     addNeighbor() {
       this.$emit("activatePopup", this.field.id);
-      this.$store.dispatch("activateClu", true)
+      this.$store.dispatch("activateClu", true);
       this.$store.dispatch("setAddNeighbor", true);
     },
     deleteField() {
+      // create an object with empty data
+      // then patch the farm/field/:fieldId with that data
+      let fieldData = {
+        name: "Unknown field",
+        farm: null,
+        crop: null,
+        crop_name: null,
+        crop_trait: null,
+        crop_trait_logo: null,
+        crop_trait_name: null,
+        is_confirmed: false,
+        owner: {}
+      };
       this.$axios
-        .delete(`/farms/${this.field.farm}/fields/${this.field.id}/`)
+        .patch(`/farms/fields/${this.field.id}/`, fieldData)
         .then(res => {
           this.$store.dispatch("setAllToNeighbor");
           this.$store.dispatch("deleteField", this.field.uuid);

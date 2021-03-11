@@ -45,7 +45,7 @@ export default new Vuex.Store({
       state.activeField = {
         dispute_coords: {},
         id: ""
-      }
+      };
 
       if (value.mpoly[0]) {
         value.status = "active";
@@ -57,7 +57,7 @@ export default new Vuex.Store({
 
       if (Object.keys(value.neighbour_coords).length > 0) {
         for (const i in value.neighbour_coords) {
-          value.neighbour_coords[i].id = i
+          value.neighbour_coords[i].id = i;
           value.neighbour_coords[i].coords = value.neighbour_coords[i].mpoly;
           value.neighbour_coords[i].status = "neighbor";
           neighbors.push(value.neighbour_coords[i]);
@@ -66,7 +66,7 @@ export default new Vuex.Store({
 
       if (Object.keys(state.activeField.dispute_coords).length > 0) {
         for (const i in state.activeField.dispute_coords) {
-          state.activeField.dispute_coords[i].id = i
+          state.activeField.dispute_coords[i].id = i;
           state.activeField.dispute_coords[i].coords =
             state.activeField.dispute_coords[i].mpoly;
           state.activeField.dispute_coords[i].status = "dispute";
@@ -81,7 +81,7 @@ export default new Vuex.Store({
       if (state.cluActive) {
         let fields = [];
         for (const i in value) {
-          value[i].id = i
+          value[i].id = i;
           value[i].coords = value[i].mpoly;
           value[i].status = "neighbor";
           fields.push(value[i]);
@@ -111,7 +111,7 @@ export default new Vuex.Store({
         el.coords = el.mpoly;
       });
       state.myFields = value;
-      if(!state.activeField.id){
+      if (!state.activeField.id) {
         state.fields = value;
       }
     },
@@ -121,7 +121,7 @@ export default new Vuex.Store({
     refreshMyFields(state) {
       state.myRefresh = !state.myRefresh;
     },
-    addToMerge(state, value){
+    addToMerge(state, value) {
       if (state.fieldsMerge.find(el => el === value)) {
         state.fieldsMerge = state.fieldsMerge.filter(item => item !== value);
       } else {
@@ -193,7 +193,7 @@ export default new Vuex.Store({
       context.commit("refreshFields");
     },
     addToMerge(context, value) {
-      context.commit("addToMerge", value)
+      context.commit("addToMerge", value);
     },
     refreshMyFields(context) {
       context.commit("refreshMyFields");
