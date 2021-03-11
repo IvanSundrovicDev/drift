@@ -202,7 +202,7 @@ export default {
 </script>
 <style scoped>
 .dots {
-  margin-left: 13.5rem;
+  margin-left: 12.5rem;
 }
 .menu-arrow {
   width: 0;
