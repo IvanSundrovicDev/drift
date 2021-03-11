@@ -239,9 +239,6 @@ export default {
     updateFieldData(data) {
       this.fieldData = data;
     }
-  },
-  beforeMount(){
-    console.log("mounted");
   }
 };
 </script>
