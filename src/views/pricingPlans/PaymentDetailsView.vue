@@ -1,7 +1,9 @@
 <template>
   <div class="bg-drift-blue ">
     <div :class="{ 'flex h-screen': registration }">
-      <div class="m-auto py-12 px-16 rounded-md bg-white">
+      <div
+        class="m-auto w-full max-w-screen-md py-12 px-16 rounded-md bg-white"
+      >
         <div class="w-full text-center">
           <h1 class="text-3xl">Enter your payment details</h1>
         </div>
@@ -19,57 +21,87 @@
           </ol>
         </div>
 
-        <div class="w-full pt-8">
+        <div class="w-full pt-4">
           <div class="pt-2">
-            <h3 class="my-auto align-middle">Name</h3>
+            <h3 class="my-auto align-middle">
+              Name <span class="text-drift-red">*</span>
+            </h3>
           </div>
 
           <div>
             <input
               type="text"
               v-model="cardName"
-              class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+              class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
+              :class="{
+                'placeholder-black placeholder-opacity-20': !cardName
+              }"
               placeholder="Enter your full name"
+              tabindex="1"
               autofocus
             />
+            <p
+              v-if="inputErrors.cardName"
+              class="my-auto align-middle text-drift-red"
+            >
+              Cardholder name is a required field.
+            </p>
           </div>
         </div>
-        <div class="w-full pt-8">
+        <div class="w-full pt-4">
           <div class="pt-2 flex">
             <img
               class="inline"
               src="../../assets/images/icons/credit-card.png"
             />
-            <h3 class="my-auto ml-2 align-middle">Card Number</h3>
+            <h3 class="my-auto ml-2 align-middle">
+              Card Number <span class="text-drift-red">*</span>
+            </h3>
           </div>
 
           <div>
             <input
               type="text"
               id="cardNumber"
-              class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
+              class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
+              :class="{
+                'placeholder-black placeholder-opacity-20': !cardNumber
+              }"
               v-mask="generateCardNumberMask"
               v-model="cardNumber"
               data-ref="cardNumber"
               autocomplete="off"
               placeholder="Enter your card number"
+              tabindex="2"
             />
+            <p
+              v-if="inputErrors.cardNumber"
+              class="my-auto align-middle text-drift-red"
+            >
+              The card number you entered appears to be invalid. Please enter a
+              valid 16-digit card number
+            </p>
           </div>
         </div>
-        <div class="flex pt-8">
-          <div class="w-22 mr-12">
-            <div>
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Month</h3>
-              </div>
+        <div class="flex pt-4 items-start">
+          <div class="flex flex-wrap justify-between w-1/2 mr-12">
+            <div class="w-full pt-2">
+              <h3 class="my-auto align-middle">
+                Expiration <span class="text-drift-red">*</span>
+              </h3>
+            </div>
+            <div class="relative w-1/2 pr-1 mt-1">
               <select
-                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 appearance-none"
+                :class="{ 'text-black text-opacity-20': !cardMonth }"
                 id="cardMonth"
                 v-model="cardMonth"
                 data-ref="cardDate"
+                tabindex="3"
               >
-                <option value="" disabled selected>Month</option>
+                <option class="hidden" value="" disabled selected>Month</option>
                 <option
+                  class="text-black text-opacity-100"
                   v-bind:value="n < 10 ? '0' + n : n"
                   v-for="n in 12"
                   v-bind:disabled="n < minCardMonth"
@@ -78,21 +110,23 @@
                   {{ n < 10 ? "0" + n : n }}
                 </option>
               </select>
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="absolute right-1 fa-fw inset-y-0 my-auto to text-drift-blue bg-white pointer-events-none"
+              />
             </div>
-          </div>
-          <div class="w-22 mr-12">
-            <div>
-              <div class="pt-2">
-                <h3 class="my-auto align-middle">Year</h3>
-              </div>
+            <div class="relative w-1/2 pl-1 mt-1">
               <select
-                class="w-22 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2 mt-1"
+                class="w-full bg-transparent border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2 appearance-none"
+                :class="{ 'text-black text-opacity-20': !cardYear }"
                 id="cardYear"
                 v-model="cardYear"
                 data-ref="cardDate"
+                tabindex="4"
               >
-                <option value="" disabled selected>Year</option>
+                <option class="hidden" value="" disabled selected>Year</option>
                 <option
+                  class="text-black text-opacity-100"
                   v-bind:value="$index + minCardYear"
                   v-for="(n, $index) in 12"
                   v-bind:key="n"
@@ -100,55 +134,127 @@
                   {{ $index + minCardYear }}
                 </option>
               </select>
+              <font-awesome-icon
+                :icon="['fas', 'caret-down']"
+                class="absolute right-1 fa-fw inset-y-0 my-auto to text-drift-blue bg-white pointer-events-none"
+              />
             </div>
+            <p
+              v-if="inputErrors.cardMonth || inputErrors.cardYear"
+              class="my-auto align-middle text-drift-red"
+            >
+              Month and Year are required fields.
+            </p>
           </div>
-          <div class="w-22">
+          <div class="w-1/2">
             <div class="pt-2">
               <h3 class="my-auto align-middle">CVC</h3>
             </div>
 
-            <div>
+            <div class="mt-1">
               <input
                 type="text"
-                class="w-full border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                id="cardCvv"
+                class="w-full border-b-2 border-drift-blue focus:border-b-2 focus:border-drift-blue authInputField py-2"
+                :class="{
+                  'placeholder-black placeholder-opacity-20': !cardCvc
+                }"
+                id="cardCvc"
                 v-mask="'####'"
                 maxlength="4"
-                v-model="cardCvv"
+                v-model="cardCvc"
                 autocomplete="off"
-                placeholder="CVV"
+                placeholder="CVC"
+                tabindex="5"
               />
+              <p
+                v-if="inputErrors.cardCvc"
+                class="my-auto align-middle text-drift-red"
+              >
+                Security code is a required field.
+              </p>
             </div>
           </div>
         </div>
-        <div v-if="$route.name === 'Payment Details'" class="flex pt-8">
-          <div class="w-full">
+        <div
+          v-if="$route.name === 'Payment Details'"
+          class="flex pt-4"
+          :class="{ 'w-1/2': voucherApplied }"
+        >
+          <div class="w-full" :class="{ 'flex-shrink-0': voucherApplied }">
             <div class="pt-2">
-              <h3 class="my-auto align-middle">Have a voucher?</h3>
+              <h3 class="my-auto align-middle">
+                {{ voucherApplied ? "Gift card applied" : "Have a Gift card?" }}
+              </h3>
             </div>
 
-            <div>
+            <div
+              class="relative items-center mt-3 w-full"
+              :class="[voucherApplied ? 'inline-flex' : 'flex']"
+            >
               <input
+                v-model="voucherCode"
                 type="text"
-                class="w-full border-2 border-gray-400 focus:border-blue-400 authInputField p-2 mt-3"
-                placeholder="Enter your card number"
+                class="w-full border-2 border-white authInputField p-2"
+                :class="{
+                  'placeholder-black placeholder-opacity-20': !voucherCode,
+                  'border-gray-400 focus:border-drift-blue': !voucherApplied,
+                  'bg-white': voucherApplied
+                }"
+                :disabled="voucherApplied"
+                placeholder="Enter your Gift card number"
+                tabindex="6"
               />
+              <font-awesome-icon
+                v-if="voucherApplied"
+                :icon="['fas', 'check']"
+                class="absolute right-1/3 text-drift-blue"
+              />
+              <a
+                v-else-if="voucherError"
+                role="button"
+                class="absolute right-0 w-10 h-full flex items-center justify-center"
+                @click="resetVaucher()"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'times']"
+                  class="text-drift-red"
+                />
+              </a>
             </div>
+            <p
+              v-if="voucherApplied || voucherError"
+              class="my-auto align-middle"
+              :class="[
+                { 'text-drift-red': voucherError },
+                { 'text-drift-blue mt-2 cursor-pointer': voucherApplied }
+              ]"
+              @click="removeVoucher()"
+            >
+              {{
+                voucherApplied
+                  ? "Remove"
+                  : "Please enter a valid Gift card code"
+              }}
+            </p>
           </div>
           <div class="w-96 pt-11 pl-10">
             <button
+              v-if="!voucherApplied"
               class="rounded-lg py-2 w-full payment-custom-button designActionButton"
+              :class="{ 'opacity-50': !voucherCode }"
+              :disabled="!voucherCode"
+              @click="redeemVoucher()"
             >
               Apply
             </button>
           </div>
         </div>
-        <div class="w-full pt-8">
+        <div class="w-full pt-6">
           <button
             class="rounded-lg py-1 w-full payment-custom-button designActionButton"
             v-on:click="finish()"
           >
-            Pay
+            Pay ${{ payAmount }}
           </button>
         </div>
       </div>
@@ -172,20 +278,80 @@ export default {
       cardNumber: "",
       cardMonth: "",
       cardYear: "",
-      cardCvv: "",
+      cardCvc: "",
+      voucherCode: "",
       minCardYear: new Date().getFullYear(),
       amexCardMask: "#### ###### #####",
       otherCardMask: "#### #### #### ####",
       cardNumberTemp: "",
-      errors: ""
+      errors: "",
+      payAmount: 79.99,
+      voucherApplied: false,
+      voucherError: false,
+      inputErrors: {
+        cardName: false,
+        cardNumber: false,
+        cardMonth: false,
+        cardYear: false,
+        cardCvc: false
+      }
     };
   },
   methods: {
+    validateInput() {
+      const inputs = Object.keys(this.inputErrors);
+      const $data = this.$data;
+
+      inputs.forEach(input => {
+        this.inputErrors[input] = !$data[input];
+      });
+
+      return Object.values(this.inputErrors).find(x => x === true);
+    },
+
+    resetVaucher() {
+      this.voucherCode = "";
+      this.voucherError = false;
+    },
+
+    removeVoucher() {
+      this.payAmount = 79.99;
+      this.voucherApplied = false;
+      this.voucherCode = "";
+    },
+
+    redeemVoucher() {
+      // eslint-disable-next-line no-undef
+      const { VUE_APP_GIFTUP_API_KEY, VUE_APP_GIFTUP_TESTMODE } = process.env;
+
+      this.$axios
+        .get(`https://api.giftup.app/gift-cards/${this.voucherCode}`, {
+          headers: {
+            Authorization: VUE_APP_GIFTUP_API_KEY,
+            "x-giftup-testmode": VUE_APP_GIFTUP_TESTMODE
+          }
+        })
+        .then(res => {
+          const { canBeRedeemed, equivalentValuePerUnit } = res.data;
+
+          if (!canBeRedeemed) return;
+
+          this.payAmount = (this.payAmount - equivalentValuePerUnit).toFixed(2);
+          this.voucherApplied = true;
+          this.voucherError = false;
+        })
+        .catch(() => {
+          this.voucherError = true;
+        });
+    },
+
     async finish() {
+      if (this.validateInput()) return;
+
       await this.$axios
         .post("subscription/verify-card/", {
           number: this.cardNumber,
-          cvc: this.cardCvv,
+          cvc: this.cardCvc,
           exp_month: this.cardMonth,
           exp_year: this.cardYear
         })
@@ -222,7 +388,6 @@ export default {
   },
   mounted() {
     this.cardNumberTemp = this.otherCardMask;
-    document.getElementById("cardNumber").focus();
   },
   computed: {
     getCardType() {
@@ -275,5 +440,12 @@ export default {
 <style scoped>
 .payment-custom-button {
   height: 44px;
+}
+
+.designActionButton:disabled:hover {
+  color: rgba(40, 170, 225, 1);
+  border: 2px solid rgba(40, 170, 225, 1);
+  background-color: #fff;
+  cursor: default;
 }
 </style>

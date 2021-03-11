@@ -31,6 +31,7 @@ export const auth = {
       AuthService.logout();
       delete axios.defaults.headers.common["Authorization"];
       commit("logout");
+      document.cookie = "jwt=";
       return Promise.resolve("/");
     },
     async register({ commit, dispatch }, user) {
@@ -53,7 +54,14 @@ export const auth = {
     },
 
     async setUserSubscription() {
-      let jwt = JSON.parse(localStorage.getItem("jwt"));
+      const cookies = document.cookie;
+      const jwtCookie = cookies.includes("jwt")
+        ? cookies.split("jwt=")[1].split(";")[0]
+        : "";
+      const jwt = jwtCookie ? JSON.parse(jwtCookie) : "";
+
+      if (!jwt) return;
+
       await axios
         .get("subscription/me/", {
           headers: { Authorization: "JWT " + jwt.access }

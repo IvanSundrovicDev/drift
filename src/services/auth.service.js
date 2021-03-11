@@ -11,7 +11,7 @@ class AuthService {
       .then(async response => {
         if (response.data.access) {
           localStorage.removeItem("jwt");
-          localStorage.setItem("jwt", JSON.stringify(response.data));
+          document.cookie = `jwt=${JSON.stringify(response.data)}`;
         }
       });
   }
@@ -35,7 +35,7 @@ class AuthService {
       .then(async response => {
         if (await response.data.access) {
           localStorage.clear();
-          localStorage.setItem("jwt", JSON.stringify(response.data));
+          document.cookie = `jwt=${JSON.stringify(response.data)}`;
         }
       });
   }

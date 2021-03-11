@@ -19,6 +19,15 @@ Vue.use(Vuex);
 import { VueMaskDirective } from "v-mask";
 Vue.directive("mask", VueMaskDirective);
 
+const cookieExtract = cookieName => {
+  const cookies = document.cookie;
+  const singleCookie = cookies.includes(cookieName)
+    ? cookies.split(`${cookieName}=`)[1].split(";")[0]
+    : "";
+  const singleCookieParsed = singleCookie ? JSON.parse(singleCookie) : "";
+  return singleCookieParsed;
+};
+
 axios.defaults.headers.common = authHeader();
 
 axios.interceptors.response.use(
@@ -48,12 +57,12 @@ axios.interceptors.response.use(
     // Try request again with new token
     return axios
       .post("auth/jwt/refresh", {
-        refresh: JSON.parse(localStorage.getItem("jwt")).refresh
+        refresh: cookieExtract("jwt").refresh
       })
       .then(token => {
-        let jwt = JSON.parse(localStorage.getItem("jwt"));
+        let jwt = cookieExtract("jwt");
         jwt.access = token.data.access;
-        localStorage.setItem("jwt", JSON.stringify(jwt));
+        document.cookie = `jwt=${JSON.stringify(jwt)}`;
 
         // New request with new token
         const config = error.response.config;
