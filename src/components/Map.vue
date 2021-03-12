@@ -302,6 +302,7 @@ export default {
       });
       let map = this.map;
       let store = this.$store;
+      let scopeThis = this
       if (map.getZoom() <= 11) {
         store.state.myFields.forEach(el => {
           let center = el.coords.reduce(
@@ -436,6 +437,7 @@ export default {
                   crops: [],
                   traits: [],
                   farms: [],
+                  field: {},
                   data: {
                     selectedCrop: {
                       id: "",
@@ -610,6 +612,7 @@ export default {
                 }
               },
               beforeMount() {
+                this.field = field
                 this.data = {
                   selectedCrop: {
                     id: field.crop,
