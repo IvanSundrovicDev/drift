@@ -35,16 +35,16 @@
                 },
                 {
                     "name": "VUE_APP_GIFTUP_TESTMODE",
-                    "value": "true"
+                    "value": true
                 }
-            ]    
+            ]
         }
     ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "256", 
+    "cpu": "256",
     "memory": "512",
-    "networkMode": "awsvpc", 
+    "networkMode": "awsvpc",
     "family": "frontend-app-task"
 }
