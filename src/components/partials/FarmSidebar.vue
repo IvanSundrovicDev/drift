@@ -3,7 +3,7 @@
     class="ml-24 pt-16 fixed z-500"
     :class="{ 'h-screen': active === 'farmSidebar' }"
   >
-    <div v-show="active === 'farmSidebar'" class=" h-full bg-white w-64">
+    <div v-show="active === 'farmSidebar'" class="h-full bg-white w-64">
       <div class="h-full pb-24">
         <div class="max-h-full overflow-y-auto">
           <div v-for="(item, index) in farms" :key="item.id" class="max-h-full">
@@ -56,16 +56,15 @@
       class="whitescreen-active"
       v-if="
         $store.state.tutorial.loaded &&
-          !$store.state.tutorial.farmTutorialDone &&
-          $store.state.tutorial.farmTutorial === 0
+        farms[0] &&
+        !$store.state.tutorial.farmTutorialDone &&
+        $store.state.tutorial.farmTutorial === 0
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
-        :text="
-          'This is your farms page. Here you can view, edit and add farms. To view the fields within a farm, just select the farm from your list.'
-        "
+        :text="'This is your farms page. Add edit and view your farms here. To view the fields within a farm, just select the farm from your list.'"
         class="top-0 left-12 fixed ml-80 mt-24"
       />
     </div>
@@ -73,16 +72,14 @@
       class="whitescreen-active"
       v-if="
         !$store.state.tutorial.farmTutorialDone &&
-          $store.state.tutorial.farmTutorial === 1 &&
-          activeFarm
+        $store.state.tutorial.farmTutorial === 1 &&
+        activeFarm
       "
     >
       <Tutorial
         v-on:exit="$store.dispatch('tutorial/setFarmTutorialStep')"
         :direction="'left'"
-        :text="
-          'Great! Under each farm, you’ll have a list of fields. There’s no field under this farm, just yet, so let’s go ahead and add one below'
-        "
+        :text="'Great! Under each farm, you’ll have a list of fields. There’s no field under this farm, just yet, so let’s go ahead and add one below'"
         class="top-0 left-12 fixed ml-80 mt-64"
       />
     </div>
@@ -103,13 +100,13 @@ export default {
     AddField,
     AddNeighbor,
     AddFarm,
-    Tutorial
+    Tutorial,
   },
   data() {
     return {
       active: "farmSidebar",
       activeFarm: null,
-      farms: []
+      farms: [],
     };
   },
   computed: {
@@ -121,7 +118,7 @@ export default {
     },
     refreshFields() {
       return this.$store.state.refresh;
-    }
+    },
   },
   watch: {
     newActiveField(newField, oldField) {
@@ -134,17 +131,17 @@ export default {
     },
     refreshFields(newRefresh, oldRefresh) {
       this.active = "farmSidebar";
-    }
+    },
   },
   methods: {
     getFarms() {
       if (this.$route.name === "Dashboard") {
         this.$axios
           .get(`farms/me/`)
-          .then(res => {
+          .then((res) => {
             this.farms = res.data;
           })
-          .catch(err => {});
+          .catch((err) => {});
       }
     },
     activateFarm(id) {
@@ -164,14 +161,14 @@ export default {
     closeAndRefreshFarms() {
       this.active = "farmSidebar";
       this.getFarms();
-    }
+    },
   },
   beforeMount() {
     this.getFarms();
     if (!this.$store.state.farmTutorialDone) {
       this.$store.dispatch("tutorial/setUserTutorial");
     }
-  }
+  },
 };
 </script>
 <style></style>

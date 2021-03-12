@@ -34,7 +34,12 @@ export default {
       fieldPolygon: [],
       drawing: false,
       activeCoords: false,
+<<<<<<< Updated upstream
       drawOptions: {}
+=======
+      drawOptions: {},
+      popupOpen: false
+>>>>>>> Stashed changes
     };
   },
   computed: {
@@ -86,7 +91,9 @@ export default {
     },
     fieldsUpdate(newFields, oldFields) {
       this.editing = false;
-      this.fieldRender(newFields);
+      if(!this.popupOpen){
+        this.fieldRender(newFields);
+      }
     },
     activeClu(newState, oldState) {
       if (newState) {
@@ -160,9 +167,15 @@ export default {
       let map = this.map;
 
       this.map.on("zoomend", function () {
+<<<<<<< Updated upstream
          if(!scopeThis.drawing){
            scopeThis.fieldRender(store.state.fields);
          }
+=======
+        if (!scopeThis.drawing && !scopeThis.popupOpen) {
+          scopeThis.fieldRender(store.state.fields);
+        }
+>>>>>>> Stashed changes
       });
 
       this.map.on("moveend", function () {
@@ -297,6 +310,7 @@ export default {
         iconUrl: newIcon,
         iconSize: [40, 40],
       });
+      let scopeThis = this
       let map = this.map;
       let store = this.$store;
       if (map.getZoom() <= 11) {
@@ -318,8 +332,6 @@ export default {
       } else {
         newFields.forEach((field) => {
           if (field.status === "active") {
-            let scopeThis = this;
-            var selectedFeature = this.editing;
             var polygon = L.polygon(field.coords)
               .setStyle({
                 color: "#FFF",
@@ -327,14 +339,29 @@ export default {
                 fillOpacity: 0.3,
               })
               .addTo(map);
+            polygon.on("click", function () {
+              let img = "@/assets/images/icons/envelope.png";
+              menu(field);
+            });
+            polygon.on("popupclose", function (e) {
+                scopeThis.popupOpen = false
+              });
           } else if (field.status === "myField") {
             var polygon = L.polygon(field.coords)
+              .bindPopup(`<div style="width:230px" id="popup"></div>`)
               .setStyle({
                 color: "#FFF",
                 fillColor: "#FFF",
                 fillOpacity: 0.3,
               })
               .addTo(map);
+            polygon.on("click", function () {
+              let img = "@/assets/images/icons/envelope.png";
+              menu(field);
+            });
+            polygon.on("popupclose", function (e) {
+                scopeThis.popupOpen = false
+              });
           } else if (field.status === "dispute") {
             if (field.is_confirmed) {
               var polygon = L.polygon(field.coords)
@@ -357,6 +384,9 @@ export default {
                 let img = "@/assets/images/icons/envelope.png";
                 menu(field);
               });
+              polygon.on("popupclose", function (e) {
+                scopeThis.popupOpen = false
+              });
             }
           } else if (field.status === "neighbor") {
             if (field.is_confirmed) {
@@ -376,6 +406,9 @@ export default {
               polygon.on("click", function () {
                 let img = "@/assets/images/icons/envelope.png";
                 menu(field);
+              });
+              polygon.on("popupclose", function (e) {
+                scopeThis.popupOpen = false
               });
             }
           }
@@ -433,6 +466,7 @@ export default {
                 },
                 claimField() {
                   if (this.data.selectedFarm.id && this.fieldName) {
+                    map.closePopup();
                     this.$axios
                       .patch(`farms/fields/${field.uuid}/claim/`, {
                         name: this.fieldName,
@@ -538,6 +572,7 @@ export default {
                 },
               },
               beforeMount() {
+                scopeThis.popupOpen = true
                 this.data = {
                   selectedCrop: {
                     id: field.crop,
@@ -601,21 +636,33 @@ export default {
                           />
                           <h1 v-on:click="active = 'assign'" class="text-xl ml-2 custom-underline cursor-pointer">Assign Crop and Trait</h1>
                         </div>
+<<<<<<< Updated upstream
                         <div class="py-2 flex">
+=======
+                        <div v-if="field.status === 'neighbor'" class="py-2 flex">
+>>>>>>> Stashed changes
                           <img
                             class="inline h-7"
                             :src="inviteImg"
                           />
                           <h1 v-on:click="active = 'invite'" class="text-xl ml-2 custom-underline cursor-pointer">Invite neighbor</h1>
                         </div>
+<<<<<<< Updated upstream
                         <div v-if="cluActive" class="py-2 flex">
+=======
+                        <div v-if="cluActive && field.status === 'neighbor'"  class="py-2 flex">
+>>>>>>> Stashed changes
                           <img
                             class="inline h-7"
                             :src="inviteImg"
                           />
                           <h1 v-on:click="addToMergedFields" class="text-xl ml-2 custom-underline cursor-pointer">Merge</h1>
                         </div>
+<<<<<<< Updated upstream
                         <div class="py-2 flex">
+=======
+                        <div v-if="field.status === 'neighbor'" class="py-2 flex">
+>>>>>>> Stashed changes
                           <img
                             class="inline h-7"
                             :src="addImg"

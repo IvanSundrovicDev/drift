@@ -6,7 +6,7 @@
         icon="ellipsis-h"
         v-on:click="activatePopup()"
       ></font-awesome-icon>
-      <div v-if="activePopup === field.id" class="fixed flex ml-11 -mt-11">
+      <div v-if="activePopup === field.id" v-on-clickaway="activatePopup" class="fixed flex ml-11 -mt-11">
         <div class="menu-arrow bg-t-white mt-4"></div>
         <div class="bg-white rounded-lg">
           <div v-if="!open" class="mx-3">
@@ -106,12 +106,17 @@ import Delete from "../../assets/images/icons/delete.svg";
 import Neighbor from "../../assets/images/icons/neighborField.svg";
 import LeftArrow from "../../assets/images/icons/LeftArrow.svg";
 
+import { directive as onClickaway } from 'vue-clickaway';
+
 export default {
   components: {
     Edit,
     Delete,
     Neighbor,
     LeftArrow
+  },
+  directives: {
+    onClickaway: onClickaway,
   },
   name: "MyField",
   props: ["activeField", "activePopup", "field"],
@@ -183,7 +188,7 @@ export default {
           this.menuOpen = false;
           this.open = "";
           this.activatePopup();
-          this.$store.dispatch("updateField", this.field);
+          this.$store.dispatch("refreshFields");
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully renamed!"

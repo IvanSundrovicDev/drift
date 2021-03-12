@@ -1,7 +1,9 @@
 <template>
   <div>
-    <!-- This example requires Tailwind CSS v2.0+ -->
-    <div class="w-full fixed border-b border-gray-200 bg-white z-501">
+    <div
+      v-on-clickaway="close"
+      class="w-full fixed border-b border-gray-200 bg-white z-501"
+    >
       <nav class="bg-white">
         <div class="w-full">
           <div class="flex h-16">
@@ -87,7 +89,10 @@
         </div>
 
         <!-- Profile menu -->
-        <ProfileMenu v-show="profileMenuOpen" />
+        <ProfileMenu
+          v-show="profileMenuOpen"
+          v-on:close="profileMenuOpen = false"
+        />
 
         <div v-if="menuOpen" class="block h-screen sm:hidden">
           <div class="pt-4 pb-1 border-t border-gray-200">
@@ -189,32 +194,40 @@ import Herbicides from "../../assets/images/navbar-icons/herbicides.svg";
 import Traits from "../../assets/images/navbar-icons/traits.svg";
 import TankMix from "../../assets/images/navbar-icons/tank-mix.svg";
 
+import { directive as onClickaway } from "vue-clickaway";
+
 export default {
   name: "TopNavbar",
+  directives: {
+    onClickaway: onClickaway,
+  },
   components: {
     ProfileMenu,
     Close,
     Farms,
     Herbicides,
     Traits,
-    TankMix
+    TankMix,
   },
-  data: function() {
+  data: function () {
     return {
       menuOpen: false,
-      profileMenuOpen: false
+      profileMenuOpen: false,
     };
   },
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
-    }
+    },
+    close() {
+      this.profileMenuOpen = false;
+    },
   },
   beforeMount() {
     if (!this.$store.state.auth.user) {
       return this.$store.dispatch("auth/setUserAction");
     }
-  }
+  },
 };
 </script>
 
