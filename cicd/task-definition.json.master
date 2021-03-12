@@ -35,7 +35,7 @@
                 },
                 {
                     "name": "VUE_APP_GIFTUP_TESTMODE",
-                    "value": true
+                    "value": "true"
                 }
             ]
         }
