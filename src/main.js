@@ -88,6 +88,7 @@ axios.interceptors.response.use(
   }
 );
 
+
 const apiUrl = process.env.VUE_APP_API_URL;
 
 console.log(apiUrl);

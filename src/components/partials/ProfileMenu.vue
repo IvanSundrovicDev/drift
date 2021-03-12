@@ -218,14 +218,14 @@
                 alt=""
               />
               <span class="my-auto ml-2 align-middle"
-                >Neighboccr e-mail address</span
+                >Neighbor e-mail address</span
               >
             </div>
             <div class="flex">
               <input
                 type="email"
                 class="w-full mr-1 border-b-2 border-blue-400 focus:border-b-2 focus:border-blue-400 authInputField py-2"
-                placeholder="Enter neighbour e-mail address"
+                placeholder="Enter neighbor e-mail address"
                 autofocus
                 v-model="neighbourEmail"
               />
