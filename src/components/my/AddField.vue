@@ -207,13 +207,13 @@ export default {
       this.$axios
         .post(`farms/${this.farmId}/fields/`, field)
         .then(res => {
-          res.data.field.new = true
+          res.data.field.new = true;
 
-          this.$store.dispatch("activateClu", false)
+          this.$store.dispatch("activateClu", false);
           this.$store.dispatch("refreshMyFields");
           this.$store.dispatch("refreshFields");
           this.$store.dispatch("setRemovedPolygon", false);
-          this.$store.dispatch("setFields", res.data.field)
+          this.$store.dispatch("setFields", res.data.field);
           this.$store.dispatch("addNotification", {
             type: "success",
             message: "Field successfully added!"
@@ -228,10 +228,14 @@ export default {
     },
     close() {
       this.$emit("toggle-farm-sidebar");
-      this.$store.dispatch("activateClu", false)
+      this.$store.dispatch("activateClu", false);
       this.$store.dispatch("setRemovedPolygon", false);
       this.$store.dispatch("setPolygonDraw", false);
-      this.$store.dispatch("setFields", this.$store.state.activeField)
+
+      // if we didn't click on any of the fields in the list, then we can't show it after closing the "Add new field" popup
+      if (!this.$store.state.activeField.id) return;
+
+      this.$store.dispatch("setFields", this.$store.state.activeField);
     },
     removeLocation() {
       this.activeLocationName = null;
