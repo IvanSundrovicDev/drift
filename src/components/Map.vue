@@ -368,13 +368,10 @@ export default {
             }
           } else if (field.status === "neighbor") {
             if (field.is_confirmed) {
-              // if the field is confirmed but it is not ours, color it blue
-              let fillColor = "#28AAE1";
-
-              if (field.owner.account === this.currentUser) {
-                // this is my neighbour field - color it white
-                fillColor = "#fff";
-              }
+              // if the field is confirmed and it's my field, color it white
+              // else it means it is a neighbors field, so color ti blue
+              let fillColor =
+                field.owner.account === this.currentUser ? "#fff" : "#28AAE1";
 
               var polygon = L.polygon(field.coords)
                 .setStyle({
@@ -385,6 +382,7 @@ export default {
                 })
                 .addTo(map);
             } else {
+              // if the field has a crop, color it blue, otherwise, don't color it at all
               const fillColor = field.crop ? "#28AAE1" : 0;
               const fillOpacity = field.crop ? "0.3" : 0;
 
