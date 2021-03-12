@@ -24,6 +24,18 @@
                 {
                     "name": "VUE_APP_API_URL",
                     "value": "http://be.dev.ditchdrift.com:8000/api/v1/"
+                },
+                {
+                    "name": "VUE_APP_NAME",
+                    "value": "Ditch Drift"
+                },
+                {
+                    "name": "VUE_APP_GIFTUP_API_KEY",
+                    "value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjYjJjYjRjYS01YzY0LTQxNWUtOTQ4ZC03YjkxOTI2ZTM3YzMiLCJzdWIiOiJ0Z29sbHlAZGl0Y2hkcmlmdC5jb20iLCJleHAiOjE5MjM4MTk5ODAsImlzcyI6Imh0dHBzOi8vZ2lmdHVwLmFwcC8iLCJhdWQiOiJodHRwczovL2dpZnR1cC5hcHAvIn0.Y_XVrls-jhFzAWNYfBmxUMhIHbEDcctPXRPFTpK0eO8"
+                },
+                {
+                    "name": "VUE_APP_GIFTUP_TESTMODE",
+                    "value": "true"
                 }
             ]    
         }
