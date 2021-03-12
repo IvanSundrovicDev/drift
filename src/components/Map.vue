@@ -20,12 +20,12 @@ delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 export default {
   name: "Map",
-  data: function() {
+  data: function () {
     return {
       map: null,
       center: [39.8859636, -95.6042309],
@@ -34,8 +34,7 @@ export default {
       fieldPolygon: [],
       drawing: false,
       activeCoords: false,
-      drawOptions: {},
-      popupOpen: false
+      drawOptions: {}
     };
   },
   computed: {
@@ -87,35 +86,33 @@ export default {
     },
     fieldsUpdate(newFields, oldFields) {
       this.editing = false;
-      if (!this.popupOpen) {
-        this.fieldRender(newFields);
-      }
+      this.fieldRender(newFields);
     },
     activeClu(newState, oldState) {
       if (newState) {
         this.getAllFields(this.map.getCenter());
       }
-    }
+    },
   },
   methods: {
-    setupLeafletMap: function() {
+    setupLeafletMap: function () {
       // Initiate map
       this.map = L.map("mapContainer", {
         zoomControl: false,
-        editable: true
+        editable: true,
       }).setView(this.center, this.zoom);
 
       // Put zoom control bottom right
       L.control
         .zoom({
-          position: "bottomright"
+          position: "bottomright",
         })
         .addTo(this.map);
 
       // Set options and params
       L.tileLayer("http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}", {
         maxZoom: 20,
-        subdomains: ["mt0", "mt1", "mt2", "mt3"]
+        subdomains: ["mt0", "mt1", "mt2", "mt3"],
       }).addTo(this.map);
 
       // Initialise the FeatureGroup to store editable layers
@@ -130,24 +127,24 @@ export default {
             drawError: {
               color: "#e1e100", // Color the shape will turn when intersects
               message:
-                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)" // Message that will show when intersect
+                "<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)", // Message that will show when intersect
             },
             shapeOptions: {
               fillColor: "rgb(196, 196, 196)",
               color: "#F47500",
-              weight: 10
-            }
+              weight: 10,
+            },
           },
           polyline: false,
           circlemarker: false,
           circle: false,
           rectangle: false,
-          marker: false
+          marker: false,
         },
         edit: {
           featureGroup: editableLayers, //REQUIRED!!
-          remove: true
-        }
+          remove: true,
+        },
       };
 
       // Initialise the draw control and pass it the FeatureGroup of editable layers
@@ -168,7 +165,7 @@ export default {
         }
       });
 
-      this.map.on("moveend", function() {
+      this.map.on("moveend", function () {
         if (
           !scopeThis.fieldPolygon[0] &&
           !scopeThis.drawing &&
@@ -180,7 +177,7 @@ export default {
       });
 
       // catch drawn polygon
-      this.map.on("draw:created", function(e) {
+      this.map.on("draw:created", function (e) {
         let layer = e.layer;
 
         let newCoords = [];
@@ -190,7 +187,7 @@ export default {
         layer.options.fillOpacity = 0.3;
         layer.options.name = "last";
 
-        layer.editing.latlngs[0][0].map(function(value, key) {
+        layer.editing.latlngs[0][0].map(function (value, key) {
           newCoords.push([value.lat, value.lng]);
         });
 
@@ -204,13 +201,13 @@ export default {
         scopeThis.map.fitBounds(layer.getBounds());
       });
 
-      this.map.on("draw:edited", function(e) {
+      this.map.on("draw:edited", function (e) {
         let layers = e.layers;
 
         let newCoords = [];
 
-        layers.eachLayer(function(layer) {
-          layer.editing.latlngs[0][0].map(function(value, key) {
+        layers.eachLayer(function (layer) {
+          layer.editing.latlngs[0][0].map(function (value, key) {
             layer.options.color = "orange";
             newCoords.push([value.lat, value.lng]);
           });
@@ -220,7 +217,7 @@ export default {
           scopeThis.map.fitBounds(layer.getBounds());
         });
       });
-      this.map.on("draw:canceled", function(e) {
+      this.map.on("draw:canceled", function (e) {
         store.dispatch("setPolygonDraw", false);
       });
     },
@@ -260,16 +257,16 @@ export default {
       if (this.$store.state.cluActive) {
         this.$axios
           .post(`farms/fields/location-search/`, coords)
-          .then(res => {
+          .then((res) => {
             this.activeCoords = coords;
             this.$store.dispatch("setNeighbor", res.data);
           })
-          .catch(err => {
+          .catch((err) => {
             this.activeCoords = false;
             this.$store.dispatch("setFields", {
               mpoly: [],
               neighbour_coords: [],
-              dispute_coords: []
+              dispute_coords: [],
             });
           });
       }
@@ -277,17 +274,17 @@ export default {
     getMyFields() {
       this.$axios
         .get(`farms/fields/mpoly/me/`)
-        .then(res => {
+        .then((res) => {
           if (!this.$store.state.myFields[0]) {
             var group = new L.featureGroup();
-            res.data.forEach(el => {
+            res.data.forEach((el) => {
               var marker = L.marker(el.mpoly[0]).addTo(group);
             });
             this.map.flyToBounds(group.getBounds(), { maxZoom: 15 });
           }
           this.$store.dispatch("setMyFields", res.data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -298,35 +295,37 @@ export default {
       this.removePolygon();
       let newMarker = L.icon({
         iconUrl: newIcon,
-        iconSize: [40, 40]
+        iconSize: [40, 40],
       });
-      let scopeThis = this;
       let map = this.map;
       let store = this.$store;
       if (map.getZoom() <= 11) {
-        store.state.myFields.forEach(el => {
+        store.state.myFields.forEach((el) => {
           let center = el.coords.reduce(
-            function(x, y) {
+            function (x, y) {
               return [
                 x[0] + y[0] / el.coords.length,
-                x[1] + y[1] / el.coords.length
+                x[1] + y[1] / el.coords.length,
               ];
             },
             [0, 0]
           );
           var marker = L.marker(center, {
             icon: newMarker,
-            name: "marker"
+            name: "marker",
           }).addTo(map);
         });
       } else {
-        newFields.forEach(field => {
+        newFields.forEach((field) => {
           if (field.status === "active") {
+            let scopeThis = this;
+            var selectedFeature = this.editing;
             var polygon = L.polygon(field.coords)
+              .bindPopup(`<div style="width:230px" id="popup"></div>`)
               .setStyle({
-                color: "#FFF",
-                fillColor: "#FFF",
-                fillOpacity: 0.3
+                color: "#fff",
+                fillColor: "#fff",
+                fillOpacity: 0.6 // to recognize the currently active field from the rest of "myFields", the opacity is bigger here
               })
               .addTo(map);
             polygon.on("click", function() {
@@ -340,8 +339,8 @@ export default {
             var polygon = L.polygon(field.coords)
               .bindPopup(`<div style="width:230px" id="popup"></div>`)
               .setStyle({
-                color: "#FFF",
-                fillColor: "#FFF",
+                color: "#fff",
+                fillColor: "#fff",
                 fillOpacity: 0.3
               })
               .addTo(map);
@@ -356,8 +355,8 @@ export default {
             if (field.is_confirmed) {
               var polygon = L.polygon(field.coords)
                 .setStyle({
-                  color: "#EC2828",
-                  fillColor: "#EC2828",
+                  color: "#fff",
+                  fillColor: "#fff",
                   fillOpacity: 0.3
                 })
                 .addTo(map);
@@ -365,12 +364,12 @@ export default {
               var polygon = L.polygon(field.coords)
                 .bindPopup(`<div style="width:230px" id="popup"></div>`)
                 .setStyle({
-                  color: "#EC2828",
+                  color: "#fff",
                   fillOpacity: 0,
-                  id: field.uuid
+                  id: field.uuid,
                 })
                 .addTo(this.map);
-              polygon.on("click", function() {
+              polygon.on("click", function () {
                 let img = "@/assets/images/icons/envelope.png";
                 menu(field);
               });
@@ -380,20 +379,34 @@ export default {
             }
           } else if (field.status === "neighbor") {
             if (field.is_confirmed) {
+              // if the field is confirmed and it's my field, color it white
+              // else it means it is a neighbors field, so color ti blue
+              let fillColor =
+                field.owner.account === this.currentUser ? "#fff" : "#28AAE1";
+
               var polygon = L.polygon(field.coords)
                 .setStyle({
-                  color: "#FFFFFF",
-                  fillColor: "#28AAE1",
+                  color: "#fff",
+                  fillColor: fillColor,
                   fillOpacity: 0.3,
-                  id: field.uuid
+                  id: field.uuid,
                 })
                 .addTo(map);
             } else {
+              // if the field has a crop, color it blue, otherwise, don't color it at all
+              const fillColor = field.crop ? "#28AAE1" : 0;
+              const fillOpacity = field.crop ? "0.3" : 0;
+
               var polygon = L.polygon(field.coords)
                 .bindPopup(`<div style="width:230px" id="popup"></div>`)
-                .setStyle({ color: "#FFF", fillOpacity: 0, id: field.uuid })
+                .setStyle({
+                  color: "#FFF",
+                  fillOpacity: fillOpacity,
+                  fillColor: fillColor,
+                  id: field.uuid
+                })
                 .addTo(map);
-              polygon.on("click", function() {
+              polygon.on("click", function () {
                 let img = "@/assets/images/icons/envelope.png";
                 menu(field);
               });
@@ -405,7 +418,7 @@ export default {
           let menu = () => {
             new Vue({
               el: "#popup",
-              data: function() {
+              data: function () {
                 return {
                   neighborEmail: "",
                   fieldName: "",
@@ -423,15 +436,15 @@ export default {
                   data: {
                     selectedCrop: {
                       id: "",
-                      name: ""
+                      name: "",
                     },
                     selectedTrait: {
                       id: "",
-                      name: ""
-                    }
+                      name: "",
+                    },
                   },
                   cluActive: store.state.cluActive,
-                  activeMenu: false
+                  activeMenu: false,
                 };
               },
               methods: {
@@ -456,13 +469,12 @@ export default {
                 },
                 claimField() {
                   if (this.data.selectedFarm.id && this.fieldName) {
-                    map.closePopup();
                     this.$axios
                       .patch(`farms/fields/${field.uuid}/claim/`, {
                         name: this.fieldName,
-                        farm: this.data.selectedFarm.id
+                        farm: this.data.selectedFarm.id,
                       })
-                      .then(res => {
+                      .then((res) => {
                         field.farm = this.data.selectedFarm.id;
                         field.claimed = true;
                         field.neighbour_coords = [];
@@ -473,43 +485,76 @@ export default {
                         store.dispatch("setFields", field);
                         store.dispatch("addNotification", {
                           type: "success",
-                          message: "You have successfully added your field!"
+                          message: "You have successfully added your field!",
                         });
                       })
-                      .catch(err => {
+                      .catch((err) => {
                         store.dispatch("addNotification", {
                           type: "error",
-                          message: "There was an error claiming your field!"
+                          message: "There was an error claiming your field!",
                         });
                       });
                   }
                 },
                 assignCropTrait() {
-                  this.$axios
-                    .patch(`farms/fields/${field.uuid}/claim/`, {
-                      crop_trait: this.data.selectedTrait.id,
-                      crop: this.data.selectedCrop.id
-                    })
-                    .then(res => {
-                      map.closePopup();
-                      field.crop_trait = this.data.selectedTrait.id;
-                      field.crop_trait_name = this.data.selectedTrait.name;
-                      field.crop = this.data.selectedCrop.id;
-                      field.crop_name = this.data.selectedCrop.name;
-                      if (!store.state.cluActive) {
-                        store.dispatch("refreshFields");
-                      }
-                      store.dispatch("addNotification", {
-                        type: "success",
-                        message: "Crop and trait successfully assigned!"
+                  if (this.field.status === "neighbor") {
+                    this.$axios
+                      .patch(`farms/fields/${field.uuid}/claim/`, {
+                        crop_trait: this.data.selectedTrait.id,
+                        crop: this.data.selectedCrop.id
+                      })
+                      .then(res => {
+                        map.closePopup();
+                        field.crop_trait = this.data.selectedTrait.id;
+                        field.crop_trait_name = this.data.selectedTrait.name;
+                        field.crop = this.data.selectedCrop.id;
+                        field.crop_name = this.data.selectedCrop.name;
+                        if (!store.state.cluActive) {
+                          store.dispatch("refreshFields");
+                        }
+                        store.dispatch("addNotification", {
+                          type: "success",
+                          message: "Crop and trait successfully assigned!"
+                        });
+                      })
+                      .catch(err => {
+                        store.dispatch("addNotification", {
+                          type: "error",
+                          message:
+                            "There was an error assigning crop and trait!"
+                        });
                       });
-                    })
-                    .catch(err => {
-                      store.dispatch("addNotification", {
-                        type: "error",
-                        message: "There was an error assigning crop and trait!"
+                  } else {
+                    this.$axios
+                      .patch(
+                        `/farms/${this.field.farm}/fields/${this.field.id}/`,
+                        {
+                          crop_trait: this.data.selectedTrait.id,
+                          crop: this.data.selectedCrop.id
+                        }
+                      )
+                      .then(res => {
+                        map.closePopup();
+                        field.crop_trait = this.data.selectedTrait.id;
+                        field.crop_trait_name = this.data.selectedTrait.name;
+                        field.crop = this.data.selectedCrop.id;
+                        field.crop_name = this.data.selectedCrop.name;
+                        if (!store.state.cluActive) {
+                          store.dispatch("refreshFields");
+                        }
+                        store.dispatch("addNotification", {
+                          type: "success",
+                          message: "Crop and trait successfully assigned!"
+                        });
+                      })
+                      .catch(err => {
+                        store.dispatch("addNotification", {
+                          type: "error",
+                          message:
+                            "There was an error assigning crop and trait!"
+                        });
                       });
-                    });
+                  }
                 },
                 addToMergedFields() {
                   console.log(field.uuid);
@@ -559,30 +604,29 @@ export default {
                       }
                       break;
                   }
-                }
+                },
               },
               beforeMount() {
-                scopeThis.popupOpen = true;
                 this.data = {
                   selectedCrop: {
                     id: field.crop,
-                    name: field.crop_name
+                    name: field.crop_name,
                   },
                   selectedTrait: {
                     id: field.crop_trait,
-                    name: field.crop_trait_name
+                    name: field.crop_trait_name,
                   },
                   selectedFarm: {
                     id: "",
-                    name: ""
-                  }
+                    name: "",
+                  },
                 };
                 this.$axios
                   .get(`farms/crops/`)
-                  .then(res => {
+                  .then((res) => {
                     this.crops = res.data;
                   })
-                  .catch(err => {});
+                  .catch((err) => {});
 
                 this.$axios
                   .get(`farms/crop-traits/`)
@@ -596,10 +640,10 @@ export default {
                   .catch(err => {});
                 this.$axios
                   .get(`farms/me/`)
-                  .then(res => {
+                  .then((res) => {
                     this.farms = res.data;
                   })
-                  .catch(err => {});
+                  .catch((err) => {});
               },
               template: `
                   <div>
@@ -833,19 +877,19 @@ export default {
                       </div>
                     </div>
                   </div>
-                  </div>`
+                  </div>`,
             });
           };
         });
       }
-    }
+    },
   },
   mounted() {
     this.setupLeafletMap();
   },
   beforeMount() {
     this.getMyFields();
-  }
+  },
 };
 </script>
 
